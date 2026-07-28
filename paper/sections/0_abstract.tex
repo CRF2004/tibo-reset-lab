@@ -1,0 +1,17 @@
+\begin{abstract}
+Rare public operational actions are easy to narrate after they occur and difficult to forecast
+without leaking post-event information. We study a single auditable stream: public announcements of
+special Codex usage-limit resets. The dataset contains 41 accepted announcements, 315 daily periods,
+1,260 six-hour periods, and prediction-safe official incident contexts. Expanding-window historical
+experiments compare global and adaptive event rates, renewal features, calendar features, and an
+official-incident model. A 30-day rolling rate is the strongest daily historical baseline
+(Brier 0.119664), outperforming the calendar model (0.125443); at six-hour resolution the calendar
+model reaches 0.036443. Official-incident features do not provide stable incremental improvement,
+and paired block-bootstrap intervals include zero. We therefore freeze a broader baseline set and establish an immutable prospective
+protocol in which discovery, primary-source verification, prediction, outcome scoring, exclusion,
+and revision occupy separate append-only layers. Fault drills pass eight predefined failure cases,
+and an auxiliary audit identifies heterogeneous application outcomes among 20 self-selected public
+reports, although only one has an exact timestamp. This draft reports historical diagnostics and the
+prospective design, not prospective superiority. Formal model comparison will occur only after at
+least 180 valid scheduled days and 20 prospective positives.
+\end{abstract}

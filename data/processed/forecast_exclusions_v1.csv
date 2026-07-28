@@ -1,0 +1,2 @@
+exclusion_id,run_id,recorded_at_utc,reason,details
+EXCL_RUN7_20260728T080000Z,RUN7_20260728T080000Z,2026-07-28T07:42:50Z,invalid_future_issuance,Manual issued_at was later than the actual system time; retained for audit but excluded from all scoring.

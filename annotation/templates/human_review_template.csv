@@ -1,0 +1,12 @@
+candidate_id,reviewer_id,reviewed_at_utc,source_access,eligibility_decision,announcement_status,primary_action,secondary_actions,reason_type,scope_class,eligible_plans,quota_windows_affected,context_source_ids,agrees_with_llm,confidence,evidence_quote_1,evidence_quote_2,uncertainties,reviewer_notes
+CAND_2026_07_10,,,,,,,,,,,,,,,,,,
+CAND_2026_07_11,,,,,,,,,,,,,,,,,,
+CAND_2026_07_12_HARD,,,,,,,,,,,,,,,,,,
+CAND_2026_07_12_BANKED,,,,,,,,,,,,,,,,,,
+CAND_2026_07_13,,,,,,,,,,,,,,,,,,
+CAND_2026_07_14,,,,,,,,,,,,,,,,,,
+CAND_2026_07_16,,,,,,,,,,,,,,,,,,
+CAND_2026_07_18,,,,,,,,,,,,,,,,,,
+CAND_2026_07_21,,,,,,,,,,,,,,,,,,
+CAND_2026_07_25,,,,,,,,,,,,,,,,,,
+CAND_2026_07_28,,,,,,,,,,,,,,,,,,

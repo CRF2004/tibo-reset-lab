@@ -1,0 +1,3 @@
+automation_run_id,phase,scheduled_for_utc,started_at_utc,completed_at_utc,status,feed_fetched_at_utc,feed_stale,signal_post_id,details,log_path
+AUTO_PREFLIGHT_20260728T075155Z,preflight,2026-07-28T17:00:00Z,2026-07-28T07:51:55Z,2026-07-28T07:51:56Z,passed,2026-07-28T07:50:26.732Z,0,2081940052154933696,Feed fresh; latest signal is present in accepted gold.,automation/logs/AUTO_PREFLIGHT_20260728T075155Z.log
+AUTO_PREFLIGHT_20260728T075521Z,preflight,2026-07-28T17:00:00Z,2026-07-28T07:55:21Z,2026-07-28T07:55:22Z,passed,2026-07-28T07:55:13.807Z,0,2081940052154933696,Feed fresh; latest signal is present in accepted gold.,automation/logs/AUTO_PREFLIGHT_20260728T075521Z.log

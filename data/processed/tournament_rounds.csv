@@ -1,0 +1,4 @@
+round_id,issued_at_utc,submission_open_utc,submission_deadline_utc,status,schedule_class,notes
+ROUND_20260728T083842Z,2026-07-28T08:38:42Z,2026-07-28T08:38:42Z,2026-07-28T08:38:42Z,closed,bootstrap,LLM-only bootstrap architecture check; excluded from formal tournament.
+ROUND_20260728T074256Z,2026-07-28T07:42:56Z,2026-07-28T07:42:56Z,2026-07-28T07:42:56Z,closed,bootstrap,Imported statistical forecast round.
+ROUND_20260728T084600Z,2026-07-28T08:46:00Z,2026-07-27T08:46:00Z,2026-07-28T08:46:00Z,open,bootstrap,LLM end-to-end bootstrap; permanently excluded from formal ranking.

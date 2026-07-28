@@ -1,0 +1,1 @@
+revision_id,forecast_id,recorded_at_utc,discovered_at_utc,old_label,new_label,old_event_count,new_event_count,old_brier,new_brier,old_log_loss,new_log_loss,reason,source_data_sha256

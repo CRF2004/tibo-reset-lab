@@ -1,0 +1,28 @@
+\section{Introduction}
+
+Public organizations sometimes take rare discretionary actions in response to incidents, releases,
+or salient milestones. Such actions invite retrospective explanations, but a useful scientific
+question is narrower: can information that was publicly available at time $t$ improve a calibrated
+forecast of an action after $t$? Answering this question requires more than a classifier. The event
+definition, source hierarchy, observation boundary, missing runs, and later data corrections must
+all be auditable.
+
+We examine public announcements of special Codex usage-limit resets. The setting is deliberately
+small and difficult. Events are irregular, the policy regime changes, multiple announcements can
+refer to one operational action, and reasons are often revealed in the announcement itself. Treating
+those reasons as predictors would create direct leakage, a general threat to machine-learning
+science \citep{kapoor2023leakage}. The project therefore forecasts public organizational behavior
+rather than inferring a person's private motives or personality.
+
+Our contributions are fourfold. First, we define an announcement-level gold standard and convert it
+into daily and six-hour person-period datasets with explicit $(\text{start},\text{end}]$ boundaries.
+Second, we compare global, adaptive-rate, renewal, calendar, and official-incident models under a
+common expanding-window evaluation. A rolling 30-day rate defeats the initially selected calendar
+model, illustrating why weak global-rate baselines are insufficient. Third, official-incident
+features do not improve reliably over temporal baselines. Fourth, we implement a prospective protocol
+with hash-locked predictions, independent outcome tables, explicit exclusions, missed-run records,
+and append-only revisions.
+
+The historical experiments are model-development evidence rather than a prospective test. The
+confirmatory sequence begins only with valid forecasts issued at the frozen daily time. This
+distinction prevents a favorable historical result from being presented as real-time performance.

@@ -1,0 +1,70 @@
+\section{Historical Experiments}
+
+\subsection{Daily evaluation}
+
+The common daily scoring window contains 248 forecasts and 37 positives. Table
+\ref{tab:daily} reports the historical comparison. M2 leads the initial four models, but rolling
+30- and 60-day rates both outperform it after stronger baselines are added. Historical M2 is
+therefore a model-development result, not the strongest available reference.
+
+\begin{table}[h]
+\centering
+\caption{Daily expanding-window results on a common scoring window.}
+\label{tab:daily}
+\begin{tabular}{lrrr}
+\toprule
+Model & Brier & Log loss & Brier skill vs.\ M0 \\
+\midrule
+M0 & 0.129385 & 0.435302 & 0.000\% \\
+M1 & 0.127290 & 0.430233 & 1.620\% \\
+M2 & 0.125443 & 0.425511 & 3.047\% \\
+M3-lite & 0.127800 & 0.434866 & 1.226\% \\
+\midrule
+Rolling 60d & 0.122391 & 0.411335 & 5.406\% \\
+Rolling 30d & \textbf{0.119664} & \textbf{0.394584} & \textbf{7.513\%} \\
+M2 without regime & 0.127477 & 0.433266 & 1.475\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Scale and calibration.}
+The daily event prevalence is 14.919\%, so it is not extremely rare. Absolute daily Brier values
+are interpreted with prevalence, skill, calibration, and PR-AUC. Rolling 30-day predictions have a
+calibration intercept of $-0.119$ and slope of $0.935$, whereas M2 has intercept $-0.736$ and slope
+$0.470$.
+
+\subsection{Six-hour evaluation}
+
+The six-hour dataset has 1,260 periods and exactly 41 positive periods, matching the announcement
+count. Once the fixed 30-day training requirement and two-positive minimum are applied, 989
+forecasts with 38 positives remain. M2 again gives the best point estimates
+(Table~\ref{tab:sixhour}), but its paired weekly-block Brier difference from M0 has a 95\% interval
+of $[-0.002073,0.000235]$. The interval includes zero.
+
+\begin{table}[h]
+\centering
+\caption{Six-hour expanding-window results. PR-AUC is secondary.}
+\label{tab:sixhour}
+\begin{tabular}{lrrr}
+\toprule
+Model & Brier & Log loss & PR-AUC \\
+\midrule
+M0 & 0.037151 & 0.167388 & 0.077297 \\
+M1 & 0.037038 & 0.166331 & 0.068535 \\
+M2 & \textbf{0.036443} & \textbf{0.159763} & \textbf{0.085141} \\
+M3-lite & 0.037029 & 0.167232 & 0.069052 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Splitting incident age into 0--6, 6--24, 24--48, and 48--72 hour bins does not improve the
+renewal baseline. Removing incident strength gives the best context ablation, but its Brier skill
+over M1 is only 0.080\%. These post-development ablations are diagnostic and do not modify the
+frozen prospective models.
+
+\subsection{Bootstrap sensitivity}
+
+Paired block intervals are recomputed with 7-, 14-, and 21-day blocks. M2 minus M0 crosses zero for
+every block length, as does M3-lite minus M2. M2 is worse than rolling 60 days in point estimate, and
+its difference interval also crosses zero for all three block sizes. With one roughly 315-day
+sequence, these intervals are sensitivity summaries rather than stable repeated-sample uncertainty.

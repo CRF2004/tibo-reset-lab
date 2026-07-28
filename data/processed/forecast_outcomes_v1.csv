@@ -1,0 +1,1 @@
+score_id,forecast_id,evaluated_at_utc,window_end_utc,label,event_count,brier,log_loss,outcome_status,source_data_sha256

@@ -1,0 +1,17 @@
+{
+  "tournament_forecast_id": "TF_ROUND_20260728T084600Z_P_LLM_GPT5_CODEX_V1_24H",
+  "round_id": "ROUND_20260728T084600Z",
+  "predictor_id": "P_LLM",
+  "participant_id": "GPT5_CODEX_V1",
+  "horizon_hours": 24,
+  "issued_at_utc": "2026-07-28T08:46:00Z",
+  "submitted_at_utc": "2026-07-28T08:44:27Z",
+  "window_end_utc": "2026-07-29T08:46:00Z",
+  "probability": "0.12000000",
+  "schedule_class": "bootstrap",
+  "evidence_cutoff_utc": "2026-07-28T08:46:00Z",
+  "evidence_ids": "ANN_X_2081940052154933696;CTX_2081940052154933696;ANN_X_2081096447718723984;CTX_2081096447718723984",
+  "rationale": "刚发生一次与 ChatGPT Work 发布相关的 hard reset，短期重复动作的边际概率受最近一次事件抑制；但近期重置节奏较高，因此仍保留两位数概率。",
+  "eligibility_status": "eligible",
+  "payload_sha256": "473aec3ec4021d3e2c653a05be48068bb1d735c1cbf1a78e038437b75c92ee94"
+}

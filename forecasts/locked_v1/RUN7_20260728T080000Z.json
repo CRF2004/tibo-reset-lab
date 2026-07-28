@@ -1,0 +1,137 @@
+{
+  "run_id": "RUN7_20260728T080000Z",
+  "issued_at_utc": "2026-07-28T08:00:00Z",
+  "data_cutoff_at_utc": "2026-07-28T08:00:00Z",
+  "schedule_class": "bootstrap",
+  "training_end_utc": "2026-07-28T00:00:00Z",
+  "training_rows": 313,
+  "last_announcement_at_utc": "2026-07-28T03:09:23Z",
+  "models": {
+    "M0_beta11_v1": {
+      "p_24h": 0.12380952,
+      "p_7d": 0.60354884,
+      "daily_hazards_7d": [
+        0.12380952,
+        0.12380952,
+        0.12380952,
+        0.12380952,
+        0.12380952,
+        0.12380952,
+        0.12380952
+      ]
+    },
+    "M2_logistic_C0.25_v1": {
+      "p_24h": 0.34336994,
+      "p_7d": 0.85939836,
+      "daily_hazards_7d": [
+        0.34336994,
+        0.30863037,
+        0.27738121,
+        0.25500806,
+        0.14555171,
+        0.14847016,
+        0.20929798
+      ]
+    },
+    "M3_lite_C0.25_v1": {
+      "p_24h": 0.16289013,
+      "p_7d": 0.62564093,
+      "daily_hazards_7d": [
+        0.16289013,
+        0.15743423,
+        0.1384389,
+        0.12588602,
+        0.11672079,
+        0.10961241,
+        0.10387038
+      ]
+    }
+  },
+  "context_projection_at_issue": [
+    {
+      "at_utc": "2026-07-28T08:00:00Z",
+      "visible": 1.0,
+      "active": 0.0,
+      "resolved": 0.0,
+      "strength": 8.0,
+      "attention": 3.0,
+      "age": 70.70305555555555,
+      "context_ids": [
+        "CTX_2081096447718723984"
+      ]
+    },
+    {
+      "at_utc": "2026-07-29T08:00:00Z",
+      "visible": 0.0,
+      "active": 0.0,
+      "resolved": 0.0,
+      "strength": 0.0,
+      "attention": 0.0,
+      "age": 72.0,
+      "context_ids": []
+    },
+    {
+      "at_utc": "2026-07-30T08:00:00Z",
+      "visible": 0.0,
+      "active": 0.0,
+      "resolved": 0.0,
+      "strength": 0.0,
+      "attention": 0.0,
+      "age": 72.0,
+      "context_ids": []
+    },
+    {
+      "at_utc": "2026-07-31T08:00:00Z",
+      "visible": 0.0,
+      "active": 0.0,
+      "resolved": 0.0,
+      "strength": 0.0,
+      "attention": 0.0,
+      "age": 72.0,
+      "context_ids": []
+    },
+    {
+      "at_utc": "2026-08-01T08:00:00Z",
+      "visible": 0.0,
+      "active": 0.0,
+      "resolved": 0.0,
+      "strength": 0.0,
+      "attention": 0.0,
+      "age": 72.0,
+      "context_ids": []
+    },
+    {
+      "at_utc": "2026-08-02T08:00:00Z",
+      "visible": 0.0,
+      "active": 0.0,
+      "resolved": 0.0,
+      "strength": 0.0,
+      "attention": 0.0,
+      "age": 72.0,
+      "context_ids": []
+    },
+    {
+      "at_utc": "2026-08-03T08:00:00Z",
+      "visible": 0.0,
+      "active": 0.0,
+      "resolved": 0.0,
+      "strength": 0.0,
+      "attention": 0.0,
+      "age": 72.0,
+      "context_ids": []
+    }
+  ],
+  "input_sha256": {
+    "data/processed/person_period_daily.csv": "023df39196c83b6ef7b63c2d2bd03aa03b97df1031a7f458c61c3478b3a82d86",
+    "data/processed/reset_announcements.csv": "7a2e2c304eb46928831c7ec49af8fdbc8a55e819addc321d47eaa82fea3156c8",
+    "data/processed/daily_context_features.csv": "960e8d2ccd609a9fab8ec2eeea4f98946da60afc35cc2ae39004131ed6581cc8",
+    "data/processed/context_events.csv": "8810c7ce7651ef8cbb2edc63bf18b967e690856691a5a5bd1722ff8c0ebb786b",
+    "scripts/issue_task7_forecast.py": "723e2cefd425c69c5e73fa64ee14010a04590f95a066a54a4af8a8fd8e4ede86"
+  },
+  "notes": [
+    "All models are frozen historical specifications; no Task-7 tuning.",
+    "Seven-day probabilities condition on no intervening announcement.",
+    "Future context resolution timestamps unknown at issuance are not used."
+  ],
+  "payload_sha256": "1dea378aba159ee949261ed478726f532a3449758ec1e4394e7fa8a84bb010c1"
+}

@@ -1,0 +1,30 @@
+status_incident_id,name,first_public_at_utc,last_update_at_utc,source_url,codex_related,has_rate_limit_language,collection_status
+STATUS_01K5SPYMA9ZPZW5RGZ8BZ9P4JQ,Increased error rate for ChatGPT,2025-09-22T21:58:00Z,2025-09-23T00:56:00Z,https://status.openai.com/incidents/01K5SPYMA9ZPZW5RGZ8BZ9P4JQ,1,0,official_page_search_verified
+STATUS_01K6KAAN7WXN69E8JET8PYB0D5,Codex and RBAC partial outage,2025-10-02T19:32:00Z,2025-10-03T17:28:00Z,https://status.openai.com/incidents/01K6KAAN7WXN69E8JET8PYB0D5,1,0,official_page_search_verified
+STATUS_01K96HVTZ8JZRGWPCADHQ9N061,Degraded availability for Codex web,2025-11-04T04:26:00Z,2025-11-04T05:14:00Z,https://status.openai.com/incidents/01K96HVTZ8JZRGWPCADHQ9N061,1,0,official_page_search_verified
+STATUS_01K9ARX310CM6V219R0GF7RNC9,Codex elevated errors,2025-11-05T19:46:00Z,2025-11-05T21:55:00Z,https://status.openai.com/incidents/01K9ARX310CM6V219R0GF7RNC9,1,0,official_page_search_verified
+STATUS_01K9G5H5NM4Y19XW4JJM3SK323,Elevated errors for Codex,2025-11-07T22:03:00Z,2025-11-08T02:04:00Z,https://status.openai.com/incidents/01K9G5H5NM4Y19XW4JJM3SK323,1,0,official_page_search_verified
+STATUS_01KACCE2MY2Z917Q4J9ZKXZ9F1,Errors creating new tasks in Codex web,2025-11-18T21:02:00Z,2025-11-18T22:19:00Z,https://status.openai.com/incidents/01KACCE2MY2Z917Q4J9ZKXZ9F1,1,0,official_page_search_verified
+STATUS_01KAPG4EE5JWEV04TPZ2SNNK8X,Elevated errors for Codex,2025-11-22T22:51:00Z,2025-11-23T06:55:00Z,https://status.openai.com/incidents/01KAPG4EE5JWEV04TPZ2SNNK8X,1,0,official_page_search_verified
+STATUS_01KAYA3GKDBP7FES5BB7ANZDV7,Regional errors for ChatGPT,2025-11-25T20:00:00Z,2025-11-25T21:14:00Z,https://status.openai.com/incidents/01KAYA3GKDBP7FES5BB7ANZDV7,1,0,official_page_search_verified_approx_start
+STATUS_01KAYQJW0EBMW9MYYBX2WK4TP9,Errors for ChatGPT,2025-11-26T00:04:00Z,2025-11-26T03:06:00Z,https://status.openai.com/incidents/01KAYQJW0EBMW9MYYBX2WK4TP9,1,0,official_page_search_verified
+STATUS_01KBGV0B1KYJAGHRD705NWNZXE,Increased errors creating new Codex tasks,2025-12-03T00:50:00Z,2025-12-03T01:46:00Z,https://status.openai.com/incidents/01KBGV0B1KYJAGHRD705NWNZXE,1,0,official_page_search_verified
+STATUS_01KBZQFTJVFKP90HA3QJ7Q3WBY,GitHub authentication errors in Codex Web,2025-12-08T18:28:00Z,2025-12-09T05:55:00Z,https://status.openai.com/incidents/01KBZQFTJVFKP90HA3QJ7Q3WBY,1,0,official_page_search_verified
+STATUS_01KC2CJTQMDW8ZX3S4S4Q8PPNQ,Codex Web and code review errors,2025-12-09T20:24:00Z,2025-12-09T21:21:00Z,https://status.openai.com/incidents/01KC2CJTQMDW8ZX3S4S4Q8PPNQ,1,0,official_page_search_verified
+STATUS_01KC6WSFM4ECT1Y5XBPF2AMXV9,GitHub connector errors for ChatGPT and Codex,2025-12-11T16:29:00Z,2025-12-12T19:52:00Z,https://status.openai.com/incidents/01KC6WSFM4ECT1Y5XBPF2AMXV9,1,0,official_page_search_verified
+STATUS_01KCM7PAMQMCM8KAB6ZCWPKNK1,Elevated errors for Codex and Responses API,2025-12-16T20:30:00Z,2025-12-17T04:12:00Z,https://status.openai.com/incidents/01KCM7PAMQMCM8KAB6ZCWPKNK1,1,0,official_page_search_verified
+STATUS_01KEDP2078ND35EQG75BVDZE5E,Codex cloud tasks failing,2026-01-08T02:13:00Z,2026-01-08T02:30:00Z,https://status.openai.com/incidents/01KEDP2078ND35EQG75BVDZE5E,1,0,official_page_search_verified
+STATUS_01KFK1A9AAJ246K5G966PSQQJK,Codex GitHub issues,2026-01-22T14:21:00Z,2026-01-22T14:55:00Z,https://status.openai.com/incidents/01KFK1A9AAJ246K5G966PSQQJK,1,0,official_page_search_verified
+STATUS_01KFXHMCMQE0EWA7R8RM5F9YW2,ChatGPT free and logged-out experience degraded,2026-01-26T16:19:00Z,2026-01-26T17:27:00Z,https://status.openai.com/incidents/01KFXHMCMQE0EWA7R8RM5F9YW2,1,0,official_page_search_verified
+STATUS_01KFZB0A5C1D3TQED136VXFT9W,Elevated Codex error rate,2026-01-27T09:01:00Z,2026-01-27T11:03:00Z,https://status.openai.com/incidents/01KFZB0A5C1D3TQED136VXFT9W,1,0,official_page_search_verified
+STATUS_01KGJK9Q6PDB3C3VX6MPCY6106,Elevated errors across ChatGPT and platform services,2026-02-03T20:32:00Z,2026-02-03T22:14:00Z,https://status.openai.com/incidents/01KGJK9Q6PDB3C3VX6MPCY6106,1,0,official_page_search_verified
+STATUS_01KGMVV926ZSCD1MSDBS07AWYA,ChatGPT availability degraded,2026-02-04T17:05:00Z,2026-02-04T21:04:00Z,https://status.openai.com/incidents/01KGMVV926ZSCD1MSDBS07AWYA,1,0,official_page_search_verified
+STATUS_01KGNJACX0T5CYY1YWS8RNW6S6,ChatGPT errors affecting Codex,2026-02-04T22:09:00Z,2026-02-05T00:48:00Z,https://status.openai.com/incidents/01KGNJACX0T5CYY1YWS8RNW6S6,1,0,official_page_search_verified
+STATUS_01KH1KTV2VBD62R0MRZFJ13XNE,Codex Cloud GitHub dependency failures,2026-02-09T16:30:00Z,2026-02-09T20:23:00Z,https://status.openai.com/incidents/01KH1KTV2VBD62R0MRZFJ13XNE,1,0,official_page_search_verified
+STATUS_01KH9WCWZ41K9ST9FGB1V15DFC,ChatGPT conversation issue affecting Codex Cloud,2026-02-12T21:20:00Z,2026-02-12T21:40:00Z,https://status.openai.com/incidents/01KH9WCWZ41K9ST9FGB1V15DFC,1,0,official_writeup_pst_converted
+STATUS_01KHKQWHXEF4WJY8WGX24RA07R,Increased Codex Cloud errors,2026-02-16T17:27:00Z,2026-02-16T17:47:00Z,https://status.openai.com/incidents/01KHKQWHXEF4WJY8WGX24RA07R,1,0,official_page_search_verified
+STATUS_01KJB80QA8P62R9X3B71YAZEAK,Artifact generation unavailable,2026-02-25T18:15:00Z,2026-02-25T21:05:00Z,https://status.openai.com/incidents/01KJB80QA8P62R9X3B71YAZEAK,1,0,official_page_search_verified
+STATUS_01KJRP6KJKP51AGPA5FW8FWFFM,Elevated Codex errors,2026-03-03T01:50:00Z,2026-03-03T01:52:00Z,https://status.openai.com/incidents/01KJRP6KJKP51AGPA5FW8FWFFM,1,0,official_page_search_verified
+STATUS_01KJXQDJ6P1CG5YNXKZRY2H6RX,API errors affecting Codex,2026-03-05T00:47:00Z,2026-03-05T01:12:00Z,https://status.openai.com/incidents/01KJXQDJ6P1CG5YNXKZRY2H6RX,1,0,official_page_search_verified
+STATUS_01KK26XE1W536H7DQV2EXM3GHE,Codex usage rate issue,2026-03-06T18:35:16Z,2026-03-07T01:00:41Z,https://status.openai.com/incidents/01KK26XE1W536H7DQV2EXM3GHE,1,1,official_page_search_verified
+STATUS_01KK9JA8JKQKDW1W24T09NHBYH,Codex unresponsive,2026-03-09T15:09:00Z,2026-03-11T16:17:00Z,https://status.openai.com/incidents/01KK9JA8JKQKDW1W24T09NHBYH,1,0,official_page_search_verified

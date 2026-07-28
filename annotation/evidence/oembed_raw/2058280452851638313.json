@@ -1,0 +1,13 @@
+{
+  "url": "https://x.com/thsottiaux/status/2058280452851638313",
+  "author_name": "Tibo",
+  "author_url": "https://x.com/thsottiaux",
+  "html": "<blockquote class=\"twitter-tweet\" data-dnt=\"true\"><p lang=\"en\" dir=\"ltr\">Some of you noticed limits drained faster in Codex, we root caused it to an optimization that we rolled back that had an impact on cache hit rates when compacting across long running sessions. <br><br>We fixed this and have now reset usage limits for all accounts. Enjoy the weekend. <a href=\"https://t.co/t1O8jCd4PB\">https://t.co/t1O8jCd4PB</a></p>&mdash; Tibo (@thsottiaux) <a href=\"https://x.com/thsottiaux/status/2058280452851638313?ref_src=twsrc%5Etfw\">May 23, 2026</a></blockquote>\n\n",
+  "width": 550,
+  "height": null,
+  "type": "rich",
+  "cache_age": "3153600000",
+  "provider_name": "X",
+  "provider_url": "https://x.com",
+  "version": "1.0"
+}

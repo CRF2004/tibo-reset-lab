@@ -1,0 +1,15 @@
+\section{Prospective Evaluation}
+
+The primary comparison is M2 against the rolling 30-day rate, while M2 against global M0 is retained
+for compatibility. The theory-feature test asks whether M3-lite improves over M2. Log loss is the key secondary metric; 168-hour scores, calibration,
+and PR-AUC are secondary analyses. Uncertainty uses paired seven-day block bootstrap with 2,000
+resamples.
+
+The first formal comparison requires both 180 valid scheduled days and 20 prospective 24-hour
+positives. A historical block-variance calculation suggests that reliably detecting a Brier
+difference of 0.004 may require substantially more than 180 days, so this minimum is not presented
+as a power guarantee. Bootstrap runs, excluded runs, and missed runs do
+not count toward the primary sequence. At the time of this draft, no valid scheduled run has matured.
+The prospective result is therefore intentionally blank. Until the stopping rule is reached, the
+dashboard reports operational completeness and descriptive cumulative scores without declaring a
+winner.

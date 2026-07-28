@@ -1,0 +1,31 @@
+{
+  "forecast": {
+    "forecast_id": "FCST_20260728T071000Z",
+    "issued_at_utc": "2026-07-28T07:10:00Z",
+    "data_cutoff_at_utc": "2026-07-28T07:10:00Z",
+    "model_version": "M2_logistic_C0.25_v1",
+    "feature_version": "daily_v1_exact_issue_projection",
+    "p_24h": "0.34473346",
+    "p_7d": "0.86006218",
+    "probability_by_reset_type_json": "{\"banked_credit\":0.073171,\"hard_global\":0.878049,\"targeted_or_conditional\":0.04878}",
+    "training_end_utc": "2026-07-28T00:00:00Z",
+    "code_commit": "nogit_sha256_manifest"
+  },
+  "daily_hazards_7d": [
+    0.34473346,
+    0.3093298,
+    0.27783185,
+    0.25533308,
+    0.14572345,
+    0.14861651,
+    0.20946286
+  ],
+  "last_announcement_at_utc": "2026-07-28T03:09:23Z",
+  "training_rows": 313,
+  "input_sha256": {
+    "data/processed/person_period_daily.csv": "023df39196c83b6ef7b63c2d2bd03aa03b97df1031a7f458c61c3478b3a82d86",
+    "data/processed/reset_announcements.csv": "7a2e2c304eb46928831c7ec49af8fdbc8a55e819addc321d47eaa82fea3156c8",
+    "scripts/issue_locked_forecast.py": "d0582ca2579b8bf82694918f36107110c4b6aa954d273c2f3c2e43e1a95b82bb"
+  },
+  "method_note": "p_7d is the complement of the product of seven projected daily non-event hazards, conditional on no intervening announcement."
+}

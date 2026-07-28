@@ -1,0 +1,54 @@
+\section{Data and Protocol}
+
+\subsection{Outcome and observation units}
+
+An outcome is an official public statement that a special Codex usage reset is promised, in
+progress, or completed. Natural personal-window refreshes and unsupported community speculation are
+excluded. Duplicate posts can map to one action, but the forecast target is the first eligible
+announcement in a window. The gold set contains 41 announcements and 42 action records because one
+announcement can encode both hard and banked actions. The main official-account scope is
+\texttt{@thsottiaux} and \texttt{@OpenAI}. Promises and completion posts are separate announcements
+but share an action cluster; one post with two actions yields one announcement outcome and two action
+rows.
+
+Daily and six-hour rows use the boundary $(s,e]$: an event at $s$ is already known, while an event at
+$e$ belongs to the future window. Context is snapshotted at $s$. Official incidents are prediction
+eligible only when their public status timestamp precedes the snapshot. Reasons first disclosed by a
+reset announcement remain explanatory metadata and never become predictors of that announcement.
+
+\subsection{Models}
+
+M0 is the Beta$(1,1)$ posterior mean of the expanding historical event rate. Stronger rate
+baselines use rolling 30/60-day windows, a 30-day half-life EWMA, a two-regime rate, a discrete
+renewal hazard, and nearest-gap analogues. M1 uses
+$\log(1+d_t)$, where $d_t$ is time since the latest announcement. M2 adds Pacific-time calendar
+cycles and a fixed policy-regime indicator. M3-lite combines the renewal term with official
+incident visibility, active/resolved state, strength, attention, and context age. Logistic models
+use L2 regularization with $C=0.25$; continuous variables are standardized inside each training
+window. The regime boundary is 11 June 2026, the first public banked-reset product evidence. It was
+selected during historical development rather than before data inspection; M2 without this
+indicator is therefore a required sensitivity analysis. Changes to the five-hour limit do not
+define additional regimes.
+
+\subsection{Annotation reliability}
+
+Historical labels were produced by an LLM rubric followed by human acceptance, not by two
+independent blinded human coders. A Cohen's $\kappa$ or Krippendorff's $\alpha$ is therefore not
+identifiable for the original 41 announcements. Future batches use LLM annotation plus independent
+human review; disagreements are retained, and agreement coefficients will be reported only for new
+batches with at least 20 candidates. Ambiguous events remain excluded rather than forced into a
+class.
+
+\subsection{Prospective storage}
+
+Each scheduled run creates forecasts for global and adaptive-rate baselines, M2, and M3-lite crossed
+with 24- and 168-hour horizons. A
+JSON lock stores probabilities, seven projected daily hazards, the issue-time context snapshot, and
+SHA-256 digests of inputs and code. Outcomes are appended to a separate table only after maturity.
+Exclusions and revisions have their own tables. Consequently, correcting an outcome cannot rewrite
+the probability that was issued.
+
+The daily completeness gate uses an independent feed only for candidate discovery. A reset signal
+must be verified against its original X identifier and accepted into gold before signing. Unknown
+signals, stale discovery data, validation errors, or duplicate locks create an explicit missed run
+rather than a backdated forecast.

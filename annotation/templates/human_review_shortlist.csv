@@ -1,0 +1,7 @@
+review_group,post_ids,question,llm_recommendation,human_final_choice,human_reason,reviewer_id,reviewed_at_utc
+H01,1983973493864894739,"社区列表称 2025-10-30 有 reset，但该原帖只谈 $100 套餐和 credits。是否能找到同日另一条真正的 reset 原帖？","当前帖子判为 related_non_reset；若找不到其他原帖，不计 reset。",,,,,
+H02,"2031216405266481489;2031605592352313567","2026-03-10 的“稍后重置”和 03-11 的“按钮已按下”是同一后台动作，还是两次动作？","暂按两次动作计数，但置信度中等。",,,,,
+H03,"2066956441173323943;2067399435009622521","2026-06-16 的 24 小时内重置承诺，是否由 06-18 的 double reset 履行？","判为同一 hard-reset 动作；06-18 另含一个新的 banked reset。",,,,,
+H04,2076365965915467978,"截断长帖的第三项是否明确包含 hard reset，并且是否明确归因于 6M 用户里程碑？","依据同时代报道暂判 hard reset + 暂停 5h 限制，原因为 milestone_celebration。",,,,,
+H05,2070653282440405046,"“usage reset on the house”是立即 hard reset，还是发放 banked reset？","暂判 hard_global；需要结合当时到账界面或回复确认。",,,,,
+H06,2081940052154933696,"7 月 28 日重置原因应归为 launch_promotion、milestone_celebration 还是 mixed_or_unclear？","暂判 launch_promotion，因为前序帖子明确庆祝 ChatGPT Work 快速采用。",,,,,

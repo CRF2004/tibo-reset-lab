@@ -1,0 +1,15 @@
+\section{Operational and Application Audits}
+
+The automation test suite exercises fresh and stale feeds, missing and unknown signals, duplicate
+locks, off-schedule issuance, and append-only revision behavior. All eight predefined drills pass.
+A Windows scheduler runs preflight, forecasting, and scoring at separate times. This arrangement
+cannot guarantee that external services never fail, but it turns failures into visible logs and
+missed-run records.
+
+We separately audit whether users report that an announced reset was applied. Among 20 public
+reports, 13 describe arrival without an explicit mechanism error, four describe arrival with a
+window or hard-versus-banked mismatch, and three describe failure. Only one report has an exact
+timestamp; it appears 32 minutes after its announcement. Evidence auditing grades one record A,
+14 B, and five C. Reporter identities are not stably captured, so reports from the same discussion
+cannot be treated as independent Bernoulli observations. These data identify mechanisms and
+counterexamples, not a population failure rate.

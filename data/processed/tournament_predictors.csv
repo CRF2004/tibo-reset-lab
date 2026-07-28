@@ -1,0 +1,9 @@
+predictor_id,display_name,predictor_class,model_version,active,formal_eligible,description
+P_GLOBAL,Global event rate,statistical_model,M0_beta11_v1,1,1,Weak expanding historical-rate reference.
+P_RECENT30,Recent 30-day rate,statistical_model,M0_rolling30_v1,1,1,Strong naive adaptive-rate baseline.
+P_RENEWAL,Renewal model,statistical_model,M1_logistic_C0.25_v1,1,1,Frozen M1 hazard based on log time since the last accepted announcement.
+P_CALENDAR,Calendar model,statistical_model,M2_logistic_C0.25_v1,1,1,Renewal plus Pacific-time calendar cycles and policy indicator.
+P_THEORY,Theory model,statistical_model,M3_lite_C0.25_v1,1,1,Prediction-safe official incident state strength attention and age.
+P_LLM,LLM forecaster,llm_forecaster,LLM_context_prompt_v1,1,1,Reads only the frozen public context packet and returns probabilities with rationale.
+P_PLAYER,Independent player,human_player,player_v1,1,1,Individual judgment submitted before the round deadline.
+P_CROWD,Crowd aggregate,crowd_aggregate,logit_pool_players_v1,1,1,Equal-weight logit pool of at least three eligible independent players.

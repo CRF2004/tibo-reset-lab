@@ -1,0 +1,3 @@
+forecast_id,issued_at_utc,data_cutoff_at_utc,model_version,feature_version,p_24h,p_7d,probability_by_reset_type_json,training_end_utc,code_commit
+
+FCST_20260728T071000Z,2026-07-28T07:10:00Z,2026-07-28T07:10:00Z,M2_logistic_C0.25_v1,daily_v1_exact_issue_projection,0.34473346,0.86006218,"{""banked_credit"":0.073171,""hard_global"":0.878049,""targeted_or_conditional"":0.04878}",2026-07-28T00:00:00Z,nogit_sha256_manifest

@@ -1,0 +1,30 @@
+\section{Related Work}
+
+\paragraph{Probabilistic forecast evaluation.}
+The Brier score evaluates squared error for probabilistic outcomes \citep{brier1950verification}.
+Strictly proper scoring rules reward honest probabilities rather than thresholded classifications
+\citep{gneiting2007strictly}. We use Brier score as the primary metric and log loss as a key
+secondary metric. Because events are rare, we also report precision--recall area as a descriptive
+ranking measure, but it does not replace calibration-sensitive scoring.
+
+\paragraph{Out-of-sample and rolling evaluation.}
+Forecast evaluation must preserve temporal order \citep{tashman2000outofsample}. Random train--test
+splits would expose a model to future policy regimes and later points in the same event cycle.
+Leakage can also arise from feature construction, source timestamps, or post-event explanations
+\citep{kapoor2023leakage}. Our expanding-window procedure reconstructs features at each issue time
+and evaluates all models on identical timestamps.
+
+\paragraph{Events and organizational attention.}
+Event system theory characterizes events by novelty, disruption, and criticality
+\citep{morgeson2015event}. The attention-based view argues that organizational action depends on
+which issues become salient to decision makers \citep{ocasio1997attention}. These theories motivate
+our context variables, but they do not license causal claims. Official incidents can be associated
+with both actions and non-actions, and public status records are an incomplete trace of internal
+attention.
+
+\paragraph{Drift and reflexivity.}
+Changing products and policies create concept drift \citep{gama2014survey}. In addition, publishing
+a forecast about a public actor may itself affect discourse or behavior. We therefore preserve model
+versions, record policy regimes, and forbid silent replacement of historical predictions. The
+resulting study is closer to an audit-preserving longitudinal diagnostic than to a stationary
+benchmark.

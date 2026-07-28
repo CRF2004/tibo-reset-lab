@@ -1,0 +1,17 @@
+{
+  "tournament_forecast_id": "TF_ROUND_20260728T084600Z_P_LLM_GPT5_CODEX_V1_168H",
+  "round_id": "ROUND_20260728T084600Z",
+  "predictor_id": "P_LLM",
+  "participant_id": "GPT5_CODEX_V1",
+  "horizon_hours": 168,
+  "issued_at_utc": "2026-07-28T08:46:00Z",
+  "submitted_at_utc": "2026-07-28T08:44:27Z",
+  "window_end_utc": "2026-08-04T08:46:00Z",
+  "probability": "0.58000000",
+  "schedule_class": "bootstrap",
+  "evidence_cutoff_utc": "2026-07-28T08:46:00Z",
+  "evidence_ids": "ANN_X_2081940052154933696;CTX_2081940052154933696;ANN_X_2081096447718723984;CTX_2081096447718723984",
+  "rationale": "七日窗口覆盖近期较高事件率；最新发布事件提升组织注意力，但刚发生的 hard reset降低立即再次动作的概率，综合给出略高于五成。",
+  "eligibility_status": "eligible",
+  "payload_sha256": "ab7a09f1d8f2712b1c7b685962ba3e3c8c483395bad223aa7bae616c809db250"
+}
