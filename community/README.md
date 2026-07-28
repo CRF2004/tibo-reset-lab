@@ -33,3 +33,8 @@ the recent-30-day baseline. The existing v1.1 stopping rule still governs model 
 
 Operational instructions are in `PLAYER_AND_AUDIT_GUIDE_V1.md`. The fixed LLM instruction is
 `LLM_FORECAST_PROMPT_V1.md`; every accepted submission is hash-locked under `community/locked/`.
+
+The LLM class currently contains five separately ranked forecasters: DeepSeek V4 Pro,
+Qwen 3.5 397B, Kimi K2.5, MiniMax M2.7, and Step 3.5 Flash. They receive the same frozen evidence
+packet and never contribute to the human-only Crowd aggregate. Selection and bootstrap details are
+recorded in `reports/llm_tournament_v1.md`.

@@ -1,0 +1,17 @@
+{
+  "tournament_forecast_id": "TF_ROUND_20260728T093000Z_P_LLM_MINIMAX_M27_MiniMax-M2.7_168H",
+  "round_id": "ROUND_20260728T093000Z",
+  "predictor_id": "P_LLM_MINIMAX_M27",
+  "participant_id": "MiniMax-M2.7",
+  "horizon_hours": 168,
+  "issued_at_utc": "2026-07-28T09:30:00Z",
+  "submitted_at_utc": "2026-07-28T09:22:34Z",
+  "window_end_utc": "2026-08-04T09:30:00Z",
+  "probability": "0.35000000",
+  "schedule_class": "bootstrap",
+  "evidence_cutoff_utc": "2026-07-28T09:22:34Z",
+  "evidence_ids": "ANN_X_2081940052154933696;ANN_X_2081096447718723984;CTX_2081096447718723984",
+  "rationale": "根据冻结证据，历史上共有41次接受的公告，说明此类reset并非罕见事件。7月28日刚在03:09发布了一次launch_promotion类型的hard_global reset，距证据截止时间仅约6小时，短期重复发布的概率较低。近期(7月25日)存在一起strength为8的严重产品事故并已解决(11:57完成)，根据历史模式incident_compensation常在事故解决后出现，这为未来一周提供了潜在的触发因素。 反向证据：证据截止前6小时刚完成一次全局reset，短期连续发布的先例较少。",
+  "eligibility_status": "eligible",
+  "payload_sha256": "cf5220f08820034b3e062685871460224fac3eb0965408f1c64535493bae9309"
+}

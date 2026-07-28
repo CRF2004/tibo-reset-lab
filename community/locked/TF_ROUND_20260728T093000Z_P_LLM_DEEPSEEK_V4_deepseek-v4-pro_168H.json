@@ -1,0 +1,17 @@
+{
+  "tournament_forecast_id": "TF_ROUND_20260728T093000Z_P_LLM_DEEPSEEK_V4_deepseek-v4-pro_168H",
+  "round_id": "ROUND_20260728T093000Z",
+  "predictor_id": "P_LLM_DEEPSEEK_V4",
+  "participant_id": "deepseek-v4-pro",
+  "horizon_hours": 168,
+  "issued_at_utc": "2026-07-28T09:30:00Z",
+  "submitted_at_utc": "2026-07-28T09:22:34Z",
+  "window_end_utc": "2026-08-04T09:30:00Z",
+  "probability": "0.95000000",
+  "schedule_class": "bootstrap",
+  "evidence_cutoff_utc": "2026-07-28T09:22:34Z",
+  "evidence_ids": "ANN_X_2081940052154933696;ANN_X_2081096447718723984;ANN_X_2079609157934886975;ANN_X_2078320950488297917;ANN_X_2077607697487188198;ANN_X_2077114635308986427",
+  "rationale": "近期公告频率平均约0.63条/天，历史曾出现同日两次或隔日一次；最近一次在6小时前，24h内再次发布概率中等；168h内几乎肯定会至少再发一次，基于19天12条的持续高频率。 反向证据：最近刚发布一次，且间隔多为2-4天，连续发布概率低于平均水平。",
+  "eligibility_status": "eligible",
+  "payload_sha256": "eaab17f10007b0e196d69b9d1852a43fd4a8785e9e261422bb0d8d1e52b38a96"
+}

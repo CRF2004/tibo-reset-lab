@@ -1,6 +1,6 @@
 # 社区预测 Dashboard
 
-生成时间：2026-07-28T08:45:42Z
+生成时间：2026-07-28T09:35:10Z
 
 > 正式停止条件尚未满足：至少 180 个有效日级轮次且至少 20 个前瞻阳性。以下结果仅用于运行审计和描述，不宣称任何预测者优胜。
 
@@ -8,8 +8,24 @@
 
 | 预测者 | 窗口(h) | 概率 | 轮次类型 | 证据/来源 |
 |---|---|---|---|---|
+| Calendar model | 24 | 34.4% | bootstrap | 2910130812e9b0e17ac2a1ce9665406a2dadbd74f99ecb98 |
+| Calendar model | 168 | 86.0% | bootstrap | 2910130812e9b0e17ac2a1ce9665406a2dadbd74f99ecb98 |
+| Global event rate | 24 | 12.4% | bootstrap | 2910130812e9b0e17ac2a1ce9665406a2dadbd74f99ecb98 |
+| Global event rate | 168 | 60.4% | bootstrap | 2910130812e9b0e17ac2a1ce9665406a2dadbd74f99ecb98 |
 | LLM forecaster | 24 | 12.0% | bootstrap | ANN_X_2081940052154933696;CTX_208194005215493369 |
 | LLM forecaster | 168 | 58.0% | bootstrap | ANN_X_2081940052154933696;CTX_208194005215493369 |
+| DeepSeek V4 Pro | 24 | 40.0% | bootstrap | ANN_X_2081940052154933696;ANN_X_2081096447718723 |
+| DeepSeek V4 Pro | 168 | 95.0% | bootstrap | ANN_X_2081940052154933696;ANN_X_2081096447718723 |
+| Kimi K2.5 | 24 | 8.0% | bootstrap | ANN_X_2081940052154933696;CTX_208109644771872398 |
+| Kimi K2.5 | 168 | 35.0% | bootstrap | ANN_X_2081940052154933696;CTX_208109644771872398 |
+| MiniMax M2.7 | 24 | 6.0% | bootstrap | ANN_X_2081940052154933696;ANN_X_2081096447718723 |
+| MiniMax M2.7 | 168 | 35.0% | bootstrap | ANN_X_2081940052154933696;ANN_X_2081096447718723 |
+| Qwen 3.5 397B | 24 | 15.0% | bootstrap | ANN_X_2081940052154933696;ANN_X_2081096447718723 |
+| Qwen 3.5 397B | 168 | 55.0% | bootstrap | ANN_X_2081940052154933696;ANN_X_2081096447718723 |
+| Step 3.5 Flash | 24 | 20.0% | bootstrap | ANN_X_2081940052154933696;ANN_X_2077114635308986 |
+| Step 3.5 Flash | 168 | 70.0% | bootstrap | ANN_X_2081940052154933696;ANN_X_2077114635308986 |
+| Theory model | 24 | 16.4% | bootstrap | 2910130812e9b0e17ac2a1ce9665406a2dadbd74f99ecb98 |
+| Theory model | 168 | 62.6% | bootstrap | 2910130812e9b0e17ac2a1ce9665406a2dadbd74f99ecb98 |
 
 ## 正式前瞻表现
 
@@ -27,6 +43,11 @@ _暂无可报告记录。_
 | Calendar model | statistical_model | Renewal plus Pacific-time calendar cycles and policy indicator. |
 | Theory model | statistical_model | Prediction-safe official incident state strength attention and age. |
 | LLM forecaster | llm_forecaster | Reads only the frozen public context packet and returns probabilities with rationale. |
+| DeepSeek V4 Pro | llm_forecaster | Independent frozen-context forecast through DMXAPI. |
+| Qwen 3.5 397B | llm_forecaster | Independent frozen-context forecast through DMXAPI. |
+| Kimi K2.5 | llm_forecaster | Independent frozen-context forecast through DMXAPI. |
+| Step 3.5 Flash | llm_forecaster | Independent frozen-context forecast through DMXAPI; selected for provider diversity and reliable structured output. |
+| MiniMax M2.7 | llm_forecaster | Independent frozen-context forecast through DMXAPI. |
 | Independent player | human_player | Individual judgment submitted before the round deadline. |
 | Crowd aggregate | crowd_aggregate | Equal-weight logit pool of at least three eligible independent players. |
 

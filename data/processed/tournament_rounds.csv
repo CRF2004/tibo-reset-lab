@@ -2,3 +2,6 @@ round_id,issued_at_utc,submission_open_utc,submission_deadline_utc,status,schedu
 ROUND_20260728T083842Z,2026-07-28T08:38:42Z,2026-07-28T08:38:42Z,2026-07-28T08:38:42Z,closed,bootstrap,LLM-only bootstrap architecture check; excluded from formal tournament.
 ROUND_20260728T074256Z,2026-07-28T07:42:56Z,2026-07-28T07:42:56Z,2026-07-28T07:42:56Z,closed,bootstrap,Imported statistical forecast round.
 ROUND_20260728T084600Z,2026-07-28T08:46:00Z,2026-07-27T08:46:00Z,2026-07-28T08:46:00Z,open,bootstrap,LLM end-to-end bootstrap; permanently excluded from formal ranking.
+ROUND_20260728T093000Z,2026-07-28T09:30:00Z,2026-07-28T09:22:33Z,2026-07-28T09:30:00Z,closed,bootstrap,Five-model DMXAPI bootstrap; permanently excluded from formal ranking.
+ROUND_20260728T093600Z,2026-07-28T09:36:00Z,2026-07-28T09:31:25Z,2026-07-28T09:36:00Z,closed,bootstrap,GLM 4.7 route bootstrap after GLM 5.2 timeout; excluded from formal ranking.
+ROUND_20260728T093800Z,2026-07-28T09:38:00Z,2026-07-28T09:32:59Z,2026-07-28T09:38:00Z,closed,bootstrap,Step 3.5 route bootstrap; excluded from formal ranking.

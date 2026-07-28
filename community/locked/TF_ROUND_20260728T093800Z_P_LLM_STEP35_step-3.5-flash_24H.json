@@ -1,0 +1,17 @@
+{
+  "tournament_forecast_id": "TF_ROUND_20260728T093800Z_P_LLM_STEP35_step-3.5-flash_24H",
+  "round_id": "ROUND_20260728T093800Z",
+  "predictor_id": "P_LLM_STEP35",
+  "participant_id": "step-3.5-flash",
+  "horizon_hours": 24,
+  "issued_at_utc": "2026-07-28T09:38:00Z",
+  "submitted_at_utc": "2026-07-28T09:33:42Z",
+  "window_end_utc": "2026-07-29T09:38:00Z",
+  "probability": "0.20000000",
+  "schedule_class": "bootstrap",
+  "evidence_cutoff_utc": "2026-07-28T09:32:59Z",
+  "evidence_ids": "ANN_X_2081940052154933696;ANN_X_2077114635308986427;ANN_X_2079609157934886975;CTX_2081096447718723984;ANN_X_2076418567143408112",
+  "rationale": "历史累计已有41条被接受的同类额度重置公告，近19天也发布了10条特殊全局重置公告，平均发布间隔约50小时，基准重置频率较高；最新一条公告于7月28日03:09发布，截至证据截止时仅过去约6小时，远低于平均发布间隔，24小时内再发公告的触发驱动不足，概率偏低；168小时（7天）时间窗口覆盖多个平均发布间隔，且存在里程碑、故障补偿等潜在触发场景，因此168小时概率显著高于24小时。 反向证据：最新公告发布不足6小时，当前无公开的 upcoming 里程碑、产品故障或推广活动等明确触发信号，短期再发公告的驱动极弱。",
+  "eligibility_status": "eligible",
+  "payload_sha256": "71eb0ecebdfeb3683a7dd2bcf3833c460f6066030c272fa627d189275263b884"
+}

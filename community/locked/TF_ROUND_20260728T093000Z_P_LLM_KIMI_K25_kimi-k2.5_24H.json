@@ -1,0 +1,17 @@
+{
+  "tournament_forecast_id": "TF_ROUND_20260728T093000Z_P_LLM_KIMI_K25_kimi-k2.5_24H",
+  "round_id": "ROUND_20260728T093000Z",
+  "predictor_id": "P_LLM_KIMI_K25",
+  "participant_id": "kimi-k2.5",
+  "horizon_hours": 24,
+  "issued_at_utc": "2026-07-28T09:30:00Z",
+  "submitted_at_utc": "2026-07-28T09:22:34Z",
+  "window_end_utc": "2026-07-29T09:30:00Z",
+  "probability": "0.08000000",
+  "schedule_class": "bootstrap",
+  "evidence_cutoff_utc": "2026-07-28T09:22:34Z",
+  "evidence_ids": "ANN_X_2081940052154933696;CTX_2081096447718723984;ANN_X_2081096447718723984",
+  "rationale": "历史数据显示过去19天内有12次特殊额度reset公告，但最近3天（7月25日incident_compensation后至7月28日）仅1次launch_promotion公告，频率已下降。当前无活跃product_incident（最近resolved_at为7月25日），且7月28日刚完成一次hard_global reset，短期内重复触发概率较低。168小时窗口覆盖更长周期，若出现新incident或milestone仍可能触发。 反向证据：7月28日03:09刚完成一次hard_global reset，且历史上存在连续多日无公告的间隙期（如7月18日至21日间隔3天）。",
+  "eligibility_status": "eligible",
+  "payload_sha256": "4c441ebbeb5c59b349f5a7cf5ccdafec81f040ac87b43fdc0f8f6c16d8091d2e"
+}

@@ -5,5 +5,10 @@ P_RENEWAL,Renewal model,statistical_model,M1_logistic_C0.25_v1,1,1,Frozen M1 haz
 P_CALENDAR,Calendar model,statistical_model,M2_logistic_C0.25_v1,1,1,Renewal plus Pacific-time calendar cycles and policy indicator.
 P_THEORY,Theory model,statistical_model,M3_lite_C0.25_v1,1,1,Prediction-safe official incident state strength attention and age.
 P_LLM,LLM forecaster,llm_forecaster,LLM_context_prompt_v1,1,1,Reads only the frozen public context packet and returns probabilities with rationale.
+P_LLM_DEEPSEEK_V4,DeepSeek V4 Pro,llm_forecaster,deepseek-v4-pro__prompt_v1,1,1,Independent frozen-context forecast through DMXAPI.
+P_LLM_QWEN35_397B,Qwen 3.5 397B,llm_forecaster,qwen3.5-397b-a17b__prompt_v1,1,1,Independent frozen-context forecast through DMXAPI.
+P_LLM_KIMI_K25,Kimi K2.5,llm_forecaster,kimi-k2.5__prompt_v1,1,1,Independent frozen-context forecast through DMXAPI.
+P_LLM_STEP35,Step 3.5 Flash,llm_forecaster,step-3.5-flash__prompt_v1,1,1,Independent frozen-context forecast through DMXAPI; selected for provider diversity and reliable structured output.
+P_LLM_MINIMAX_M27,MiniMax M2.7,llm_forecaster,MiniMax-M2.7__prompt_v1,1,1,Independent frozen-context forecast through DMXAPI.
 P_PLAYER,Independent player,human_player,player_v1,1,1,Individual judgment submitted before the round deadline.
 P_CROWD,Crowd aggregate,crowd_aggregate,logit_pool_players_v1,1,1,Equal-weight logit pool of at least three eligible independent players.

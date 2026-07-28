@@ -1,0 +1,20 @@
+{
+  "round_id": "ROUND_20260728T093000Z",
+  "predictor_id": "P_LLM_KIMI_K25",
+  "provider_model": "kimi-k2.5",
+  "called_at_utc": "2026-07-28T09:22:34Z",
+  "evidence_packet_sha256": "e3c5d283c879311ebefaa7b00717676fb8bdcfe1a974efc0f8fc78c59cdd6c04",
+  "raw_response_sha256": "2c5f4c858a3853e33af79653edd0cd804f7568dcfc1bfac2118078ff866d4d74",
+  "parsed_response": {
+    "p_24h": 0.08,
+    "p_168h": 0.35,
+    "rationale_zh": "历史数据显示过去19天内有12次特殊额度reset公告，但最近3天（7月25日incident_compensation后至7月28日）仅1次launch_promotion公告，频率已下降。当前无活跃product_incident（最近resolved_at为7月25日），且7月28日刚完成一次hard_global reset，短期内重复触发概率较低。168小时窗口覆盖更长周期，若出现新incident或milestone仍可能触发。",
+    "supporting_evidence_ids": [
+      "ANN_X_2081940052154933696",
+      "CTX_2081096447718723984",
+      "ANN_X_2081096447718723984"
+    ],
+    "counter_evidence": "7月28日03:09刚完成一次hard_global reset，且历史上存在连续多日无公告的间隙期（如7月18日至21日间隔3天）。",
+    "confidence": "medium"
+  }
+}

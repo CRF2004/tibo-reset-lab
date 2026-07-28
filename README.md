@@ -62,6 +62,11 @@ Tibo Reset Lab 是一个关于 Codex / ChatGPT Work 特殊额度重置公告的�
 所有预测都在结果发生前记录时间、证据截止点和 SHA-256。Bootstrap、迟交、无效签发
 和事后补填不进入正式排名。
 
+LLM 组目前包含五个独立席位：DeepSeek V4 Pro、Qwen 3.5 397B、Kimi K2.5、
+MiniMax M2.7 和 Step 3.5 Flash。它们分别计分，不并入只包含人类玩家的 Crowd。
+选型、失败路由和 bootstrap 记录见
+[llm_tournament_v1.md](reports/llm_tournament_v1.md)。
+
 ## 数据与可审计性
 
 核心数据位于：

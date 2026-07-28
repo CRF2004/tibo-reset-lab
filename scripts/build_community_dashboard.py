@@ -53,8 +53,18 @@ def main() -> int:
             f"{sum(v[1] for v in values) / len(values):.4f}",
         ])
     leaderboard.sort(key=lambda row: (int(row[1]), float(row[3])))
-    latest_issue = max((row["issued_at_utc"] for row in forecasts), default="")
-    latest = [row for row in forecasts if row["issued_at_utc"] == latest_issue]
+    latest_by_predictor_horizon: dict[tuple[str, str], dict[str, str]] = {}
+    for row in forecasts:
+        key = (row["predictor_id"], row["horizon_hours"])
+        if (
+            key not in latest_by_predictor_horizon
+            or row["issued_at_utc"] > latest_by_predictor_horizon[key]["issued_at_utc"]
+        ):
+            latest_by_predictor_horizon[key] = row
+    latest = sorted(
+        latest_by_predictor_horizon.values(),
+        key=lambda row: (row["predictor_id"], int(row["horizon_hours"])),
+    )
     latest_rows = [[
         predictors[row["predictor_id"]]["display_name"],
         row["horizon_hours"], f"{float(row['probability']):.1%}",

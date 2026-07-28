@@ -27,11 +27,16 @@ def stamp(value: datetime) -> str:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--round-id", required=True)
-    parser.add_argument("--predictor-id", choices=["P_LLM", "P_PLAYER"], required=True)
+    parser.add_argument("--predictor-id", choices=[
+        "P_LLM", "P_LLM_DEEPSEEK_V4", "P_LLM_QWEN35_397B",
+        "P_LLM_KIMI_K25", "P_LLM_STEP35", "P_LLM_MINIMAX_M27",
+        "P_PLAYER",
+    ], required=True)
     parser.add_argument("--participant-id", required=True)
     parser.add_argument("--horizon-hours", type=int, choices=[24, 168], required=True)
     parser.add_argument("--probability", type=float, required=True)
     parser.add_argument("--submitted-at")
+    parser.add_argument("--evidence-cutoff")
     parser.add_argument("--evidence-ids", default="")
     parser.add_argument("--rationale", required=True)
     args = parser.parse_args()
@@ -65,7 +70,9 @@ def main() -> int:
         "window_end_utc": stamp(issued + timedelta(hours=args.horizon_hours)),
         "probability": f"{args.probability:.8f}",
         "schedule_class": round_row["schedule_class"],
-        "evidence_cutoff_utc": round_row["issued_at_utc"],
+        "evidence_cutoff_utc": (
+            stamp(dt(args.evidence_cutoff)) if args.evidence_cutoff else stamp(submitted)
+        ),
         "evidence_ids": args.evidence_ids,
         "rationale": args.rationale,
         "eligibility_status": "eligible",

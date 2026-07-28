@@ -1,0 +1,23 @@
+{
+  "round_id": "ROUND_20260728T093000Z",
+  "predictor_id": "P_LLM_DEEPSEEK_V4",
+  "provider_model": "deepseek-v4-pro",
+  "called_at_utc": "2026-07-28T09:22:34Z",
+  "evidence_packet_sha256": "e3c5d283c879311ebefaa7b00717676fb8bdcfe1a974efc0f8fc78c59cdd6c04",
+  "raw_response_sha256": "fc45144d1c3633f8cb93e6384a04abc6bec2113086d4523ee07cb3135edd0bd2",
+  "parsed_response": {
+    "p_24h": 0.4,
+    "p_168h": 0.95,
+    "rationale_zh": "近期公告频率平均约0.63条/天，历史曾出现同日两次或隔日一次；最近一次在6小时前，24h内再次发布概率中等；168h内几乎肯定会至少再发一次，基于19天12条的持续高频率。",
+    "supporting_evidence_ids": [
+      "ANN_X_2081940052154933696",
+      "ANN_X_2081096447718723984",
+      "ANN_X_2079609157934886975",
+      "ANN_X_2078320950488297917",
+      "ANN_X_2077607697487188198",
+      "ANN_X_2077114635308986427"
+    ],
+    "counter_evidence": "最近刚发布一次，且间隔多为2-4天，连续发布概率低于平均水平。",
+    "confidence": "medium"
+  }
+}

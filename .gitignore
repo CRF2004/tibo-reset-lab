@@ -29,3 +29,7 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+
+# User-provided local API example; may contain a hard-coded credential
+LLM_CALL.py
+.playwright-cli/

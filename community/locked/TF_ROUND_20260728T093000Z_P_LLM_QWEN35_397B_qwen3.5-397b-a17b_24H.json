@@ -1,0 +1,17 @@
+{
+  "tournament_forecast_id": "TF_ROUND_20260728T093000Z_P_LLM_QWEN35_397B_qwen3.5-397b-a17b_24H",
+  "round_id": "ROUND_20260728T093000Z",
+  "predictor_id": "P_LLM_QWEN35_397B",
+  "participant_id": "qwen3.5-397b-a17b",
+  "horizon_hours": 24,
+  "issued_at_utc": "2026-07-28T09:30:00Z",
+  "submitted_at_utc": "2026-07-28T09:22:34Z",
+  "window_end_utc": "2026-07-29T09:30:00Z",
+  "probability": "0.15000000",
+  "schedule_class": "bootstrap",
+  "evidence_cutoff_utc": "2026-07-28T09:22:34Z",
+  "evidence_ids": "ANN_X_2081940052154933696;ANN_X_2081096447718723984;CTX_2081096447718723984",
+  "rationale": "最近一次硬全局重置公告发生在 cutoff 前约 6 小时（ANN_X_2081940052154933696），短期内重复发布特殊额度的概率显著降低。然而，7 月以来数据显示平均每 2-3 天有一次公告，且产品事故上下文频繁，支撑了 168 小时内的发生可能性。基准率表明此类公告虽频繁但需区别于正常周期刷新，极端概率不符合历史波动规律。 反向证据：7 月上旬曾出现连续多日发布重置公告的集群现象，表明特殊情况下频率可能显著高于平均水平。",
+  "eligibility_status": "eligible",
+  "payload_sha256": "a55d4127c58b79f9a6a80ba6582dee67658544abf6acd226c7551b7b22626899"
+}

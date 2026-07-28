@@ -109,6 +109,16 @@ def run_command(command: list[str], log) -> None:
         raise RuntimeError(f"command failed ({result.returncode}): {' '.join(command)}")
 
 
+def run_optional_command(command: list[str], log) -> bool:
+    """Run a non-blocking tournament component without invalidating research issuance."""
+    result = subprocess.run(
+        command, cwd=ROOT, text=True, stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT, check=False,
+    )
+    log.write("$ optional " + " ".join(command) + "\n" + result.stdout + "\n")
+    return result.returncode == 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--phase", choices=["preflight", "forecast", "score"], required=True)
@@ -149,7 +159,16 @@ def main() -> int:
                     "--issued-at", stamp(scheduled), "--schedule-class", "scheduled",
                     "--notes", "Opened by the passed Task-8 preflight gate.",
                 ], log)
-                status, details = "passed", "Feed fresh; latest signal is present in accepted gold."
+                llm_ok = run_optional_command([
+                    "python3", "scripts/run_llm_tournament.py",
+                    "--round-id", "ROUND_" + stamp(scheduled).replace("-", "").replace(":", ""),
+                ], log)
+                status = "passed"
+                details = (
+                    "Feed fresh; latest signal accepted; five LLM forecasts locked."
+                    if llm_ok else
+                    "Feed fresh and accepted; LLM tournament partially/fully unavailable (non-blocking)."
+                )
             elif args.phase == "forecast":
                 if scheduled.hour != 17 or scheduled.minute or scheduled.second:
                     raise RuntimeError("scheduled_for must be exactly 17:00:00 UTC")
