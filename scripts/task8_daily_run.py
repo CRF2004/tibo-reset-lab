@@ -204,6 +204,7 @@ def main() -> int:
                     ["python3", "scripts/score_tournament.py"],
                     ["python3", "scripts/build_task13_dashboard.py"],
                     ["python3", "scripts/build_community_dashboard.py"],
+                    ["python3", "scripts/update_readme_snapshot.py"],
                 ):
                     run_command(command, log)
                 status, details = "passed", "Validated, signed scheduled bundle, and scored mature forecasts."
@@ -214,6 +215,7 @@ def main() -> int:
                 run_command(["python3", "scripts/score_tournament.py"], log)
                 run_command(["python3", "scripts/build_task13_dashboard.py"], log)
                 run_command(["python3", "scripts/build_community_dashboard.py"], log)
+                run_command(["python3", "scripts/update_readme_snapshot.py"], log)
                 status, details = "passed", "Scored mature forecasts and refreshed dashboard."
     except Exception as exc:
         details = f"{type(exc).__name__}: {exc}"
