@@ -56,16 +56,18 @@ Tibo Reset Lab 是一个关于 Codex / ChatGPT Work 特殊额度重置公告的�
 | 项目 | 状态 |
 | --- | --- |
 | 历史官方公告 | 41 条 |
-| 独立额度动作 | 42 个 |
+| 主结果：独立决策 cluster | 40 个 |
+| 拆分后的额度动作 | 42 个 |
 | 官方事故上下文 | 已回填至 2025-09 |
-| 历史模型比较 | M0–M3-lite 与强朴素基线已完成 |
-| 前瞻设计 | v1 冻结，v1.1 在首个正式样本前修订 |
+| 历史模型比较 | 旧 v1 开发结果已完成；17:00 对齐的 v1.2 待重建 |
+| 前瞻设计 | v1 冻结；v1.1 强基线修订；v1.2 对齐时间与事件单位 |
 | 实时比赛 | 数据结构、冻结、Crowd 与评分流程已建立 |
 | 正式前瞻样本 | 尚未积累到停止条件 |
 
-历史回测中，近期 30 天事件率的 Brier Score 为 `0.119664`，优于 Calendar M2 的
-`0.125443`。因此本项目不声称复杂模型已经胜出；这也是把强朴素基线放进正式比赛的
-原因。详细结果见 [strong_baselines_v1.md](reports/strong_baselines_v1.md)。
+旧 v1 开发回测中，近期 30 天事件率的 Brier Score 为 `0.119664`，优于 Calendar M2
+的 `0.125443`。这些数值使用旧的 00:00 UTC / announcement-post 口径，只作为开发记录；
+v1.2 将在 17:00 UTC / cluster-first 共同窗口上重建全部模型。项目不声称复杂模型已经
+胜出。旧结果见 [strong_baselines_v1.md](reports/strong_baselines_v1.md)。
 
 正式比较至少需要同时达到：
 
@@ -101,6 +103,8 @@ MiniMax M2.7 和 Step 3.5 Flash。它们分别计分，不并入只包含人类�
 
 - [`reset_announcements.csv`](data/processed/reset_announcements.csv)：公告级金标准；
 - [`reset_actions.csv`](data/processed/reset_actions.csv)：拆分后的 hard/banked 等动作；
+- [`announcement_cluster_overrides.csv`](data/processed/announcement_cluster_overrides.csv)：
+  先于动作记录出现的 promise 与 action cluster 的显式映射；
 - [`context_events.csv`](data/processed/context_events.csv)：事故、发布、里程碑和注意力；
 - [`historical_x_posts_bilingual.csv`](annotation/evidence/historical_x_posts_bilingual.csv)：
   原帖与中文翻译；
@@ -113,23 +117,27 @@ MiniMax M2.7 和 Step 3.5 Flash。它们分别计分，不并入只包含人类�
 [EVENT_ADJUDICATION_PROTOCOL_V1.md](annotation/EVENT_ADJUDICATION_PROTOCOL_V1.md)。
 
 第三方 feed 只用于发现候选；进入金标准前必须回到原始 X 帖或官方 OpenAI 来源核验。
-一条公告包含多个动作时在 action 表拆分，但公告级预测只计一次事件。
+一条公告包含多个动作时在 action 表拆分。v1.2 主结果按 action cluster 去重，只计算每个
+cluster 的首次合格公开承诺；全部公告帖作为次要结果保留。
 
 ## 快速开始
 
-环境需要 Python 3，以及用于模型脚本的 `numpy` 和 `scikit-learn`。
+环境需要 Python 3。依赖声明在 `requirements.txt`，提交会由 GitHub Actions 自动运行
+数据验证、边界测试和 17:00 UTC landmark 构建测试。
 
 ```bash
 git clone https://github.com/CRF2004/tibo-reset-lab.git
 cd tibo-reset-lab
+python3 -m pip install -r requirements.txt
 
-# 检查 23 张核心数据表
+# 检查核心数据表
 python3 scripts/validate_data.py
 
 # 重建日级/6 小时数据与历史模型结果
 python3 scripts/build_person_period.py \
-  --start 2025-09-17T00:00:00Z \
-  --end 2026-07-29T00:00:00Z
+  --start 2025-09-17T17:00:00Z \
+  --end YYYY-MM-DDT17:00:00Z \
+  --event-unit cluster_first
 python3 scripts/build_daily_context_features.py
 python3 scripts/build_6h_dataset.py
 python3 scripts/rolling_6h_models.py --data-cutoff YYYY-MM-DDTHH:MM:SSZ
@@ -155,6 +163,7 @@ python3 scripts/build_community_dashboard.py
 - [完整研究报告](研究报告.md)
 - [冻结前瞻协议 v1](preregistration_v1_frozen.md)
 - [首个正式样本前修订 v1.1](preregistration_v1.1_amendment.md)
+- [时间锚点与事件单位修订 v1.2](preregistration_v1.2_amendment.md)
 - [论文草稿 PDF](output/pdf/tibo_forecasting_protocol_draft.pdf)
 - [模型比较](reports/model_comparison_v1.md)
 - [强基线分析](reports/strong_baselines_v1.md)
@@ -169,8 +178,9 @@ python3 scripts/build_community_dashboard.py
 低绝对 Brier Score 不自动意味着模型优秀，因为事件在 6 小时尺度很少见。本项目同时
 报告事件基准比例、Brier skill、Log Loss、校准、PR-AUC、覆盖率和强基线差异。
 
-历史 expanding-window 结果是时间顺序正确的**模型开发结果**，不是完全未见数据上的
-独立验证。真正的证据只能来自未来按时冻结、到期后评分的 scheduled 预测。
+历史 expanding-window 结果是**模型开发结果**，不是完全未见数据上的独立验证。旧 v1
+结果还使用了与正式签发不一致的时间锚点，因此不得直接作为 v1.2 的历史对照。真正的
+证据只能来自共同 17:00 UTC landmark 下按时冻结、到期后评分的 scheduled 预测。
 
 ## 参与
 
