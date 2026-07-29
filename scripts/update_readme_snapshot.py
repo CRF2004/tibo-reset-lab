@@ -79,7 +79,7 @@ def main() -> int:
         issue = max((row["issued_at_utc"] for row in selected), default="")
         mode = "Bootstrap 演示"
         warning = (
-            "> **注意：** 尚无正式 scheduled 轮次。下表来自不同时间的 bootstrap，"
+            "> **注意：** 尚无正式定时轮次。下表来自不同时间的 bootstrap，"
             "只展示系统如何工作，不能用于比较高低，也不进入排行榜。\n"
         )
     by_predictor: dict[str, dict[str, dict[str, str]]] = {}
@@ -182,16 +182,19 @@ def main() -> int:
         for issued, predictor, probability, label, brier, kind in scored_rows[:12]
     )
     block = f"""{START}
-## 当前预测快照
+## 现在各预测者怎么猜？
 
-**状态：{mode}** · 数据更新至 `{data_at}` · 正式成熟预测 `{len(mature_scheduled)}` 条
+**状态：{mode}** · 数据更新至 `{data_at}` · 已完成的正式预测 `{len(mature_scheduled)}` 条
 
 {warning}
+下面的百分比可以按字面理解：`40%` 约等于“10 次类似情况里，模型认为会发生 4 次”。
+`证据截止` 表示预测者只能看到这个时间以前的信息。
+
 | 预测者 | 未来24小时 | 未来7天 | 证据截止（UTC） |
 | --- | ---: | ---: | --- |
 {chr(10).join(table_rows) if table_rows else "| 暂无有效预测 | — | — | — |"}
 
-### 当前已知事实
+### 已知事实
 
 - 最近一次合格公告：[原始 X 帖]({latest_url})，时间 `{latest_ann['announced_at_utc']}`；
 - 类型：`{latest_ann['reset_type']}`；原因：`{latest_ann['reason_type']}`；
@@ -200,26 +203,29 @@ def main() -> int:
 
 概率不是官方消息，也不是“重置倒计时”。Bootstrap、迟交和未成熟结果不进入正式排名。
 
-### 已成熟展示评分
+### 已经揭晓的演示预测
 
-| 预测者 | 签发时间 | 24h 概率 | 标签 | Brier | 轮次 |
+`标签=1` 表示签发后 24 小时内确实又出现了合格 reset 公告，`标签=0` 表示没有。
+`误差` 越小越好：预测 40% 后真的发生，误差是 `(1 - 0.40)^2 = 0.36`。
+
+| 预测者 | 签发时间 | 当时猜24h | 结果 | 误差 | 类型 |
 | --- | --- | ---: | ---: | ---: | --- |
 {scored_table if scored_table else "| 暂无成熟评分 | — | — | — | — | — |"}
 
 该表来自 tournament 展示层；`bootstrap` 评分用于演示和审计，不进入 scheduled 主分析。
 
-### 统计预测者历史演练排行榜
+### 历史演练：以前这么猜会怎样？
 
-口径：v1.2 `cluster_first`，每日 17:00 UTC landmark，24小时窗口；每个预测点只用此前数据。
-统计模型使用严格 expanding-window；LLM replay 使用当前冻结上下文构建器在历史 cutoff 回放。
-玩家和 Crowd 只有存在独立历史 replay 提交时才计分。
+这张表回答的是：“如果每天固定时间用同一套方法预测下一天，长期误差多大？”
+`full` 表示覆盖完整历史窗口；`limited` 表示只跑了少量回放点，不能直接和 full 公平比较。
+`N` 是评分次数。`平均误差` 越小越好。`相对基础模型` 为正，表示比最简单的长期平均率更准。
 
-| 排名 | 预测者 | 覆盖 | N | Brier | Log Loss | Skill vs global |
+| 排名 | 预测者 | 覆盖 | N | 平均误差 | 惩罚大错 | 相对基础模型 |
 | ---: | --- | --- | ---: | ---: | ---: | ---: |
 {leaderboard}
 
 共同窗口 `{historical[0]['issued_at_utc']}` 至 `{historical[-1]['issued_at_utc']}`；
-正例率 `{historical_prevalence:.1%}`。这是模型开发期历史演练，不替代未来 scheduled 排行榜。
+实际发生率 `{historical_prevalence:.1%}`。这是模型开发期历史演练，不替代未来正式排行榜。
 暂无可评分 replay：{", ".join(replay_status) if replay_status else "无"}。
 {END}"""
     text = README.read_text(encoding="utf-8")
