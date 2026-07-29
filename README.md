@@ -53,12 +53,15 @@ Tibo Reset Lab 是一个关于 Codex / ChatGPT Work 特殊额度重置公告的�
 | 7 | Calendar model without regime | full | 247 | 0.123121 | 0.426222 | 1.0% |
 | 8 | Global event rate | full | 247 | 0.124353 | 0.425184 | 0.0% |
 | 9 | Discrete renewal hazard | full | 247 | 0.153615 | 0.489800 | -23.5% |
-| 10 | Kimi K2.5 | limited | 1 | 0.006400 | 0.083382 | 94.9% |
-| 11 | DeepSeek V4 Pro | limited | 1 | 0.014400 | 0.127833 | 88.4% |
+| 10 | Step 3.5 Flash | limited | 4 | 0.016425 | 0.136505 | 86.8% |
+| 11 | MiniMax M2.7 | limited | 3 | 0.008133 | 0.091030 | 93.5% |
+| 12 | Kimi K2.5 | limited | 2 | 0.006400 | 0.083382 | 94.9% |
+| 13 | DeepSeek V4 Pro | limited | 2 | 0.014400 | 0.127833 | 88.4% |
+| 14 | Qwen 3.5 397B | limited | 2 | 0.018450 | 0.145176 | 85.2% |
 
 共同窗口 `2025-11-23T17:00:00Z` 至 `2026-07-27T17:00:00Z`；
 正例率 `14.2%`。这是模型开发期历史演练，不替代未来 scheduled 排行榜。
-暂无可评分 replay：Qwen 3.5 397B, MiniMax M2.7, Step 3.5 Flash, Independent player, Crowd aggregate。
+暂无可评分 replay：Independent player, Crowd aggregate。
 <!-- LIVE_SNAPSHOT_END -->
 
 ## 它与普通 reset tracker 有什么不同？
