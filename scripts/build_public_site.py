@@ -165,6 +165,22 @@ def main() -> int:
     action_cluster_count = len({row["action_cluster_id"] for row in actions})
     sorted_ann = sorted(announcements, key=lambda row: row["announced_at_utc"], reverse=True)
     sorted_contexts = sorted(contexts, key=lambda row: row["first_public_at_utc"], reverse=True)
+    llm_rows = [row for row in rows if row["name"] in {
+        "DeepSeek V4 Pro", "Qwen 3.5 397B", "Kimi K2.5", "MiniMax M2.7", "Step 3.5 Flash"
+    }]
+    llm_cutoff = max((row["cutoff"] for row in llm_rows), default="")
+    if llm_cutoff and dt(llm_cutoff) >= dt(latest_ann["announced_at_utc"]):
+        llm_evidence = {
+            "tone": "support",
+            "label": "LLM 已更新",
+            "text": f"五个 LLM 席位的最新证据截止到 {llm_cutoff}，已经覆盖最新 reset 公告。",
+        }
+    else:
+        llm_evidence = {
+            "tone": "caution",
+            "label": "LLM 待更新",
+            "text": "LLM 席位的最新证据还没有覆盖最新 reset 公告；请优先看统计模型或等待下一轮。",
+        }
     evidence_items = [
         {
             "tone": "support",
@@ -181,11 +197,7 @@ def main() -> int:
             "label": "刚重置后的冷却效应",
             "text": "多次模型仍低于 50%，因为刚完成一次 reset 后，马上再次发生通常需要新的触发因素。",
         },
-        {
-            "tone": "caution",
-            "label": "LLM 证据较旧",
-            "text": "当前 LLM 快照仍基于 7/28 的证据截止点，不能直接代表 7/29 新公告后的判断。",
-        },
+        llm_evidence,
     ]
     evidence_html = "\n".join(
         f"<article class='evidence {item['tone']}'><span>{esc(item['label'])}</span><p>{esc(item['text'])}</p></article>"

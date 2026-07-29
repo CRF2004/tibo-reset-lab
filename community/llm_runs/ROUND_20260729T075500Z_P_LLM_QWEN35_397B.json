@@ -1,0 +1,21 @@
+{
+  "round_id": "ROUND_20260729T075500Z",
+  "predictor_id": "P_LLM_QWEN35_397B",
+  "provider_model": "qwen3.5-397b-a17b",
+  "called_at_utc": "2026-07-29T07:45:50Z",
+  "completed_at_utc": "2026-07-29T07:47:46Z",
+  "evidence_packet_sha256": "cb26f3c4c79a25afb05e4c582ac6407ae4a78622dde09408e355b1d509bcedee",
+  "raw_response_sha256": "2404ee4b9fe723fcff20a052c4e208dfd159691b058a1522c9c553f1032e0426",
+  "parsed_response": {
+    "p_24h": 0.35,
+    "p_168h": 0.8,
+    "rationale_zh": "近期公告频率显著高于历史基准（20 天内 12 次），且截止前 3.5 小时刚发布了一次硬全局重置。尽管启动推广可能带来密集发布，但刚发生事件后 24 小时内再次发布的边际概率降低。而 168 小时窗口基于高基准率覆盖至少一次的可能性很高。",
+    "supporting_evidence_ids": [
+      "ANN_X_2082317452755751098",
+      "ANN_X_2081940052154933696",
+      "ANN_X_2081096447718723984"
+    ],
+    "counter_evidence": "连续两次发布启动推广类重置后，营销活动可能进入冷却期，降低短期内的发布频率。",
+    "confidence": "medium"
+  }
+}

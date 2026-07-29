@@ -1,0 +1,17 @@
+{
+  "tournament_forecast_id": "TF_ROUND_20260729T075500Z_P_LLM_QWEN35_397B_qwen3.5-397b-a17b_24H",
+  "round_id": "ROUND_20260729T075500Z",
+  "predictor_id": "P_LLM_QWEN35_397B",
+  "participant_id": "qwen3.5-397b-a17b",
+  "horizon_hours": 24,
+  "issued_at_utc": "2026-07-29T07:55:00Z",
+  "submitted_at_utc": "2026-07-29T07:47:46Z",
+  "window_end_utc": "2026-07-30T07:55:00Z",
+  "probability": "0.35000000",
+  "schedule_class": "bootstrap",
+  "evidence_cutoff_utc": "2026-07-29T07:45:50Z",
+  "evidence_ids": "ANN_X_2082317452755751098;ANN_X_2081940052154933696;ANN_X_2081096447718723984",
+  "rationale": "近期公告频率显著高于历史基准（20 天内 12 次），且截止前 3.5 小时刚发布了一次硬全局重置。尽管启动推广可能带来密集发布，但刚发生事件后 24 小时内再次发布的边际概率降低。而 168 小时窗口基于高基准率覆盖至少一次的可能性很高。 反向证据：连续两次发布启动推广类重置后，营销活动可能进入冷却期，降低短期内的发布频率。",
+  "eligibility_status": "eligible",
+  "payload_sha256": "87434e54a397a0d2d389b587c0cc3fd4bb268ac10b8391911eca10e755952902"
+}

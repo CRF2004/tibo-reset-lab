@@ -1,0 +1,17 @@
+{
+  "tournament_forecast_id": "TF_ROUND_20260729T075500Z_P_LLM_MINIMAX_M27_MiniMax-M2.7_24H",
+  "round_id": "ROUND_20260729T075500Z",
+  "predictor_id": "P_LLM_MINIMAX_M27",
+  "participant_id": "MiniMax-M2.7",
+  "horizon_hours": 24,
+  "issued_at_utc": "2026-07-29T07:55:00Z",
+  "submitted_at_utc": "2026-07-29T07:48:47Z",
+  "window_end_utc": "2026-07-30T07:55:00Z",
+  "probability": "0.25000000",
+  "schedule_class": "bootstrap",
+  "evidence_cutoff_utc": "2026-07-29T07:45:50Z",
+  "evidence_ids": "ANN_X_2081940052154933696;ANN_X_2082317452755751098;ANN_X_2081096447718723984",
+  "rationale": "根据历史数据，42条已确认的特殊额度reset公告表明这是定期发生的事件。最近一周（截至证据截止日）出现了4次hard_global reset，包括7月28-29日连续两次launch_promotion类型reset，显示当前处于活跃期。虽然最近的incident已在25日解决且无新重大context，但高频reset模式暗示系统性补偿机制持续运作。 反向证据：刚刚在7月28-29日连续进行了两次reset，短期内可能暂无新的补偿需求。",
+  "eligibility_status": "eligible",
+  "payload_sha256": "d8d6f36bfb96b0937134de57df1d3fa3dd2c187cd99880d4a23841e1234038b9"
+}

@@ -1,0 +1,21 @@
+{
+  "round_id": "ROUND_20260729T075500Z",
+  "predictor_id": "P_LLM_MINIMAX_M27",
+  "provider_model": "MiniMax-M2.7",
+  "called_at_utc": "2026-07-29T07:45:50Z",
+  "completed_at_utc": "2026-07-29T07:48:47Z",
+  "evidence_packet_sha256": "cb26f3c4c79a25afb05e4c582ac6407ae4a78622dde09408e355b1d509bcedee",
+  "raw_response_sha256": "f7ece610f394edcb2e2841e2df6ba26a4ad4b09dc82edbd1b890f51d64e926fa",
+  "parsed_response": {
+    "p_24h": 0.25,
+    "p_168h": 0.58,
+    "rationale_zh": "根据历史数据，42条已确认的特殊额度reset公告表明这是定期发生的事件。最近一周（截至证据截止日）出现了4次hard_global reset，包括7月28-29日连续两次launch_promotion类型reset，显示当前处于活跃期。虽然最近的incident已在25日解决且无新重大context，但高频reset模式暗示系统性补偿机制持续运作。",
+    "supporting_evidence_ids": [
+      "ANN_X_2081940052154933696",
+      "ANN_X_2082317452755751098",
+      "ANN_X_2081096447718723984"
+    ],
+    "counter_evidence": "刚刚在7月28-29日连续进行了两次reset，短期内可能暂无新的补偿需求。",
+    "confidence": "medium"
+  }
+}

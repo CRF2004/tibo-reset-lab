@@ -77,7 +77,7 @@
   <main>
     <section class="metricRow" aria-label="关键数字">
       <div class="metric"><span class="subtle">最高 24h 概率</span><strong>40.6%</strong></div>
-      <div class="metric"><span class="subtle">平均 24h 概率</span><strong>21.6%</strong></div>
+      <div class="metric"><span class="subtle">平均 24h 概率</span><strong>24.8%</strong></div>
       <div class="metric"><span class="subtle">历史公告</span><strong>42</strong></div>
       <div class="metric"><span class="subtle">独立重置事件</span><strong>41</strong></div>
     </section>
@@ -86,11 +86,11 @@
       <div class="panel heroCard">
         <h2>当前最高 24h 预测</h2>
         <div class="stat">40.6%</div>
-        <p class="subtle">不同预测者的 24h 概率范围：6.0% 到 40.6%。数据更新至 <code>2026-07-29T05:05:00Z</code>。</p>
+        <p class="subtle">不同预测者的 24h 概率范围：8.0% 到 40.6%。数据更新至 <code>2026-07-29T07:45:50Z</code>。</p>
         <div class="facts">
           <div class="fact"><strong>最新公告</strong><br><a href="https://x.com/thsottiaux/status/2082317452755751098">原始 X 帖</a></div>
           <div class="fact"><strong>公告时间</strong><br>2026-07-29T04:09:02.000Z</div>
-          <div class="fact"><strong>距今约</strong><br>0.9 小时</div>
+          <div class="fact"><strong>距今约</strong><br>3.6 小时</div>
         </div>
       </div>
       <div class="panel chartCard">
@@ -106,7 +106,7 @@
       <div class="evidenceGrid"><article class='evidence support'><span>刚出现新公告</span><p>最新合格 reset 公告发生在 2026-07-29T04:09:02.000Z，短期历史率会被抬高。</p></article>
 <article class='evidence support'><span>近期频率偏高</span><p>Recent 30-day rate 给出当前最高 24h 概率，说明最近窗口内事件密度高于长期平均。</p></article>
 <article class='evidence caution'><span>刚重置后的冷却效应</span><p>多次模型仍低于 50%，因为刚完成一次 reset 后，马上再次发生通常需要新的触发因素。</p></article>
-<article class='evidence caution'><span>LLM 证据较旧</span><p>当前 LLM 快照仍基于 7/28 的证据截止点，不能直接代表 7/29 新公告后的判断。</p></article></div>
+<article class='evidence support'><span>LLM 已更新</span><p>五个 LLM 席位的最新证据截止到 2026-07-29T07:45:50Z，已经覆盖最新 reset 公告。</p></article></div>
     </section>
 
     <section>
@@ -117,11 +117,11 @@
 <tr><td>Renewal model</td><td>22.5%</td><td>69.6%</td><td>2026-07-29T05:05:00Z</td></tr>
 <tr><td>Calendar model</td><td>34.5%</td><td>84.1%</td><td>2026-07-29T05:05:00Z</td></tr>
 <tr><td>Theory model</td><td>17.7%</td><td>61.2%</td><td>2026-07-29T05:05:00Z</td></tr>
-<tr><td>DeepSeek V4 Pro</td><td>40.0%</td><td>95.0%</td><td>2026-07-28T09:22:34Z</td></tr>
-<tr><td>Qwen 3.5 397B</td><td>15.0%</td><td>55.0%</td><td>2026-07-28T09:22:34Z</td></tr>
-<tr><td>Kimi K2.5</td><td>8.0%</td><td>35.0%</td><td>2026-07-28T09:22:34Z</td></tr>
-<tr><td>MiniMax M2.7</td><td>6.0%</td><td>35.0%</td><td>2026-07-28T09:22:34Z</td></tr>
-<tr><td>Step 3.5 Flash</td><td>20.0%</td><td>70.0%</td><td>2026-07-28T09:32:59Z</td></tr></tbody></table></div>
+<tr><td>DeepSeek V4 Pro</td><td>25.0%</td><td>97.0%</td><td>2026-07-29T07:45:50Z</td></tr>
+<tr><td>Qwen 3.5 397B</td><td>35.0%</td><td>80.0%</td><td>2026-07-29T07:45:50Z</td></tr>
+<tr><td>Kimi K2.5</td><td>8.0%</td><td>35.0%</td><td>2026-07-29T07:45:50Z</td></tr>
+<tr><td>MiniMax M2.7</td><td>25.0%</td><td>58.0%</td><td>2026-07-29T07:45:50Z</td></tr>
+<tr><td>Step 3.5 Flash</td><td>28.0%</td><td>72.0%</td><td>2026-07-29T07:45:50Z</td></tr></tbody></table></div>
     </section>
 
     <section class="two" id="scores">
@@ -192,7 +192,7 @@
   </main>
   <footer><div class="wrap">数据来自仓库 CSV。查看 <a href="https://github.com/CRF2004/tibo-reset-lab/blob/main/README.md">README</a>、<a href="https://github.com/CRF2004/tibo-reset-lab/blob/main/reports/community_dashboard.md">Markdown Dashboard</a> 和 <a href="https://github.com/CRF2004/tibo-reset-lab/blob/main/PUBLIC_PRODUCT_IDEAS.md">产品路线</a>。</div></footer>
   <script>
-    const data = [{"name": "Global event rate", "p24": 0.12025316, "p168": 0.59214669}, {"name": "Recent 30-day rate", "p24": 0.40625, "p168": 0.95483207}, {"name": "Renewal model", "p24": 0.22516128, "p168": 0.69551119}, {"name": "Calendar model", "p24": 0.34496067, "p168": 0.84138399}, {"name": "Theory model", "p24": 0.17697501, "p168": 0.61225848}, {"name": "DeepSeek V4 Pro", "p24": 0.4, "p168": 0.95}, {"name": "Qwen 3.5 397B", "p24": 0.15, "p168": 0.55}, {"name": "Kimi K2.5", "p24": 0.08, "p168": 0.35}, {"name": "MiniMax M2.7", "p24": 0.06, "p168": 0.35}, {"name": "Step 3.5 Flash", "p24": 0.2, "p168": 0.7}];
+    const data = [{"name": "Global event rate", "p24": 0.12025316, "p168": 0.59214669}, {"name": "Recent 30-day rate", "p24": 0.40625, "p168": 0.95483207}, {"name": "Renewal model", "p24": 0.22516128, "p168": 0.69551119}, {"name": "Calendar model", "p24": 0.34496067, "p168": 0.84138399}, {"name": "Theory model", "p24": 0.17697501, "p168": 0.61225848}, {"name": "DeepSeek V4 Pro", "p24": 0.25, "p168": 0.97}, {"name": "Qwen 3.5 397B", "p24": 0.35, "p168": 0.8}, {"name": "Kimi K2.5", "p24": 0.08, "p168": 0.35}, {"name": "MiniMax M2.7", "p24": 0.25, "p168": 0.58}, {"name": "Step 3.5 Flash", "p24": 0.28, "p168": 0.72}];
     const bars = document.getElementById('bars');
     for (const row of data) {
       const p = row.p24 ?? 0;

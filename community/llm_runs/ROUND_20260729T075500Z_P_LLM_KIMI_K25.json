@@ -1,0 +1,21 @@
+{
+  "round_id": "ROUND_20260729T075500Z",
+  "predictor_id": "P_LLM_KIMI_K25",
+  "provider_model": "kimi-k2.5",
+  "called_at_utc": "2026-07-29T07:45:50Z",
+  "completed_at_utc": "2026-07-29T07:47:52Z",
+  "evidence_packet_sha256": "cb26f3c4c79a25afb05e4c582ac6407ae4a78622dde09408e355b1d509bcedee",
+  "raw_response_sha256": "2b21810a9baec1fb780acb07ee7b20643fd6c8f3ce39e1a0a58a1633b2086cca",
+  "parsed_response": {
+    "p_24h": 0.08,
+    "p_168h": 0.35,
+    "rationale_zh": "最近两次公告（7月28日和29日）均为hard_global reset且reason_type为launch_promotion，显示OpenAI可能刚完成一轮密集发布周期。历史数据显示hard_global reset间隔通常数天至一周以上，42次历史公告分布在较长时间跨度，基准率不高。当前无活跃product_incident处于未解决状态，缺乏触发补偿reset的强信号。",
+    "supporting_evidence_ids": [
+      "ANN_X_2081940052154933696",
+      "ANN_X_2082317452755751098",
+      "CTX_2081096447718723984"
+    ],
+    "counter_evidence": "7月25日曾发生strength=8的高强度事件并触发补偿reset，类似事件可能再次发生",
+    "confidence": "medium"
+  }
+}

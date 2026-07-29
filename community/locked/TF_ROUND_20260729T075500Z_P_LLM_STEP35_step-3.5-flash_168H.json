@@ -1,0 +1,17 @@
+{
+  "tournament_forecast_id": "TF_ROUND_20260729T075500Z_P_LLM_STEP35_step-3.5-flash_168H",
+  "round_id": "ROUND_20260729T075500Z",
+  "predictor_id": "P_LLM_STEP35",
+  "participant_id": "step-3.5-flash",
+  "horizon_hours": 168,
+  "issued_at_utc": "2026-07-29T07:55:00Z",
+  "submitted_at_utc": "2026-07-29T07:48:25Z",
+  "window_end_utc": "2026-08-05T07:55:00Z",
+  "probability": "0.72000000",
+  "schedule_class": "bootstrap",
+  "evidence_cutoff_utc": "2026-07-29T07:45:50Z",
+  "evidence_ids": "ANN_X_2081940052154933696;ANN_X_2082317452755751098;historical_accepted_announcement_count",
+  "rationale": "历史累计已发布42条符合研究协议的特殊额度reset公告，近19天共发布12条，平均发布间隔约1.7天，发布节奏相对稳定；最近一次公告为7月29日04:09发布的launch_promotion类hard_global reset，距证据截止时间仅3.5小时，按此前约25小时的短间隔规律，下一次公告可能出现在24小时窗口的末尾；近期无新的重大产品incident或明确发布触发信号，24小时内发布概率不高，但168小时覆盖多个常规发布周期，概率显著更高。 反向证据：最近一次公告刚在证据截止前3小时发布，历史最短发布间隔为3.5小时，24小时内再次发布需打破常规短间隔规律，可能性较低",
+  "eligibility_status": "eligible",
+  "payload_sha256": "bfe169baf4150ba5c086b75f6d3e1e7c2b068d5f1c0a85d5191f2728cd37db2f"
+}

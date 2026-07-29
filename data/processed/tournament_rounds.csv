@@ -6,3 +6,4 @@ ROUND_20260728T093000Z,2026-07-28T09:30:00Z,2026-07-28T09:22:33Z,2026-07-28T09:3
 ROUND_20260728T093600Z,2026-07-28T09:36:00Z,2026-07-28T09:31:25Z,2026-07-28T09:36:00Z,closed,bootstrap,GLM 4.7 route bootstrap after GLM 5.2 timeout; excluded from formal ranking.
 ROUND_20260728T093800Z,2026-07-28T09:38:00Z,2026-07-28T09:32:59Z,2026-07-28T09:38:00Z,closed,bootstrap,Step 3.5 route bootstrap; excluded from formal ranking.
 ROUND_20260729T050500Z,2026-07-29T05:05:00Z,2026-07-29T05:05:00Z,2026-07-29T05:05:00Z,closed,bootstrap,Imported statistical forecast round.
+ROUND_20260729T075500Z,2026-07-29T07:55:00Z,2026-07-29T07:45:58Z,2026-07-29T07:55:00Z,closed,bootstrap,Current LLM refresh after July 29 reset; public dashboard refresh.

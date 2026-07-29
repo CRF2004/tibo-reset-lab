@@ -1,0 +1,17 @@
+{
+  "tournament_forecast_id": "TF_ROUND_20260729T075500Z_P_LLM_DEEPSEEK_V4_deepseek-v4-pro_168H",
+  "round_id": "ROUND_20260729T075500Z",
+  "predictor_id": "P_LLM_DEEPSEEK_V4",
+  "participant_id": "deepseek-v4-pro",
+  "horizon_hours": 168,
+  "issued_at_utc": "2026-07-29T07:55:00Z",
+  "submitted_at_utc": "2026-07-29T07:46:35Z",
+  "window_end_utc": "2026-08-05T07:55:00Z",
+  "probability": "0.97000000",
+  "schedule_class": "bootstrap",
+  "evidence_cutoff_utc": "2026-07-29T07:45:50Z",
+  "evidence_ids": "ANN_X_2082317452755751098;ANN_X_2081940052154933696;ANN_X_2081096447718723984",
+  "rationale": "最近19.3天内出现12次特殊额度重置公告（约0.62次/天），168小时期望值超4次，无公告的概率极低（<2%），故p_168h接近上限。但最新公告在截止前3.6小时刚发布，且24小时内再次发布的间隔案例较少（仅7月12日出现过），所以p_24h适度调低至25%左右。 反向证据：最新重置公告发生于2026-07-29T04:09，距离截至时间仅约3.6小时，短期内连续发布的先例很少。",
+  "eligibility_status": "eligible",
+  "payload_sha256": "cbe2f5df337d016d7b4547ee0ebd86ff012aeaefdbd8d0590b804fe6d80e29b5"
+}
