@@ -53,11 +53,13 @@ def main() -> int:
     regime_counts = Counter(row["policy_regime"] for row in announcements)
 
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
+    start = periods[0]["window_start_utc"]
+    end = periods[-1]["window_end_utc"]
     OUTPUT.write_text(
-        f"""# 描述统计与 M0 基线 v1
+        f"""# 描述统计与 M0 基线 v1.2
 
 数据版本：`gold_v1`  
-观察期：2025-09-17 00:00 UTC 至 2026-07-29 00:00 UTC
+观察期：{start} 至 {end}；日级窗口使用 17:00 UTC landmark 和 `cluster_first` 主口径。
 
 ## 样本规模
 
@@ -124,4 +126,3 @@ M0 不能利用等待时间、日历节律、事故或里程碑，因此后续�
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

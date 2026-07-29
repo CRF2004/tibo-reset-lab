@@ -1,21 +1,21 @@
-# 描述统计与 M0 基线 v1
+# 描述统计与 M0 基线 v1.2
 
 数据版本：`gold_v1`  
-观察期：2025-09-17 00:00 UTC 至 2026-07-29 00:00 UTC
+观察期：2025-09-17T17:00:00Z 至 2026-07-29T17:00:00Z；日级窗口使用 17:00 UTC landmark 和 `cluster_first` 主口径。
 
 ## 样本规模
 
-- 严格公告帖子：41
-- 唯一 reset 动作：42
+- 严格公告帖子：42
+- 唯一 reset 动作：43
 - 日级时间片：315
-- 含公告的日级时间片：40
-- 事件日占比：12.698%
+- 含公告的日级时间片：38
+- 事件日占比：12.063%
 
 ## 公告间隔
 
-- 间隔数量：40
-- 平均间隔：7.85 天
-- 中位间隔：3.74 天
+- 间隔数量：41
+- 平均间隔：7.68 天
+- 中位间隔：3.55 天
 - 最短间隔：0.15 天
 - 最长间隔：67.74 天
 
@@ -33,13 +33,13 @@
 | `2026-04` | 6 |
 | `2026-05` | 3 |
 | `2026-06` | 7 |
-| `2026-07` | 12 |
+| `2026-07` | 13 |
 
 ## 公告状态
 
 | 类别 | 数量 |
 | --- | ---: |
-| `claimed_done` | 25 |
+| `claimed_done` | 26 |
 | `in_progress` | 12 |
 | `promised` | 4 |
 
@@ -49,7 +49,7 @@
 | --- | ---: |
 | `community_response` | 1 |
 | `incident_compensation` | 19 |
-| `launch_promotion` | 5 |
+| `launch_promotion` | 6 |
 | `milestone_celebration` | 9 |
 | `mixed_or_unclear` | 7 |
 
@@ -58,20 +58,20 @@
 | 类别 | 数量 |
 | --- | ---: |
 | `banked_credit` | 5 |
-| `hard_global` | 35 |
+| `hard_global` | 36 |
 | `targeted_or_conditional` | 2 |
 
 ## 制度时期
 
 | 类别 | 数量 |
 | --- | ---: |
-| `post_banked_reset` | 18 |
+| `post_banked_reset` | 19 |
 | `pre_banked_reset` | 23 |
 
 ## M0 expanding-window 基线
 
 - 评分预测点：314
-- 24h Brier Score：0.112950
+- 24h Brier Score：0.107598
 - 模型：历史日事件率，使用 Beta(1,1) 平滑
 - 7d 概率：由当前日 hazard 按常数情景聚合，仅作为基线
 

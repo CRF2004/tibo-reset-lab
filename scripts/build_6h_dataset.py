@@ -8,8 +8,12 @@ import csv
 from datetime import datetime, timedelta
 from pathlib import Path
 
+from event_units import accepted_event_times
+
 ROOT = Path(__file__).resolve().parents[1]
 ANNOUNCEMENTS = ROOT / "data/processed/reset_announcements.csv"
+ACTIONS = ROOT / "data/processed/reset_actions.csv"
+OVERRIDES = ROOT / "data/processed/announcement_cluster_overrides.csv"
 CONTEXTS = ROOT / "data/processed/context_events.csv"
 OUTPUT = ROOT / "data/processed/person_period_6h.csv"
 
@@ -34,11 +38,14 @@ def main() -> int:
         parser.error("--start must be before --end")
 
     with ANNOUNCEMENTS.open(encoding="utf-8", newline="") as handle:
-        announcements = sorted(
-            utc(row["announced_at_utc"])
-            for row in csv.DictReader(handle)
-            if row["adjudication_status"] == "accepted"
-        )
+        announcements = list(csv.DictReader(handle))
+    with ACTIONS.open(encoding="utf-8", newline="") as handle:
+        actions = list(csv.DictReader(handle))
+    with OVERRIDES.open(encoding="utf-8", newline="") as handle:
+        overrides = list(csv.DictReader(handle))
+    event_times = accepted_event_times(
+        announcements, actions, overrides, event_unit="cluster_first"
+    )
     with CONTEXTS.open(encoding="utf-8", newline="") as handle:
         candidates = [
             row for row in csv.DictReader(handle)
@@ -60,10 +67,10 @@ def main() -> int:
 
     rows = []
     cursor = args.start
-    last_event = max((event for event in announcements if event <= cursor), default=None)
+    last_event = max((event for event in event_times if event <= cursor), default=None)
     while cursor < args.end:
         window_end = min(cursor + timedelta(hours=6), args.end)
-        events = [event for event in announcements if cursor < event <= window_end]
+        events = [event for event in event_times if cursor < event <= window_end]
         visible = [
             event for event in contexts
             if utc(event["first_public_at_utc"]) <= cursor
@@ -104,6 +111,7 @@ def main() -> int:
             "visible_context_ids": ";".join(
                 sorted(event["context_event_id"] for event in visible)
             ),
+            "event_unit": "cluster_first",
         })
         if events:
             last_event = events[-1]
@@ -115,7 +123,7 @@ def main() -> int:
         writer.writeheader()
         writer.writerows(rows)
     print(f"Wrote {len(rows)} 6-hour periods")
-    print(f"Positive periods: {sum(int(row['announcement_in_next_window']) for row in rows)}")
+    print(f"Positive cluster-first periods: {sum(int(row['announcement_in_next_window']) for row in rows)}")
     print(f"Context-visible periods: {sum(int(row['official_context_visible']) for row in rows)}")
     return 0
 
