@@ -6,14 +6,16 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%232563eb'/%3E%3Cpath d='M14 39h9l6-16 8 24 6-14h7' fill='none' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
   <title>Tibo Reset Lab</title>
   <style>
-    :root { color-scheme: light; --ink:#18212f; --muted:#5d6675; --line:#d9dee8; --bg:#f7f8fb; --panel:#ffffff; --blue:#2563eb; --green:#15803d; --amber:#b45309; }
+    :root { color-scheme: light; --ink:#172033; --muted:#667085; --line:#d9e0ea; --bg:#f6f8fb; --panel:#ffffff; --blue:#2563eb; --green:#16815f; --amber:#b45309; --red:#be3b3b; --soft:#eef4ff; }
     * { box-sizing: border-box; }
     body { margin:0; font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif; color:var(--ink); background:var(--bg); }
-    header { background:#111827; color:white; padding:36px 20px 30px; }
+    header { background:#182033; color:white; padding:34px 20px 28px; border-bottom:4px solid #3b82f6; }
     .wrap { max-width:1180px; margin:0 auto; }
     .eyebrow { color:#b7c4d8; font-size:14px; margin:0 0 8px; }
     h1 { margin:0; font-size:clamp(32px,5vw,58px); line-height:1.04; letter-spacing:0; }
     .lead { max-width:780px; margin:16px 0 0; color:#d7deea; font-size:18px; }
+    nav { margin-top:22px; display:flex; gap:10px; flex-wrap:wrap; }
+    nav a { color:#eaf1ff; text-decoration:none; border:1px solid #41516e; border-radius:999px; padding:7px 12px; }
     main { padding:24px 20px 56px; }
     section { margin:22px auto; max-width:1180px; }
     h2 { margin:0 0 10px; font-size:24px; }
@@ -25,7 +27,11 @@
     .subtle { color:var(--muted); }
     .facts { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:14px; }
     .fact { border-left:4px solid var(--blue); padding:10px 12px; background:#f8fbff; }
+    .metricRow { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+    .metric { background:white; border:1px solid var(--line); border-radius:8px; padding:14px; }
+    .metric strong { display:block; font-size:24px; }
     table { width:100%; border-collapse:collapse; background:white; border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+    .tableWrap { overflow:auto; border-radius:8px; }
     th,td { padding:10px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
     th { background:#eef2f7; font-weight:650; }
     td:nth-child(n+2), th:nth-child(n+2) { text-align:right; }
@@ -37,9 +43,21 @@
     .chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
     .chip { border:1px solid var(--line); background:white; border-radius:999px; padding:6px 10px; color:var(--muted); }
     .two { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .evidenceGrid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+    .evidence { border:1px solid var(--line); border-radius:8px; padding:14px; background:white; }
+    .evidence span { display:inline-block; font-weight:700; margin-bottom:8px; }
+    .evidence p { margin:0; color:var(--muted); }
+    .evidence.support { border-top:4px solid var(--green); }
+    .evidence.caution { border-top:4px solid var(--amber); }
+    .timeline { list-style:none; padding:0; margin:0; border-left:2px solid var(--line); }
+    .timeline li { margin:0 0 14px 0; padding-left:14px; position:relative; }
+    .timeline li::before { content:""; width:9px; height:9px; border-radius:50%; background:var(--blue); position:absolute; left:-5.5px; top:7px; }
+    .timeline time { display:block; color:var(--muted); font-size:13px; }
+    .timeline strong { margin-right:8px; }
+    .timeline span { color:var(--muted); }
     footer { border-top:1px solid var(--line); padding:24px 20px; color:var(--muted); }
     a { color:var(--blue); }
-    @media (max-width: 850px) { .heroCard,.chartCard { grid-column:1 / -1; } .two,.facts { grid-template-columns:1fr; } .bar { grid-template-columns:120px 1fr 48px; } table { font-size:14px; } }
+    @media (max-width: 950px) { .heroCard,.chartCard { grid-column:1 / -1; } .two,.facts,.metricRow,.evidenceGrid { grid-template-columns:1fr; } .bar { grid-template-columns:120px 1fr 48px; } table { font-size:14px; } }
   </style>
 </head>
 <body>
@@ -48,10 +66,23 @@
       <p class="eyebrow">开放预测实验 · 不是官方倒计时</p>
       <h1>未来一天会不会再次重置额度？</h1>
       <p class="lead">我们只使用公开证据，让统计模型和 LLM 给出概率。等结果揭晓后，用同一规则计算误差。</p>
+      <nav aria-label="页面导航">
+        <a href="#current">当前概率</a>
+        <a href="#why">为什么这样猜</a>
+        <a href="#scores">已揭晓评分</a>
+        <a href="#history">历史演练</a>
+      </nav>
     </div>
   </header>
   <main>
-    <section class="grid">
+    <section class="metricRow" aria-label="关键数字">
+      <div class="metric"><span class="subtle">最高 24h 概率</span><strong>40.6%</strong></div>
+      <div class="metric"><span class="subtle">平均 24h 概率</span><strong>21.6%</strong></div>
+      <div class="metric"><span class="subtle">历史公告</span><strong>42</strong></div>
+      <div class="metric"><span class="subtle">独立重置事件</span><strong>41</strong></div>
+    </section>
+
+    <section class="grid" id="current">
       <div class="panel heroCard">
         <h2>当前最高 24h 预测</h2>
         <div class="stat">40.6%</div>
@@ -69,10 +100,19 @@
       </div>
     </section>
 
+    <section id="why">
+      <h2>为什么概率会上下移动？</h2>
+      <p class="note">这些是给普通读者看的解释卡：它们帮助理解模型输入，但不等同于对 OpenAI 内部动机的判断。</p>
+      <div class="evidenceGrid"><article class='evidence support'><span>刚出现新公告</span><p>最新合格 reset 公告发生在 2026-07-29T04:09:02.000Z，短期历史率会被抬高。</p></article>
+<article class='evidence support'><span>近期频率偏高</span><p>Recent 30-day rate 给出当前最高 24h 概率，说明最近窗口内事件密度高于长期平均。</p></article>
+<article class='evidence caution'><span>刚重置后的冷却效应</span><p>多次模型仍低于 50%，因为刚完成一次 reset 后，马上再次发生通常需要新的触发因素。</p></article>
+<article class='evidence caution'><span>LLM 证据较旧</span><p>当前 LLM 快照仍基于 7/28 的证据截止点，不能直接代表 7/29 新公告后的判断。</p></article></div>
+    </section>
+
     <section>
       <h2>当前概率表</h2>
       <p class="note">证据截止时间说明预测者最多只能看到该时间以前的信息。</p>
-      <table><thead><tr><th>预测者</th><th>未来24小时</th><th>未来7天</th><th>证据截止</th></tr></thead><tbody><tr><td>Global event rate</td><td>12.0%</td><td>59.2%</td><td>2026-07-29T05:05:00Z</td></tr>
+      <div class="tableWrap"><table><thead><tr><th>预测者</th><th>未来24小时</th><th>未来7天</th><th>证据截止</th></tr></thead><tbody><tr><td>Global event rate</td><td>12.0%</td><td>59.2%</td><td>2026-07-29T05:05:00Z</td></tr>
 <tr><td>Recent 30-day rate</td><td>40.6%</td><td>95.5%</td><td>2026-07-29T05:05:00Z</td></tr>
 <tr><td>Renewal model</td><td>22.5%</td><td>69.6%</td><td>2026-07-29T05:05:00Z</td></tr>
 <tr><td>Calendar model</td><td>34.5%</td><td>84.1%</td><td>2026-07-29T05:05:00Z</td></tr>
@@ -81,14 +121,14 @@
 <tr><td>Qwen 3.5 397B</td><td>15.0%</td><td>55.0%</td><td>2026-07-28T09:22:34Z</td></tr>
 <tr><td>Kimi K2.5</td><td>8.0%</td><td>35.0%</td><td>2026-07-28T09:22:34Z</td></tr>
 <tr><td>MiniMax M2.7</td><td>6.0%</td><td>35.0%</td><td>2026-07-28T09:22:34Z</td></tr>
-<tr><td>Step 3.5 Flash</td><td>20.0%</td><td>70.0%</td><td>2026-07-28T09:32:59Z</td></tr></tbody></table>
+<tr><td>Step 3.5 Flash</td><td>20.0%</td><td>70.0%</td><td>2026-07-28T09:32:59Z</td></tr></tbody></table></div>
     </section>
 
-    <section class="two">
+    <section class="two" id="scores">
       <div>
         <h2>已经揭晓的演示预测</h2>
         <p class="note">结果为 1 表示 24 小时内确实发生。误差越小越好；bootstrap 是演示评分，不算正式比赛。</p>
-        <table><thead><tr><th>预测者</th><th>签发时间</th><th>当时猜24h</th><th>结果</th><th>误差</th><th>类型</th></tr></thead><tbody><tr><td>Step 3.5 Flash</td><td>2026-07-28T09:38:00Z</td><td>20.0%</td><td>1</td><td>0.6400</td><td>bootstrap</td></tr>
+        <div class="tableWrap"><table><thead><tr><th>预测者</th><th>签发时间</th><th>当时猜24h</th><th>结果</th><th>误差</th><th>类型</th></tr></thead><tbody><tr><td>Step 3.5 Flash</td><td>2026-07-28T09:38:00Z</td><td>20.0%</td><td>1</td><td>0.6400</td><td>bootstrap</td></tr>
 <tr><td>DeepSeek V4 Pro</td><td>2026-07-28T09:30:00Z</td><td>40.0%</td><td>1</td><td>0.3600</td><td>bootstrap</td></tr>
 <tr><td>Qwen 3.5 397B</td><td>2026-07-28T09:30:00Z</td><td>15.0%</td><td>1</td><td>0.7225</td><td>bootstrap</td></tr>
 <tr><td>Kimi K2.5</td><td>2026-07-28T09:30:00Z</td><td>8.0%</td><td>1</td><td>0.8464</td><td>bootstrap</td></tr>
@@ -96,12 +136,12 @@
 <tr><td>LLM forecaster</td><td>2026-07-28T08:46:00Z</td><td>12.0%</td><td>1</td><td>0.7744</td><td>bootstrap</td></tr>
 <tr><td>Global event rate</td><td>2026-07-28T07:42:56Z</td><td>12.4%</td><td>1</td><td>0.7677</td><td>bootstrap</td></tr>
 <tr><td>Calendar model</td><td>2026-07-28T07:42:56Z</td><td>34.4%</td><td>1</td><td>0.4306</td><td>bootstrap</td></tr>
-<tr><td>Theory model</td><td>2026-07-28T07:42:56Z</td><td>16.4%</td><td>1</td><td>0.6991</td><td>bootstrap</td></tr></tbody></table>
+<tr><td>Theory model</td><td>2026-07-28T07:42:56Z</td><td>16.4%</td><td>1</td><td>0.6991</td><td>bootstrap</td></tr></tbody></table></div>
       </div>
-      <div>
+      <div id="history">
         <h2>历史演练榜</h2>
         <p class="note">full 覆盖完整历史窗口；limited 只跑了少量回放点，不能和 full 直接比冠军。</p>
-        <table><thead><tr><th>#</th><th>预测者</th><th>覆盖</th><th>N</th><th>平均误差</th><th>惩罚大错</th><th>相对基础模型</th></tr></thead><tbody><tr><td>1</td><td>Recent 30-day rate</td><td>full</td><td>248</td><td>0.118385</td><td>0.392663</td><td>6.8%</td></tr>
+        <div class="tableWrap"><table><thead><tr><th>#</th><th>预测者</th><th>覆盖</th><th>N</th><th>平均误差</th><th>惩罚大错</th><th>相对基础模型</th></tr></thead><tbody><tr><td>1</td><td>Recent 30-day rate</td><td>full</td><td>248</td><td>0.118385</td><td>0.392663</td><td>6.8%</td></tr>
 <tr><td>2</td><td>EWMA half-life 30d</td><td>full</td><td>248</td><td>0.118941</td><td>0.395390</td><td>6.3%</td></tr>
 <tr><td>3</td><td>Two-regime rate</td><td>full</td><td>248</td><td>0.119744</td><td>0.401472</td><td>5.7%</td></tr>
 <tr><td>4</td><td>Recent 60-day rate</td><td>full</td><td>248</td><td>0.120119</td><td>0.406460</td><td>5.4%</td></tr>
@@ -111,7 +151,30 @@
 <tr><td>8</td><td>MiniMax M2.7</td><td>limited</td><td>3</td><td>0.008133</td><td>0.091030</td><td>93.6%</td></tr>
 <tr><td>9</td><td>DeepSeek V4 Pro</td><td>limited</td><td>2</td><td>0.014400</td><td>0.127833</td><td>88.7%</td></tr>
 <tr><td>10</td><td>Step 3.5 Flash</td><td>limited</td><td>4</td><td>0.016425</td><td>0.136505</td><td>87.1%</td></tr>
-<tr><td>11</td><td>Qwen 3.5 397B</td><td>limited</td><td>2</td><td>0.018450</td><td>0.145176</td><td>85.5%</td></tr></tbody></table>
+<tr><td>11</td><td>Qwen 3.5 397B</td><td>limited</td><td>2</td><td>0.018450</td><td>0.145176</td><td>85.5%</td></tr></tbody></table></div>
+      </div>
+    </section>
+
+    <section class="two">
+      <div class="panel">
+        <h2>最近 reset 公告</h2>
+        <ul class="timeline"><li><time>2026-07-29T04:09:02.000Z</time><strong>hard_global</strong><span>launch_promotion</span></li>
+<li><time>2026-07-28T03:09:23.666Z</time><strong>hard_global</strong><span>launch_promotion</span></li>
+<li><time>2026-07-25T19:17:12.695Z</time><strong>hard_global</strong><span>incident_compensation</span></li>
+<li><time>2026-07-21T16:47:15.178Z</time><strong>hard_global</strong><span>milestone_celebration</span></li>
+<li><time>2026-07-18T03:28:22.589Z</time><strong>hard_global</strong><span>mixed_or_unclear</span></li>
+<li><time>2026-07-16T04:14:09.822Z</time><strong>hard_global</strong><span>milestone_celebration</span></li>
+<li><time>2026-07-14T19:34:54.638Z</time><strong>hard_global</strong><span>milestone_celebration</span></li>
+<li><time>2026-07-13T18:29:31.013Z</time><strong>banked_credit</strong><span>milestone_celebration</span></li></ul>
+      </div>
+      <div class="panel">
+        <h2>最近公开背景信号</h2>
+        <ul class="timeline"><li><time>2026-07-25T09:17:49Z</time><strong>product_incident</strong><span>Near/global outage: novel, highly disruptive, core reliability.</span></li>
+<li><time>2026-07-24T07:55:28.019Z</time><strong>product_incident</strong><span>Official Codex status incident; strength conservatively scored from the incident title.</span></li>
+<li><time>2026-07-20T00:34:34.443Z</time><strong>product_incident</strong><span>Official Codex status incident; strength conservatively scored from the incident title.</span></li>
+<li><time>2026-07-18T08:05:37.238Z</time><strong>product_incident</strong><span>Official Codex status incident; strength conservatively scored from the incident title.</span></li>
+<li><time>2026-07-17T17:19:22.79Z</time><strong>product_incident</strong><span>Official Codex status incident; strength conservatively scored from the incident title.</span></li>
+<li><time>2026-07-17T15:32:26.6Z</time><strong>product_incident</strong><span>Official Codex status incident; strength conservatively scored from the incident title.</span></li></ul>
       </div>
     </section>
 
@@ -127,7 +190,7 @@
       <p class="note">这个项目不会读取你的账号额度，也不会预测任何人的私人行为。它只追踪公开公告，并把预测过程和评分公开。</p>
     </section>
   </main>
-  <footer><div class="wrap">数据来自仓库 CSV。查看 <a href="../README.md">README</a>、<a href="../reports/community_dashboard.md">Markdown Dashboard</a> 和 <a href="../PUBLIC_PRODUCT_IDEAS.md">产品路线</a>。</div></footer>
+  <footer><div class="wrap">数据来自仓库 CSV。查看 <a href="https://github.com/CRF2004/tibo-reset-lab/blob/main/README.md">README</a>、<a href="https://github.com/CRF2004/tibo-reset-lab/blob/main/reports/community_dashboard.md">Markdown Dashboard</a> 和 <a href="https://github.com/CRF2004/tibo-reset-lab/blob/main/PUBLIC_PRODUCT_IDEAS.md">产品路线</a>。</div></footer>
   <script>
     const data = [{"name": "Global event rate", "p24": 0.12025316, "p168": 0.59214669}, {"name": "Recent 30-day rate", "p24": 0.40625, "p168": 0.95483207}, {"name": "Renewal model", "p24": 0.22516128, "p168": 0.69551119}, {"name": "Calendar model", "p24": 0.34496067, "p168": 0.84138399}, {"name": "Theory model", "p24": 0.17697501, "p168": 0.61225848}, {"name": "DeepSeek V4 Pro", "p24": 0.4, "p168": 0.95}, {"name": "Qwen 3.5 397B", "p24": 0.15, "p168": 0.55}, {"name": "Kimi K2.5", "p24": 0.08, "p168": 0.35}, {"name": "MiniMax M2.7", "p24": 0.06, "p168": 0.35}, {"name": "Step 3.5 Flash", "p24": 0.2, "p168": 0.7}];
     const bars = document.getElementById('bars');

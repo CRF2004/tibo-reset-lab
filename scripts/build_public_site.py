@@ -61,6 +61,8 @@ def main() -> int:
     forecasts = [row for row in read("tournament_forecasts.csv") if row["eligibility_status"] == "eligible"]
     scores = read("tournament_scores.csv")
     announcements = [row for row in read("reset_announcements.csv") if row["adjudication_status"] == "accepted"]
+    contexts = [row for row in read("context_events.csv") if row["prediction_eligible"] == "1"]
+    actions = read("reset_actions.csv")
     historical = read("strong_daily_baseline_forecasts.csv")
     replay = read("historical_replay_forecasts.csv")
 
@@ -159,6 +161,44 @@ def main() -> int:
     max_p = max((row["p24"] or 0 for row in rows), default=0)
     min_p = min((row["p24"] for row in rows if row["p24"] is not None), default=0)
     hero_p = max_p
+    avg_p = sum(row["p24"] or 0 for row in rows) / len(rows) if rows else 0
+    action_cluster_count = len({row["action_cluster_id"] for row in actions})
+    sorted_ann = sorted(announcements, key=lambda row: row["announced_at_utc"], reverse=True)
+    sorted_contexts = sorted(contexts, key=lambda row: row["first_public_at_utc"], reverse=True)
+    evidence_items = [
+        {
+            "tone": "support",
+            "label": "刚出现新公告",
+            "text": f"最新合格 reset 公告发生在 {latest_ann['announced_at_utc']}，短期历史率会被抬高。",
+        },
+        {
+            "tone": "support",
+            "label": "近期频率偏高",
+            "text": "Recent 30-day rate 给出当前最高 24h 概率，说明最近窗口内事件密度高于长期平均。",
+        },
+        {
+            "tone": "caution",
+            "label": "刚重置后的冷却效应",
+            "text": "多次模型仍低于 50%，因为刚完成一次 reset 后，马上再次发生通常需要新的触发因素。",
+        },
+        {
+            "tone": "caution",
+            "label": "LLM 证据较旧",
+            "text": "当前 LLM 快照仍基于 7/28 的证据截止点，不能直接代表 7/29 新公告后的判断。",
+        },
+    ]
+    evidence_html = "\n".join(
+        f"<article class='evidence {item['tone']}'><span>{esc(item['label'])}</span><p>{esc(item['text'])}</p></article>"
+        for item in evidence_items
+    )
+    timeline_html = "\n".join(
+        f"<li><time>{esc(row['announced_at_utc'])}</time><strong>{esc(row['reset_type'])}</strong><span>{esc(row['reason_type'])}</span></li>"
+        for row in sorted_ann[:8]
+    )
+    context_html = "\n".join(
+        f"<li><time>{esc(row['first_public_at_utc'])}</time><strong>{esc(row['event_type'])}</strong><span>{esc(row['scoring_rationale'][:110])}</span></li>"
+        for row in sorted_contexts[:6]
+    )
 
     html_text = f"""<!doctype html>
 <html lang="zh-CN">
@@ -168,14 +208,16 @@ def main() -> int:
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%232563eb'/%3E%3Cpath d='M14 39h9l6-16 8 24 6-14h7' fill='none' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
   <title>Tibo Reset Lab</title>
   <style>
-    :root {{ color-scheme: light; --ink:#18212f; --muted:#5d6675; --line:#d9dee8; --bg:#f7f8fb; --panel:#ffffff; --blue:#2563eb; --green:#15803d; --amber:#b45309; }}
+    :root {{ color-scheme: light; --ink:#172033; --muted:#667085; --line:#d9e0ea; --bg:#f6f8fb; --panel:#ffffff; --blue:#2563eb; --green:#16815f; --amber:#b45309; --red:#be3b3b; --soft:#eef4ff; }}
     * {{ box-sizing: border-box; }}
     body {{ margin:0; font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif; color:var(--ink); background:var(--bg); }}
-    header {{ background:#111827; color:white; padding:36px 20px 30px; }}
+    header {{ background:#182033; color:white; padding:34px 20px 28px; border-bottom:4px solid #3b82f6; }}
     .wrap {{ max-width:1180px; margin:0 auto; }}
     .eyebrow {{ color:#b7c4d8; font-size:14px; margin:0 0 8px; }}
     h1 {{ margin:0; font-size:clamp(32px,5vw,58px); line-height:1.04; letter-spacing:0; }}
     .lead {{ max-width:780px; margin:16px 0 0; color:#d7deea; font-size:18px; }}
+    nav {{ margin-top:22px; display:flex; gap:10px; flex-wrap:wrap; }}
+    nav a {{ color:#eaf1ff; text-decoration:none; border:1px solid #41516e; border-radius:999px; padding:7px 12px; }}
     main {{ padding:24px 20px 56px; }}
     section {{ margin:22px auto; max-width:1180px; }}
     h2 {{ margin:0 0 10px; font-size:24px; }}
@@ -187,7 +229,11 @@ def main() -> int:
     .subtle {{ color:var(--muted); }}
     .facts {{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:14px; }}
     .fact {{ border-left:4px solid var(--blue); padding:10px 12px; background:#f8fbff; }}
+    .metricRow {{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }}
+    .metric {{ background:white; border:1px solid var(--line); border-radius:8px; padding:14px; }}
+    .metric strong {{ display:block; font-size:24px; }}
     table {{ width:100%; border-collapse:collapse; background:white; border:1px solid var(--line); border-radius:8px; overflow:hidden; }}
+    .tableWrap {{ overflow:auto; border-radius:8px; }}
     th,td {{ padding:10px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }}
     th {{ background:#eef2f7; font-weight:650; }}
     td:nth-child(n+2), th:nth-child(n+2) {{ text-align:right; }}
@@ -199,9 +245,21 @@ def main() -> int:
     .chips {{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }}
     .chip {{ border:1px solid var(--line); background:white; border-radius:999px; padding:6px 10px; color:var(--muted); }}
     .two {{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }}
+    .evidenceGrid {{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }}
+    .evidence {{ border:1px solid var(--line); border-radius:8px; padding:14px; background:white; }}
+    .evidence span {{ display:inline-block; font-weight:700; margin-bottom:8px; }}
+    .evidence p {{ margin:0; color:var(--muted); }}
+    .evidence.support {{ border-top:4px solid var(--green); }}
+    .evidence.caution {{ border-top:4px solid var(--amber); }}
+    .timeline {{ list-style:none; padding:0; margin:0; border-left:2px solid var(--line); }}
+    .timeline li {{ margin:0 0 14px 0; padding-left:14px; position:relative; }}
+    .timeline li::before {{ content:""; width:9px; height:9px; border-radius:50%; background:var(--blue); position:absolute; left:-5.5px; top:7px; }}
+    .timeline time {{ display:block; color:var(--muted); font-size:13px; }}
+    .timeline strong {{ margin-right:8px; }}
+    .timeline span {{ color:var(--muted); }}
     footer {{ border-top:1px solid var(--line); padding:24px 20px; color:var(--muted); }}
     a {{ color:var(--blue); }}
-    @media (max-width: 850px) {{ .heroCard,.chartCard {{ grid-column:1 / -1; }} .two,.facts {{ grid-template-columns:1fr; }} .bar {{ grid-template-columns:120px 1fr 48px; }} table {{ font-size:14px; }} }}
+    @media (max-width: 950px) {{ .heroCard,.chartCard {{ grid-column:1 / -1; }} .two,.facts,.metricRow,.evidenceGrid {{ grid-template-columns:1fr; }} .bar {{ grid-template-columns:120px 1fr 48px; }} table {{ font-size:14px; }} }}
   </style>
 </head>
 <body>
@@ -210,10 +268,23 @@ def main() -> int:
       <p class="eyebrow">开放预测实验 · 不是官方倒计时</p>
       <h1>未来一天会不会再次重置额度？</h1>
       <p class="lead">我们只使用公开证据，让统计模型和 LLM 给出概率。等结果揭晓后，用同一规则计算误差。</p>
+      <nav aria-label="页面导航">
+        <a href="#current">当前概率</a>
+        <a href="#why">为什么这样猜</a>
+        <a href="#scores">已揭晓评分</a>
+        <a href="#history">历史演练</a>
+      </nav>
     </div>
   </header>
   <main>
-    <section class="grid">
+    <section class="metricRow" aria-label="关键数字">
+      <div class="metric"><span class="subtle">最高 24h 概率</span><strong>{pct(max_p)}</strong></div>
+      <div class="metric"><span class="subtle">平均 24h 概率</span><strong>{pct(avg_p)}</strong></div>
+      <div class="metric"><span class="subtle">历史公告</span><strong>{len(announcements)}</strong></div>
+      <div class="metric"><span class="subtle">独立重置事件</span><strong>{action_cluster_count}</strong></div>
+    </section>
+
+    <section class="grid" id="current">
       <div class="panel heroCard">
         <h2>当前最高 24h 预测</h2>
         <div class="stat">{pct(hero_p)}</div>
@@ -231,22 +302,39 @@ def main() -> int:
       </div>
     </section>
 
+    <section id="why">
+      <h2>为什么概率会上下移动？</h2>
+      <p class="note">这些是给普通读者看的解释卡：它们帮助理解模型输入，但不等同于对 OpenAI 内部动机的判断。</p>
+      <div class="evidenceGrid">{evidence_html}</div>
+    </section>
+
     <section>
       <h2>当前概率表</h2>
       <p class="note">证据截止时间说明预测者最多只能看到该时间以前的信息。</p>
-      <table><thead><tr><th>预测者</th><th>未来24小时</th><th>未来7天</th><th>证据截止</th></tr></thead><tbody>{probability_rows}</tbody></table>
+      <div class="tableWrap"><table><thead><tr><th>预测者</th><th>未来24小时</th><th>未来7天</th><th>证据截止</th></tr></thead><tbody>{probability_rows}</tbody></table></div>
     </section>
 
-    <section class="two">
+    <section class="two" id="scores">
       <div>
         <h2>已经揭晓的演示预测</h2>
         <p class="note">结果为 1 表示 24 小时内确实发生。误差越小越好；bootstrap 是演示评分，不算正式比赛。</p>
-        <table><thead><tr><th>预测者</th><th>签发时间</th><th>当时猜24h</th><th>结果</th><th>误差</th><th>类型</th></tr></thead><tbody>{score_rows_html}</tbody></table>
+        <div class="tableWrap"><table><thead><tr><th>预测者</th><th>签发时间</th><th>当时猜24h</th><th>结果</th><th>误差</th><th>类型</th></tr></thead><tbody>{score_rows_html}</tbody></table></div>
       </div>
-      <div>
+      <div id="history">
         <h2>历史演练榜</h2>
         <p class="note">full 覆盖完整历史窗口；limited 只跑了少量回放点，不能和 full 直接比冠军。</p>
-        <table><thead><tr><th>#</th><th>预测者</th><th>覆盖</th><th>N</th><th>平均误差</th><th>惩罚大错</th><th>相对基础模型</th></tr></thead><tbody>{leaderboard_rows}</tbody></table>
+        <div class="tableWrap"><table><thead><tr><th>#</th><th>预测者</th><th>覆盖</th><th>N</th><th>平均误差</th><th>惩罚大错</th><th>相对基础模型</th></tr></thead><tbody>{leaderboard_rows}</tbody></table></div>
+      </div>
+    </section>
+
+    <section class="two">
+      <div class="panel">
+        <h2>最近 reset 公告</h2>
+        <ul class="timeline">{timeline_html}</ul>
+      </div>
+      <div class="panel">
+        <h2>最近公开背景信号</h2>
+        <ul class="timeline">{context_html}</ul>
       </div>
     </section>
 
@@ -262,7 +350,7 @@ def main() -> int:
       <p class="note">这个项目不会读取你的账号额度，也不会预测任何人的私人行为。它只追踪公开公告，并把预测过程和评分公开。</p>
     </section>
   </main>
-  <footer><div class="wrap">数据来自仓库 CSV。查看 <a href="../README.md">README</a>、<a href="../reports/community_dashboard.md">Markdown Dashboard</a> 和 <a href="../PUBLIC_PRODUCT_IDEAS.md">产品路线</a>。</div></footer>
+  <footer><div class="wrap">数据来自仓库 CSV。查看 <a href="https://github.com/CRF2004/tibo-reset-lab/blob/main/README.md">README</a>、<a href="https://github.com/CRF2004/tibo-reset-lab/blob/main/reports/community_dashboard.md">Markdown Dashboard</a> 和 <a href="https://github.com/CRF2004/tibo-reset-lab/blob/main/PUBLIC_PRODUCT_IDEAS.md">产品路线</a>。</div></footer>
   <script>
     const data = {probabilities_json};
     const bars = document.getElementById('bars');
