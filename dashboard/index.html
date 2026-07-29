@@ -70,9 +70,24 @@
     .storyStrip { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
     .story { padding:18px; border:1px solid var(--line); border-radius:18px; background:rgba(255,253,248,.76); }
     .readCard { margin-top:20px; padding:16px 18px; border-radius:16px; background:#f6ead9; color:#57493b; }
+    .labRibbon { display:grid; grid-template-columns:1.15fr .85fr; gap:16px; }
+    .alertCard { background:var(--ink); color:#fff8ee; border-radius:22px; padding:24px; box-shadow:var(--shadow); }
+    .alertCard span { display:inline-block; font:800 13px/1 system-ui,-apple-system,Segoe UI,sans-serif; letter-spacing:.08em; text-transform:uppercase; color:#f0c996; margin-bottom:14px; }
+    .alertCard strong { display:block; font:800 46px/1 system-ui,-apple-system,Segoe UI,sans-serif; margin-bottom:10px; }
+    .moveGrid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+    .move { padding:16px; border:1px solid var(--line); border-radius:16px; background:var(--paper); }
+    .move span { color:var(--muted); font-family:system-ui,-apple-system,Segoe UI,sans-serif; font-size:13px; }
+    .move strong { display:block; margin:8px 0; font:800 26px/1 system-ui,-apple-system,Segoe UI,sans-serif; color:var(--blue); }
+    .watchList { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+    .watch { border:1px solid var(--line); border-radius:16px; background:rgba(255,253,248,.78); padding:16px; }
+    .watch strong { display:block; margin-bottom:6px; }
+    .seasonBoard { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+    .season { padding:18px; border-radius:18px; border:1px solid var(--line); background:var(--paper); }
+    .season span { color:var(--muted); font-family:system-ui,-apple-system,Segoe UI,sans-serif; font-size:13px; }
+    .season strong { display:block; font:800 24px/1.1 system-ui,-apple-system,Segoe UI,sans-serif; margin-top:8px; }
     footer { border-top:1px solid var(--line); padding:24px 20px; color:var(--muted); }
     a { color:var(--blue); }
-    @media (max-width: 950px) { .topbar { align-items:flex-start; flex-direction:column; } .heroCard,.chartCard { grid-column:1 / -1; } .two,.facts,.metricRow,.evidenceGrid,.storyStrip { grid-template-columns:1fr; } .dotRow { grid-template-columns:118px 1fr 48px; } .predictionBox { grid-template-columns:1fr; } .sliderValue { text-align:left; } table { font-size:14px; } }
+    @media (max-width: 950px) { .topbar { align-items:flex-start; flex-direction:column; } .heroCard,.chartCard { grid-column:1 / -1; } .two,.facts,.metricRow,.evidenceGrid,.storyStrip,.labRibbon,.moveGrid,.watchList,.seasonBoard { grid-template-columns:1fr; } .dotRow { grid-template-columns:118px 1fr 48px; } .predictionBox { grid-template-columns:1fr; } .sliderValue { text-align:left; } table { font-size:14px; } }
   </style>
 </head>
 <body>
@@ -132,6 +147,23 @@
       </div>
     </section>
 
+    <section class="labRibbon">
+      <div class="alertCard">
+        <span>6小时观察层</span>
+        <strong>Watch</strong>
+        <p>值得留意，但还不是压倒性信号。 这一层先作为公开展示，后续会用历史回测冻结阈值。</p>
+      </div>
+      <div class="panel">
+        <h2>下一步会补什么</h2>
+        <p class="note">产品路线里的第一阶段正在落地：解释概率、展示分歧、让读者先做一次自己的判断。</p>
+        <div class="chips">
+          <span class="chip">概率变动解释器</span>
+          <span class="chip">Tibo Watch</span>
+          <span class="chip">历史回放</span>
+        </div>
+      </div>
+    </section>
+
     <section id="why">
       <h2>证据天平</h2>
       <p class="note">这些卡片把模型输入翻译成人话：哪些信号把概率往上推，哪些信号让它慢下来。</p>
@@ -139,6 +171,14 @@
 <article class='evidence support'><span>最近节奏偏密</span><p>近 30 天模型给出最高 24h 概率，说明最近窗口比长期平均更活跃。</p></article>
 <article class='evidence caution'><span>短期可能降温</span><p>刚完成一次 reset 后，再次发生通常需要新的事故、里程碑或发布信号。</p></article>
 <article class='evidence support'><span>LLM 已更新</span><p>五个 LLM 席位读到了 2026-07-29T07:45:50Z 以前的公开证据，包括最新 reset 公告。</p></article></div>
+    </section>
+
+    <section>
+      <h2>为什么它会动？</h2>
+      <p class="note">这是“Why did it move”的第一版：先把可直接从数据表读出的变化讲清楚，之后再接入特征消融。</p>
+      <div class="moveGrid"><article class='move'><span>近 30 天基准</span><strong>+3.1%</strong><p>最近窗口的事件密度变化，是当前 24h 概率最直观的推力。</p></article>
+<article class='move'><span>刚刚 reset</span><strong>降温项</strong><p>最新公告距证据截止约 3.6 小时，短期内会让部分模型更谨慎。</p></article>
+<article class='move'><span>LLM 共识</span><strong>5 席</strong><p>多个 LLM 在同一份冻结证据上给出判断，用来观察分歧而不是投票定案。</p></article></div>
     </section>
 
     <section class="panel" id="play">
@@ -154,6 +194,16 @@
           </div>
         </div>
         <div class="sliderValue"><span id="guessValue">41</span>%</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Tibo Watch 订阅草图</h2>
+      <p class="note">不是所有新帖都值得打扰你。订阅层级会把“明确 reset”和“可能相关背景”分开。</p>
+      <div class="watchList">
+        <article class="watch"><strong>Only confirmed</strong><p class="note">只看明确 reset / usage limit 公告，适合只关心结果的人。</p></article>
+        <article class="watch"><strong>Relevant posts</strong><p class="note">加入事故、里程碑、发布和额度讨论，适合想看概率为什么变化的人。</p></article>
+        <article class="watch"><strong>Research feed</strong><p class="note">保留发现时间、来源、分类和通知延迟，适合核查数据的人。</p></article>
       </div>
     </section>
 
@@ -200,6 +250,16 @@
 <tr><td>9</td><td>DeepSeek V4 Pro</td><td>limited</td><td>2</td><td>0.014400</td><td>0.127833</td><td>88.7%</td></tr>
 <tr><td>10</td><td>Step 3.5 Flash</td><td>limited</td><td>4</td><td>0.016425</td><td>0.136505</td><td>87.1%</td></tr>
 <tr><td>11</td><td>Qwen 3.5 397B</td><td>limited</td><td>2</td><td>0.018450</td><td>0.145176</td><td>85.5%</td></tr></tbody></table></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>赛季制竞猜会长什么样？</h2>
+      <div class="seasonBoard">
+        <article class="season"><span>玩家</span><strong>看校准</strong><p class="note">敢押高概率也要承担误差，长期稳定比蒙中一次更重要。</p></article>
+        <article class="season"><span>LLM</span><strong>看分歧</strong><p class="note">同一份证据，不同模型会怎样权衡新公告和冷却期。</p></article>
+        <article class="season"><span>Crowd</span><strong>看群体</strong><p class="note">匿名提交后再展示分布，减少被当前模型数字锚定。</p></article>
+        <article class="season"><span>统计模型</span><strong>看基准</strong><p class="note">用简单、可复现的规则作为所有判断的参照系。</p></article>
       </div>
     </section>
 

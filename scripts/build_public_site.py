@@ -30,6 +30,11 @@ def pct(value: str | float | None) -> str:
     return f"{float(value):.1%}"
 
 
+def signed_pct(value: float) -> str:
+    sign = "+" if value >= 0 else ""
+    return f"{sign}{value:.1%}"
+
+
 def esc(value: object) -> str:
     return html.escape(str(value), quote=True)
 
@@ -166,6 +171,19 @@ def main() -> int:
     min_p = min((row["p24"] for row in rows if row["p24"] is not None), default=0)
     hero_p = max_p
     avg_p = sum(row["p24"] or 0 for row in rows) / len(rows) if rows else 0
+    recent_hist = sorted(historical, key=lambda row: row["issued_at_utc"])
+    previous_recent30 = float(recent_hist[-2]["p_rolling30"]) if len(recent_hist) >= 2 else 0.0
+    current_recent30 = float(recent_hist[-1]["p_rolling30"]) if recent_hist else 0.0
+    recent30_delta = current_recent30 - previous_recent30
+    if hero_p >= 0.60:
+        alert_level = "Alert"
+        alert_copy = "多类信号已经很强，适合高频关注。"
+    elif hero_p >= 0.30:
+        alert_level = "Watch"
+        alert_copy = "值得留意，但还不是压倒性信号。"
+    else:
+        alert_level = "Quiet"
+        alert_copy = "短线仍偏冷，适合按普通节奏观察。"
     action_cluster_count = len({row["action_cluster_id"] for row in actions})
     sorted_ann = sorted(announcements, key=lambda row: row["announced_at_utc"], reverse=True)
     sorted_contexts = sorted(contexts, key=lambda row: row["first_public_at_utc"], reverse=True)
@@ -206,6 +224,15 @@ def main() -> int:
     evidence_html = "\n".join(
         f"<article class='evidence {item['tone']}'><span>{esc(item['label'])}</span><p>{esc(item['text'])}</p></article>"
         for item in evidence_items
+    )
+    move_items = [
+        ("近 30 天基准", signed_pct(recent30_delta), "最近窗口的事件密度变化，是当前 24h 概率最直观的推力。"),
+        ("刚刚 reset", "降温项", f"最新公告距证据截止约 {hours_since:.1f} 小时，短期内会让部分模型更谨慎。"),
+        ("LLM 共识", f"{len(llm_rows)} 席", "多个 LLM 在同一份冻结证据上给出判断，用来观察分歧而不是投票定案。"),
+    ]
+    move_html = "\n".join(
+        f"<article class='move'><span>{esc(label)}</span><strong>{esc(value)}</strong><p>{esc(text)}</p></article>"
+        for label, value, text in move_items
     )
     timeline_html = "\n".join(
         f"<li><time>{esc(row['announced_at_utc'])}</time><strong>{esc(row['reset_type'])}</strong><span>{esc(row['reason_type'])}</span></li>"
@@ -288,9 +315,24 @@ def main() -> int:
     .storyStrip {{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }}
     .story {{ padding:18px; border:1px solid var(--line); border-radius:18px; background:rgba(255,253,248,.76); }}
     .readCard {{ margin-top:20px; padding:16px 18px; border-radius:16px; background:#f6ead9; color:#57493b; }}
+    .labRibbon {{ display:grid; grid-template-columns:1.15fr .85fr; gap:16px; }}
+    .alertCard {{ background:var(--ink); color:#fff8ee; border-radius:22px; padding:24px; box-shadow:var(--shadow); }}
+    .alertCard span {{ display:inline-block; font:800 13px/1 system-ui,-apple-system,Segoe UI,sans-serif; letter-spacing:.08em; text-transform:uppercase; color:#f0c996; margin-bottom:14px; }}
+    .alertCard strong {{ display:block; font:800 46px/1 system-ui,-apple-system,Segoe UI,sans-serif; margin-bottom:10px; }}
+    .moveGrid {{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }}
+    .move {{ padding:16px; border:1px solid var(--line); border-radius:16px; background:var(--paper); }}
+    .move span {{ color:var(--muted); font-family:system-ui,-apple-system,Segoe UI,sans-serif; font-size:13px; }}
+    .move strong {{ display:block; margin:8px 0; font:800 26px/1 system-ui,-apple-system,Segoe UI,sans-serif; color:var(--blue); }}
+    .watchList {{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }}
+    .watch {{ border:1px solid var(--line); border-radius:16px; background:rgba(255,253,248,.78); padding:16px; }}
+    .watch strong {{ display:block; margin-bottom:6px; }}
+    .seasonBoard {{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }}
+    .season {{ padding:18px; border-radius:18px; border:1px solid var(--line); background:var(--paper); }}
+    .season span {{ color:var(--muted); font-family:system-ui,-apple-system,Segoe UI,sans-serif; font-size:13px; }}
+    .season strong {{ display:block; font:800 24px/1.1 system-ui,-apple-system,Segoe UI,sans-serif; margin-top:8px; }}
     footer {{ border-top:1px solid var(--line); padding:24px 20px; color:var(--muted); }}
     a {{ color:var(--blue); }}
-    @media (max-width: 950px) {{ .topbar {{ align-items:flex-start; flex-direction:column; }} .heroCard,.chartCard {{ grid-column:1 / -1; }} .two,.facts,.metricRow,.evidenceGrid,.storyStrip {{ grid-template-columns:1fr; }} .dotRow {{ grid-template-columns:118px 1fr 48px; }} .predictionBox {{ grid-template-columns:1fr; }} .sliderValue {{ text-align:left; }} table {{ font-size:14px; }} }}
+    @media (max-width: 950px) {{ .topbar {{ align-items:flex-start; flex-direction:column; }} .heroCard,.chartCard {{ grid-column:1 / -1; }} .two,.facts,.metricRow,.evidenceGrid,.storyStrip,.labRibbon,.moveGrid,.watchList,.seasonBoard {{ grid-template-columns:1fr; }} .dotRow {{ grid-template-columns:118px 1fr 48px; }} .predictionBox {{ grid-template-columns:1fr; }} .sliderValue {{ text-align:left; }} table {{ font-size:14px; }} }}
   </style>
 </head>
 <body>
@@ -341,10 +383,33 @@ def main() -> int:
       </div>
     </section>
 
+    <section class="labRibbon">
+      <div class="alertCard">
+        <span>6小时观察层</span>
+        <strong>{esc(alert_level)}</strong>
+        <p>{esc(alert_copy)} 这一层先作为公开展示，后续会用历史回测冻结阈值。</p>
+      </div>
+      <div class="panel">
+        <h2>下一步会补什么</h2>
+        <p class="note">产品路线里的第一阶段正在落地：解释概率、展示分歧、让读者先做一次自己的判断。</p>
+        <div class="chips">
+          <span class="chip">概率变动解释器</span>
+          <span class="chip">Tibo Watch</span>
+          <span class="chip">历史回放</span>
+        </div>
+      </div>
+    </section>
+
     <section id="why">
       <h2>证据天平</h2>
       <p class="note">这些卡片把模型输入翻译成人话：哪些信号把概率往上推，哪些信号让它慢下来。</p>
       <div class="evidenceGrid">{evidence_html}</div>
+    </section>
+
+    <section>
+      <h2>为什么它会动？</h2>
+      <p class="note">这是“Why did it move”的第一版：先把可直接从数据表读出的变化讲清楚，之后再接入特征消融。</p>
+      <div class="moveGrid">{move_html}</div>
     </section>
 
     <section class="panel" id="play">
@@ -364,6 +429,16 @@ def main() -> int:
     </section>
 
     <section>
+      <h2>Tibo Watch 订阅草图</h2>
+      <p class="note">不是所有新帖都值得打扰你。订阅层级会把“明确 reset”和“可能相关背景”分开。</p>
+      <div class="watchList">
+        <article class="watch"><strong>Only confirmed</strong><p class="note">只看明确 reset / usage limit 公告，适合只关心结果的人。</p></article>
+        <article class="watch"><strong>Relevant posts</strong><p class="note">加入事故、里程碑、发布和额度讨论，适合想看概率为什么变化的人。</p></article>
+        <article class="watch"><strong>Research feed</strong><p class="note">保留发现时间、来源、分类和通知延迟，适合核查数据的人。</p></article>
+      </div>
+    </section>
+
+    <section>
       <h2>当前概率表</h2>
       <p class="note">证据截止时间说明预测者最多只能看到该时间以前的信息。</p>
       <div class="tableWrap"><table><thead><tr><th>预测者</th><th>未来24小时</th><th>未来7天</th><th>证据截止</th></tr></thead><tbody>{probability_rows}</tbody></table></div>
@@ -379,6 +454,16 @@ def main() -> int:
         <h2>历史演练榜</h2>
         <p class="note">full 是完整历史窗口；limited 是少量回放点。先看样本量，再看误差。</p>
         <div class="tableWrap"><table><thead><tr><th>#</th><th>预测者</th><th>覆盖</th><th>N</th><th>平均误差</th><th>惩罚大错</th><th>相对基础模型</th></tr></thead><tbody>{leaderboard_rows}</tbody></table></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>赛季制竞猜会长什么样？</h2>
+      <div class="seasonBoard">
+        <article class="season"><span>玩家</span><strong>看校准</strong><p class="note">敢押高概率也要承担误差，长期稳定比蒙中一次更重要。</p></article>
+        <article class="season"><span>LLM</span><strong>看分歧</strong><p class="note">同一份证据，不同模型会怎样权衡新公告和冷却期。</p></article>
+        <article class="season"><span>Crowd</span><strong>看群体</strong><p class="note">匿名提交后再展示分布，减少被当前模型数字锚定。</p></article>
+        <article class="season"><span>统计模型</span><strong>看基准</strong><p class="note">用简单、可复现的规则作为所有判断的参照系。</p></article>
       </div>
     </section>
 
