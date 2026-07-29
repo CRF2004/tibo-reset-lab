@@ -107,6 +107,11 @@
     .detective span { color:var(--amber); font:800 13px/1 system-ui,-apple-system,Segoe UI,sans-serif; }
     .detective strong { display:block; margin:8px 0; font:800 24px/1.1 system-ui,-apple-system,Segoe UI,sans-serif; color:var(--blue); }
     .detective p { margin:0; color:var(--muted); }
+    .pageGrid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+    .pageCard { min-height:190px; padding:22px; border:1px solid var(--line); border-radius:20px; background:var(--paper); box-shadow:var(--shadow); text-decoration:none; color:var(--ink); }
+    .pageCard span { color:var(--amber); font:800 13px/1 system-ui,-apple-system,Segoe UI,sans-serif; }
+    .pageCard strong { display:block; margin:10px 0; font:800 24px/1.08 system-ui,-apple-system,Segoe UI,sans-serif; }
+    .pageCard p { margin:0; color:var(--muted); }
     .routeMap { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:14px; }
     .routeMap div { padding:14px; border:1px solid var(--line); border-radius:16px; background:#f6ead9; }
     .routeMap span { color:var(--muted); font:800 12px/1 system-ui,-apple-system,Segoe UI,sans-serif; }
@@ -130,7 +135,7 @@
     .routeNode p { margin:0; color:var(--muted); font-size:14px; }
     footer { border-top:1px solid var(--line); padding:24px 20px; color:var(--muted); }
     a { color:var(--blue); }
-    @media (max-width: 950px) { .topbar { align-items:flex-start; flex-direction:column; } .heroCard,.chartCard { grid-column:1 / -1; } .two,.facts,.metricRow,.evidenceGrid,.storyStrip,.labRibbon,.moveGrid,.watchList,.seasonBoard,.lessonIntro,.lessonGrid,.scoreExplainer,.caseGrid,.detectiveGrid,.routeMap { grid-template-columns:1fr; } .routeRow,.routeRow.reverse { grid-template-columns:1fr; direction:ltr; } .routeRow::before { left:30px; right:auto; top:12px; bottom:12px; width:8px; height:auto; background:repeating-linear-gradient(180deg,#d8c3a6 0 18px,#c49d72 18px 28px); } .routeRow::after { display:none; } .routeNode { min-height:auto; padding-left:62px; padding-top:18px; } .routeNode::before { top:18px; left:18px; } .dotRow { grid-template-columns:118px 1fr 48px; } .predictionBox { grid-template-columns:1fr; } .sliderValue { text-align:left; } table { font-size:14px; } }
+    @media (max-width: 950px) { .topbar { align-items:flex-start; flex-direction:column; } .heroCard,.chartCard { grid-column:1 / -1; } .two,.facts,.metricRow,.evidenceGrid,.storyStrip,.labRibbon,.moveGrid,.watchList,.seasonBoard,.lessonIntro,.lessonGrid,.scoreExplainer,.caseGrid,.detectiveGrid,.routeMap,.pageGrid { grid-template-columns:1fr; } .routeRow,.routeRow.reverse { grid-template-columns:1fr; direction:ltr; } .routeRow::before { left:30px; right:auto; top:12px; bottom:12px; width:8px; height:auto; background:repeating-linear-gradient(180deg,#d8c3a6 0 18px,#c49d72 18px 28px); } .routeRow::after { display:none; } .routeNode { min-height:auto; padding-left:62px; padding-top:18px; } .routeNode::before { top:18px; left:18px; } .dotRow { grid-template-columns:118px 1fr 48px; } .predictionBox { grid-template-columns:1fr; } .sliderValue { text-align:left; } table { font-size:14px; } }
   </style>
 </head>
 <body>
@@ -139,11 +144,10 @@
       <div class="topbar">
         <div class="brand">Tibo Reset Lab</div>
         <nav aria-label="页面导航">
-          <a href="#current">当前实验</a>
-          <a href="#learn">概率小课堂</a>
-          <a href="#why">证据天平</a>
-          <a href="#play">你的判断</a>
-          <a href="#history">历史表现</a>
+          <a href="index.html">今日</a>
+          <a href="map.html">事件地图</a>
+          <a href="learn.html">概率小课堂</a>
+          <a href="history.html">历史表现</a>
         </nav>
       </div>
       <p class="eyebrow">公开证据里的概率练习</p>
@@ -236,23 +240,15 @@
     <section>
       <div class="lessonIntro">
         <div>
-          <p class="eyebrow">OpenAI 事件路线</p>
-          <h2>预测看到的是一条节奏线</h2>
+          <p class="eyebrow">分页面浏览</p>
+          <h2>把长页面拆成几条清晰路线</h2>
         </div>
-        <p class="note">事故、里程碑、发布和 reset 公告不是孤立点。路线图把它们按公开时间排开，帮助你看到“为什么最近窗口会变热，为什么刚 reset 后又可能降温”。</p>
+        <p class="note">主页保留今天最重要的数字。想看事件节奏、概率原理或历史榜单，可以进入独立页面慢慢探索。</p>
       </div>
-      <div class="eventMap"><div class="routePath"><div class='routeRow '><article class='routeNode incident'><span>06/16</span><b>事故信号</b><p>Official Codex status incident; strength conservatively scored from the incident t</p></article><article class='routeNode incident'><span>06/25</span><b>事故信号</b><p>Official Codex status incident; strength conservatively scored from the incident t</p></article><article class='routeNode incident'><span>06/26</span><b>事故信号</b><p>Confirmed or claimed product shortfall with moderate disruption.</p></article><article class='routeNode incident'><span>06/26</span><b>事故信号</b><p>Confirmed or claimed product shortfall with moderate disruption.</p></article></div>
-<div class='routeRow reverse'><article class='routeNode incident'><span>06/26</span><b>事故信号</b><p>Confirmed or claimed product shortfall with moderate disruption.</p></article><article class='routeNode incident'><span>06/29</span><b>事故信号</b><p>Official Codex status incident; strength conservatively scored from the incident t</p></article><article class='routeNode reset'><span>07/10</span><b>hard_global</b><p>mixed_or_unclear</p></article><article class='routeNode reset'><span>07/11</span><b>hard_global</b><p>mixed_or_unclear</p></article></div>
-<div class='routeRow '><article class='routeNode reset'><span>07/12</span><b>hard_global</b><p>milestone_celebration</p></article><article class='routeNode reset'><span>07/12</span><b>banked_credit</b><p>incident_compensation</p></article><article class='routeNode reset'><span>07/13</span><b>banked_credit</b><p>milestone_celebration</p></article><article class='routeNode reset'><span>07/14</span><b>hard_global</b><p>milestone_celebration</p></article></div>
-<div class='routeRow reverse'><article class='routeNode reset'><span>07/16</span><b>hard_global</b><p>milestone_celebration</p></article><article class='routeNode incident'><span>07/17</span><b>事故信号</b><p>Official Codex status incident; strength conservatively scored from the incident t</p></article><article class='routeNode incident'><span>07/17</span><b>事故信号</b><p>Official Codex status incident; strength conservatively scored from the incident t</p></article><article class='routeNode reset'><span>07/18</span><b>hard_global</b><p>mixed_or_unclear</p></article></div>
-<div class='routeRow '><article class='routeNode incident'><span>07/18</span><b>事故信号</b><p>Official Codex status incident; strength conservatively scored from the incident t</p></article><article class='routeNode incident'><span>07/20</span><b>事故信号</b><p>Official Codex status incident; strength conservatively scored from the incident t</p></article><article class='routeNode reset'><span>07/21</span><b>hard_global</b><p>milestone_celebration</p></article><article class='routeNode incident'><span>07/24</span><b>事故信号</b><p>Official Codex status incident; strength conservatively scored from the incident t</p></article></div>
-<div class='routeRow reverse'><article class='routeNode incident'><span>07/25</span><b>事故信号</b><p>Near/global outage: novel, highly disruptive, core reliability.</p></article><article class='routeNode reset'><span>07/25</span><b>hard_global</b><p>incident_compensation</p></article><article class='routeNode reset'><span>07/28</span><b>hard_global</b><p>launch_promotion</p></article><article class='routeNode reset'><span>07/29</span><b>hard_global</b><p>launch_promotion</p></article></div></div></div>
-      <div class="chips">
-        <span class="chip">按公开时间前进</span>
-        <span class="chip">红点：事故</span>
-        <span class="chip">蓝点：里程碑</span>
-        <span class="chip">橙点：发布/额度更新</span>
-        <span class="chip">绿点：reset 公告</span>
+      <div class="pageGrid">
+        <a class="pageCard" href="map.html"><span>事件地图</span><strong>OpenAI 相关事件路线</strong><p>用一条连续的动态路线串起事故、发布、里程碑和 reset 公告。</p></a>
+        <a class="pageCard" href="learn.html"><span>科普</span><strong>概率为什么可信</strong><p>用通俗语言解释基准率、最近窗口、时间间隔和评分。</p></a>
+        <a class="pageCard" href="history.html"><span>回放</span><strong>历史演练榜</strong><p>把统计模型、LLM、玩家和 Crowd 放到可比较的长期榜单里。</p></a>
       </div>
     </section>
 

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>历史表现 · Tibo Reset Lab</title><style>
+    :root { color-scheme: light; --ink:#27211b; --muted:#746b60; --line:#e4d8c8; --bg:#fbf5ec; --paper:#fffdf8; --cream:#f4eadc; --blue:#315f7d; --green:#26735b; --amber:#b66a2d; --rose:#a64d56; --shadow:0 20px 60px rgba(80,52,24,.10); }
+    * { box-sizing: border-box; }
+    body { margin:0; font:16px/1.62 ui-serif,Georgia,"Times New Roman",serif; color:var(--ink); background:var(--bg); }
+    body::before { content:""; position:fixed; inset:0; pointer-events:none; opacity:.55; background-image:linear-gradient(rgba(92,64,32,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(92,64,32,.035) 1px, transparent 1px); background-size:28px 28px; }
+    .wrap { max-width:1120px; margin:0 auto; position:relative; }
+    header { padding:28px 20px 18px; }
+    main { padding:8px 20px 64px; }
+    .topbar { display:flex; justify-content:space-between; gap:16px; align-items:center; margin-bottom:24px; }
+    .brand { font:700 15px/1.2 system-ui,-apple-system,Segoe UI,sans-serif; letter-spacing:.08em; text-transform:uppercase; }
+    nav { display:flex; gap:8px; flex-wrap:wrap; }
+    nav a { color:var(--ink); background:rgba(255,255,255,.55); text-decoration:none; border:1px solid var(--line); border-radius:999px; padding:8px 12px; font:600 14px/1 system-ui,-apple-system,Segoe UI,sans-serif; }
+    .eyebrow { color:var(--blue); font:700 13px/1.2 system-ui,-apple-system,Segoe UI,sans-serif; margin:0 0 12px; }
+    h1 { margin:0; max-width:820px; font-size:clamp(42px,7vw,78px); line-height:.98; letter-spacing:0; }
+    h2 { margin:0 0 10px; font-size:28px; line-height:1.12; }
+    h3 { margin:0 0 10px; font-size:18px; }
+    .lead { max-width:720px; margin:18px 0 0; color:var(--muted); font-size:20px; }
+    section { margin:26px auto; max-width:1120px; }
+    .panel { background:rgba(255,253,248,.88); border:1px solid var(--line); border-radius:18px; padding:22px; box-shadow:var(--shadow); }
+    .note { color:var(--muted); margin:8px 0 14px; }
+    .chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+    .chip { border:1px solid var(--line); background:var(--paper); border-radius:999px; padding:7px 11px; color:var(--muted); font-family:system-ui,-apple-system,Segoe UI,sans-serif; }
+    .grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+    .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .lesson,.card { padding:20px; border:1px solid var(--line); border-radius:18px; background:var(--paper); box-shadow:0 12px 34px rgba(80,52,24,.08); }
+    .lesson span,.card span { color:var(--amber); font:800 13px/1 system-ui,-apple-system,Segoe UI,sans-serif; }
+    .lesson p,.card p { color:var(--muted); margin:0; }
+    .move,.detective { padding:18px; border:1px solid var(--line); border-radius:18px; background:var(--paper); box-shadow:0 12px 34px rgba(80,52,24,.08); }
+    .move span,.detective span { color:var(--amber); font:800 13px/1 system-ui,-apple-system,Segoe UI,sans-serif; }
+    .move strong,.detective strong { display:block; margin:8px 0; font:800 24px/1.1 system-ui,-apple-system,Segoe UI,sans-serif; color:var(--blue); }
+    .move p,.detective p { margin:0; color:var(--muted); }
+    .timeline { list-style:none; padding:0; margin:0; }
+    .timeline li { margin:0 0 12px 0; padding:13px 14px; border:1px solid var(--line); border-radius:14px; background:rgba(255,253,248,.78); }
+    .timeline time { display:block; color:var(--muted); font-size:13px; }
+    .timeline strong { margin-right:8px; }
+    .timeline span { color:var(--muted); }
+    .caseStamp { display:inline-block; margin-bottom:12px; padding:6px 10px; border:1px solid #d8c5ad; border-radius:999px; color:var(--amber); font:800 12px/1 system-ui,-apple-system,Segoe UI,sans-serif; letter-spacing:.08em; }
+    .caseGrid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:18px 0; }
+    .caseGrid div { padding:14px; border-radius:16px; background:#f6ead9; }
+    .caseGrid span { display:block; color:var(--muted); font:700 12px/1 system-ui,-apple-system,Segoe UI,sans-serif; margin-bottom:8px; }
+    .caseGrid strong { font:800 22px/1.1 system-ui,-apple-system,Segoe UI,sans-serif; }
+    table { width:100%; border-collapse:collapse; background:var(--paper); border:1px solid var(--line); border-radius:14px; overflow:hidden; font-family:system-ui,-apple-system,Segoe UI,sans-serif; }
+    .tableWrap { overflow:auto; border-radius:14px; }
+    th,td { padding:10px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { background:#f3eadf; font-weight:700; }
+    td:nth-child(n+2), th:nth-child(n+2) { text-align:right; }
+    footer { border-top:1px solid var(--line); padding:24px 20px; color:var(--muted); }
+    a { color:var(--blue); }
+    @media (max-width: 850px) { .topbar { align-items:flex-start; flex-direction:column; } .grid3,.grid2,.caseGrid { grid-template-columns:1fr; } table { font-size:14px; } }
+    </style></head>
+<body><header><div class="wrap"><div class="topbar"><div class="brand">Tibo Reset Lab</div>
+        <nav aria-label="页面导航">
+          <a href="index.html">今日</a>
+          <a href="map.html">事件地图</a>
+          <a href="learn.html">概率小课堂</a>
+          <a href="history.html">历史表现</a>
+        </nav>
+    </div><p class="eyebrow">历史演练榜</p><h1>把统计模型、LLM、玩家和 Crowd 放到同一张表里</h1><p class="lead">历史回放只允许使用当时已经公开的证据。这样比较的不是事后解释能力，而是事前判断是否稳定。</p></div></header>
+<main>
+  <section class="grid2"><div><h2>历史演练榜</h2><p class="note">full 是完整历史窗口；limited 是少量回放点。先看样本量，再看平均误差。</p><div class="tableWrap"><table><thead><tr><th>#</th><th>预测者</th><th>覆盖</th><th>N</th><th>平均误差</th><th>惩罚大错</th><th>相对基础模型</th></tr></thead><tbody><tr><td>1</td><td>Recent 30-day rate</td><td>full</td><td>248</td><td>0.118385</td><td>0.392663</td><td>6.8%</td></tr>
+<tr><td>2</td><td>EWMA half-life 30d</td><td>full</td><td>248</td><td>0.118941</td><td>0.395390</td><td>6.3%</td></tr>
+<tr><td>3</td><td>Two-regime rate</td><td>full</td><td>248</td><td>0.119744</td><td>0.401472</td><td>5.7%</td></tr>
+<tr><td>4</td><td>Recent 60-day rate</td><td>full</td><td>248</td><td>0.120119</td><td>0.406460</td><td>5.4%</td></tr>
+<tr><td>5</td><td>Calendar model</td><td>full</td><td>248</td><td>0.122875</td><td>0.422946</td><td>3.2%</td></tr>
+<tr><td>6</td><td>Global event rate</td><td>full</td><td>248</td><td>0.126972</td><td>0.432011</td><td>0.0%</td></tr>
+<tr><td>7</td><td>Kimi K2.5</td><td>limited</td><td>2</td><td>0.006400</td><td>0.083382</td><td>95.0%</td></tr>
+<tr><td>8</td><td>MiniMax M2.7</td><td>limited</td><td>3</td><td>0.008133</td><td>0.091030</td><td>93.6%</td></tr>
+<tr><td>9</td><td>DeepSeek V4 Pro</td><td>limited</td><td>2</td><td>0.014400</td><td>0.127833</td><td>88.7%</td></tr>
+<tr><td>10</td><td>Step 3.5 Flash</td><td>limited</td><td>4</td><td>0.016425</td><td>0.136505</td><td>87.1%</td></tr>
+<tr><td>11</td><td>Qwen 3.5 397B</td><td>limited</td><td>2</td><td>0.018450</td><td>0.145176</td><td>85.5%</td></tr></tbody></table></div></div><div><h2>已揭晓预测</h2><p class="note">结果为 1 表示 24 小时内发生。误差越小，说明当时概率越贴近结果。</p><div class="tableWrap"><table><thead><tr><th>预测者</th><th>签发时间</th><th>当时猜24h</th><th>结果</th><th>误差</th><th>类型</th></tr></thead><tbody><tr><td>Step 3.5 Flash</td><td>2026-07-28T09:38:00Z</td><td>20.0%</td><td>1</td><td>0.6400</td><td>bootstrap</td></tr>
+<tr><td>DeepSeek V4 Pro</td><td>2026-07-28T09:30:00Z</td><td>40.0%</td><td>1</td><td>0.3600</td><td>bootstrap</td></tr>
+<tr><td>Qwen 3.5 397B</td><td>2026-07-28T09:30:00Z</td><td>15.0%</td><td>1</td><td>0.7225</td><td>bootstrap</td></tr>
+<tr><td>Kimi K2.5</td><td>2026-07-28T09:30:00Z</td><td>8.0%</td><td>1</td><td>0.8464</td><td>bootstrap</td></tr>
+<tr><td>MiniMax M2.7</td><td>2026-07-28T09:30:00Z</td><td>6.0%</td><td>1</td><td>0.8836</td><td>bootstrap</td></tr>
+<tr><td>LLM forecaster</td><td>2026-07-28T08:46:00Z</td><td>12.0%</td><td>1</td><td>0.7744</td><td>bootstrap</td></tr>
+<tr><td>Global event rate</td><td>2026-07-28T07:42:56Z</td><td>12.4%</td><td>1</td><td>0.7677</td><td>bootstrap</td></tr>
+<tr><td>Calendar model</td><td>2026-07-28T07:42:56Z</td><td>34.4%</td><td>1</td><td>0.4306</td><td>bootstrap</td></tr>
+<tr><td>Theory model</td><td>2026-07-28T07:42:56Z</td><td>16.4%</td><td>1</td><td>0.6991</td><td>bootstrap</td></tr></tbody></table></div></div></section>
+  <section class="panel">
+        <div class="caseStamp">最近复盘</div>
+        <h2>Step 3.5 Flash 的一次已揭晓预测</h2>
+        <p class="note">这张卡把一次预测拆开看：当时给了多少概率，后来结果是什么，误差又意味着什么。</p>
+        <div class="caseGrid">
+          <div><span>签发时间</span><strong>2026-07-28T09:38:00Z</strong></div>
+          <div><span>当时概率</span><strong>20.0%</strong></div>
+          <div><span>结果</span><strong>发生</strong></div>
+          <div><span>Brier 误差</span><strong>0.6400</strong></div>
+        </div>
+        <p class="note">读法：如果预测偏低但事件发生，误差会变大；如果预测很高却没发生，误差也会变大。这个机制会奖励长期校准，而不是奖励单次喊得最响。</p>
+        </section>
+  <section class="grid2"><div class="panel"><h2>最近 reset 公告</h2><ul class="timeline"><li><time>2026-07-29T04:09:02.000Z</time><strong>hard_global</strong><span>launch_promotion</span></li>
+<li><time>2026-07-28T03:09:23.666Z</time><strong>hard_global</strong><span>launch_promotion</span></li>
+<li><time>2026-07-25T19:17:12.695Z</time><strong>hard_global</strong><span>incident_compensation</span></li>
+<li><time>2026-07-21T16:47:15.178Z</time><strong>hard_global</strong><span>milestone_celebration</span></li>
+<li><time>2026-07-18T03:28:22.589Z</time><strong>hard_global</strong><span>mixed_or_unclear</span></li>
+<li><time>2026-07-16T04:14:09.822Z</time><strong>hard_global</strong><span>milestone_celebration</span></li>
+<li><time>2026-07-14T19:34:54.638Z</time><strong>hard_global</strong><span>milestone_celebration</span></li>
+<li><time>2026-07-13T18:29:31.013Z</time><strong>banked_credit</strong><span>milestone_celebration</span></li></ul></div><div class="panel"><h2>最近公开背景信号</h2><ul class="timeline"><li><time>2026-07-25T09:17:49Z</time><strong>product_incident</strong><span>Near/global outage: novel, highly disruptive, core reliability.</span></li>
+<li><time>2026-07-24T07:55:28.019Z</time><strong>product_incident</strong><span>Official Codex status incident; strength conservatively scored from the incident title.</span></li>
+<li><time>2026-07-20T00:34:34.443Z</time><strong>product_incident</strong><span>Official Codex status incident; strength conservatively scored from the incident title.</span></li>
+<li><time>2026-07-18T08:05:37.238Z</time><strong>product_incident</strong><span>Official Codex status incident; strength conservatively scored from the incident title.</span></li>
+<li><time>2026-07-17T17:19:22.79Z</time><strong>product_incident</strong><span>Official Codex status incident; strength conservatively scored from the incident title.</span></li>
+<li><time>2026-07-17T15:32:26.6Z</time><strong>product_incident</strong><span>Official Codex status incident; strength conservatively scored from the incident title.</span></li></ul></div></section>
+</main><footer><div class="wrap">返回 <a href="index.html">今日概览</a>。</div></footer></body></html>

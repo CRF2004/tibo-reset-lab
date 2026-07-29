@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>概率小课堂 · Tibo Reset Lab</title><style>
+    :root { color-scheme: light; --ink:#27211b; --muted:#746b60; --line:#e4d8c8; --bg:#fbf5ec; --paper:#fffdf8; --cream:#f4eadc; --blue:#315f7d; --green:#26735b; --amber:#b66a2d; --rose:#a64d56; --shadow:0 20px 60px rgba(80,52,24,.10); }
+    * { box-sizing: border-box; }
+    body { margin:0; font:16px/1.62 ui-serif,Georgia,"Times New Roman",serif; color:var(--ink); background:var(--bg); }
+    body::before { content:""; position:fixed; inset:0; pointer-events:none; opacity:.55; background-image:linear-gradient(rgba(92,64,32,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(92,64,32,.035) 1px, transparent 1px); background-size:28px 28px; }
+    .wrap { max-width:1120px; margin:0 auto; position:relative; }
+    header { padding:28px 20px 18px; }
+    main { padding:8px 20px 64px; }
+    .topbar { display:flex; justify-content:space-between; gap:16px; align-items:center; margin-bottom:24px; }
+    .brand { font:700 15px/1.2 system-ui,-apple-system,Segoe UI,sans-serif; letter-spacing:.08em; text-transform:uppercase; }
+    nav { display:flex; gap:8px; flex-wrap:wrap; }
+    nav a { color:var(--ink); background:rgba(255,255,255,.55); text-decoration:none; border:1px solid var(--line); border-radius:999px; padding:8px 12px; font:600 14px/1 system-ui,-apple-system,Segoe UI,sans-serif; }
+    .eyebrow { color:var(--blue); font:700 13px/1.2 system-ui,-apple-system,Segoe UI,sans-serif; margin:0 0 12px; }
+    h1 { margin:0; max-width:820px; font-size:clamp(42px,7vw,78px); line-height:.98; letter-spacing:0; }
+    h2 { margin:0 0 10px; font-size:28px; line-height:1.12; }
+    h3 { margin:0 0 10px; font-size:18px; }
+    .lead { max-width:720px; margin:18px 0 0; color:var(--muted); font-size:20px; }
+    section { margin:26px auto; max-width:1120px; }
+    .panel { background:rgba(255,253,248,.88); border:1px solid var(--line); border-radius:18px; padding:22px; box-shadow:var(--shadow); }
+    .note { color:var(--muted); margin:8px 0 14px; }
+    .chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+    .chip { border:1px solid var(--line); background:var(--paper); border-radius:999px; padding:7px 11px; color:var(--muted); font-family:system-ui,-apple-system,Segoe UI,sans-serif; }
+    .grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+    .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .lesson,.card { padding:20px; border:1px solid var(--line); border-radius:18px; background:var(--paper); box-shadow:0 12px 34px rgba(80,52,24,.08); }
+    .lesson span,.card span { color:var(--amber); font:800 13px/1 system-ui,-apple-system,Segoe UI,sans-serif; }
+    .lesson p,.card p { color:var(--muted); margin:0; }
+    .move,.detective { padding:18px; border:1px solid var(--line); border-radius:18px; background:var(--paper); box-shadow:0 12px 34px rgba(80,52,24,.08); }
+    .move span,.detective span { color:var(--amber); font:800 13px/1 system-ui,-apple-system,Segoe UI,sans-serif; }
+    .move strong,.detective strong { display:block; margin:8px 0; font:800 24px/1.1 system-ui,-apple-system,Segoe UI,sans-serif; color:var(--blue); }
+    .move p,.detective p { margin:0; color:var(--muted); }
+    .timeline { list-style:none; padding:0; margin:0; }
+    .timeline li { margin:0 0 12px 0; padding:13px 14px; border:1px solid var(--line); border-radius:14px; background:rgba(255,253,248,.78); }
+    .timeline time { display:block; color:var(--muted); font-size:13px; }
+    .timeline strong { margin-right:8px; }
+    .timeline span { color:var(--muted); }
+    .caseStamp { display:inline-block; margin-bottom:12px; padding:6px 10px; border:1px solid #d8c5ad; border-radius:999px; color:var(--amber); font:800 12px/1 system-ui,-apple-system,Segoe UI,sans-serif; letter-spacing:.08em; }
+    .caseGrid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:18px 0; }
+    .caseGrid div { padding:14px; border-radius:16px; background:#f6ead9; }
+    .caseGrid span { display:block; color:var(--muted); font:700 12px/1 system-ui,-apple-system,Segoe UI,sans-serif; margin-bottom:8px; }
+    .caseGrid strong { font:800 22px/1.1 system-ui,-apple-system,Segoe UI,sans-serif; }
+    table { width:100%; border-collapse:collapse; background:var(--paper); border:1px solid var(--line); border-radius:14px; overflow:hidden; font-family:system-ui,-apple-system,Segoe UI,sans-serif; }
+    .tableWrap { overflow:auto; border-radius:14px; }
+    th,td { padding:10px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { background:#f3eadf; font-weight:700; }
+    td:nth-child(n+2), th:nth-child(n+2) { text-align:right; }
+    footer { border-top:1px solid var(--line); padding:24px 20px; color:var(--muted); }
+    a { color:var(--blue); }
+    @media (max-width: 850px) { .topbar { align-items:flex-start; flex-direction:column; } .grid3,.grid2,.caseGrid { grid-template-columns:1fr; } table { font-size:14px; } }
+    </style></head>
+<body><header><div class="wrap"><div class="topbar"><div class="brand">Tibo Reset Lab</div>
+        <nav aria-label="页面导航">
+          <a href="index.html">今日</a>
+          <a href="map.html">事件地图</a>
+          <a href="learn.html">概率小课堂</a>
+          <a href="history.html">历史表现</a>
+        </nav>
+    </div><p class="eyebrow">概率小课堂</p><h1>用人话解释这套预测为什么能被检验</h1><p class="lead">好的概率预测不是“说中了”这么简单。它要先有历史参照，再用新证据修正，最后接受已经揭晓结果的评分。</p></div></header>
+<main>
+  <section class="grid3"><article class='lesson'><span>先看基准率</span><h3>不要从零开始猜</h3><p>历史里已经有 42 条合格公告。全局基准率先回答：长期平均来看，一天内发生的机会有多大？</p></article>
+<article class='lesson'><span>再看最近窗口</span><h3>让新节奏说话</h3><p>最近 30 天模型当前给出 40.6%。它像天气预报里的“近况雷达”，能快速反映最近公告变密或变稀。</p></article>
+<article class='lesson'><span>时间间隔模型</span><h3>刚发生过会影响下一次</h3><p>最新公告距证据截止约 3.6 小时。Renewal 类模型会问：历史上刚 reset 后，下一次通常隔多久？</p></article>
+<article class='lesson'><span>日历与背景信号</span><h3>把节奏和事件放在一起</h3><p>Calendar / Theory 模型会参考星期、最近事故、发布、里程碑等公开背景，避免只盯着一条最新消息。</p></article>
+<article class='lesson'><span>多模型不是投票</span><h3>看分歧比看平均更有用</h3><p>当前有 10 个预测者。它们方法不同，所以分歧本身也是信息：一致时更稳，分散时说明证据还不够单向。</p></article>
+<article class='lesson'><span>用结果反过来约束模型</span><h3>猜完必须算账</h3><p>历史完整榜目前每个 full 模型有 248 个回放点，最好 full 模型是 Recent 30-day rate，平均误差 0.118。</p></article></section>
+  <section><h2>为什么它会动？</h2><p class="note">这些变化来自数据表中能复核的事实。</p><div class="grid3"><article class='move'><span>近 30 天基准</span><strong>+3.1%</strong><p>最近窗口的事件密度变化，是当前 24h 概率最直观的推力。</p></article>
+<article class='move'><span>刚刚 reset</span><strong>降温项</strong><p>最新公告距证据截止约 3.6 小时，短期内会让部分模型更谨慎。</p></article>
+<article class='move'><span>LLM 共识</span><strong>5 席</strong><p>多个 LLM 在同一份冻结证据上给出判断，用来观察分歧而不是投票定案。</p></article></div></section>
+  <section class="panel"><h2>评分怎么读</h2><p class="note">Brier 可以理解成“离结果有多远”，Log Loss 会惩罚非常自信但错得离谱的判断，覆盖率说明这个模型有没有经历足够多的历史窗口。</p><div class="grid3"><article class="card"><span>Brier</span><h3>平均误差越小越好</h3><p>发生记为 1，未发生记为 0。预测越贴近最后结果，分数越低。</p></article><article class="card"><span>Log Loss</span><h3>别轻易说绝对</h3><p>它会重罚过度自信的错误，让模型不敢靠喊极端概率取巧。</p></article><article class="card"><span>覆盖率</span><h3>样本越多越稳</h3><p>完整历史窗口比少量回放更有说服力，所以榜单会同时显示 N。</p></article></div></section>
+  <section><h2>证据侦探</h2><div class="grid3"><article class='detective'><span>官方公告</span><strong>42 条</strong><p>先确认来源是不是 Tibo / OpenAI 可追溯公开信息。</p></article>
+<article class='detective'><span>实际到账</span><strong>17 条成功线索</strong><p>把“宣布会 reset”和“用户看到额度变化”分开记录。</p></article>
+<article class='detective'><span>事件切分</span><strong>41 个独立事件</strong><p>一条公告可能包含 hard reset、banked credit 或条件性处理，需要拆成动作。</p></article>
+<article class='detective'><span>背景信号</span><strong>55 条</strong><p>事故、发布、里程碑会进入公开背景，但不会直接改写结果标签。</p></article></div></section>
+</main><footer><div class="wrap">返回 <a href="index.html">今日概览</a>。</div></footer></body></html>

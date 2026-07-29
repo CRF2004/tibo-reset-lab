@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OpenAI 事件地图 · Tibo Reset Lab</title>
+  <style>
+    
+    :root { color-scheme: light; --ink:#27211b; --muted:#746b60; --line:#e4d8c8; --bg:#fbf5ec; --paper:#fffdf8; --cream:#f4eadc; --blue:#315f7d; --green:#26735b; --amber:#b66a2d; --rose:#a64d56; --shadow:0 20px 60px rgba(80,52,24,.10); }
+    * { box-sizing: border-box; }
+    body { margin:0; font:16px/1.62 ui-serif,Georgia,"Times New Roman",serif; color:var(--ink); background:var(--bg); }
+    body::before { content:""; position:fixed; inset:0; pointer-events:none; opacity:.55; background-image:linear-gradient(rgba(92,64,32,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(92,64,32,.035) 1px, transparent 1px); background-size:28px 28px; }
+    .wrap { max-width:1120px; margin:0 auto; position:relative; }
+    header { padding:28px 20px 18px; }
+    main { padding:8px 20px 64px; }
+    .topbar { display:flex; justify-content:space-between; gap:16px; align-items:center; margin-bottom:24px; }
+    .brand { font:700 15px/1.2 system-ui,-apple-system,Segoe UI,sans-serif; letter-spacing:.08em; text-transform:uppercase; }
+    nav { display:flex; gap:8px; flex-wrap:wrap; }
+    nav a { color:var(--ink); background:rgba(255,255,255,.55); text-decoration:none; border:1px solid var(--line); border-radius:999px; padding:8px 12px; font:600 14px/1 system-ui,-apple-system,Segoe UI,sans-serif; }
+    .eyebrow { color:var(--blue); font:700 13px/1.2 system-ui,-apple-system,Segoe UI,sans-serif; margin:0 0 12px; }
+    h1 { margin:0; max-width:820px; font-size:clamp(42px,7vw,78px); line-height:.98; letter-spacing:0; }
+    h2 { margin:0 0 10px; font-size:28px; line-height:1.12; }
+    h3 { margin:0 0 10px; font-size:18px; }
+    .lead { max-width:720px; margin:18px 0 0; color:var(--muted); font-size:20px; }
+    section { margin:26px auto; max-width:1120px; }
+    .panel { background:rgba(255,253,248,.88); border:1px solid var(--line); border-radius:18px; padding:22px; box-shadow:var(--shadow); }
+    .note { color:var(--muted); margin:8px 0 14px; }
+    .chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+    .chip { border:1px solid var(--line); background:var(--paper); border-radius:999px; padding:7px 11px; color:var(--muted); font-family:system-ui,-apple-system,Segoe UI,sans-serif; }
+    .grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+    .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .lesson,.card { padding:20px; border:1px solid var(--line); border-radius:18px; background:var(--paper); box-shadow:0 12px 34px rgba(80,52,24,.08); }
+    .lesson span,.card span { color:var(--amber); font:800 13px/1 system-ui,-apple-system,Segoe UI,sans-serif; }
+    .lesson p,.card p { color:var(--muted); margin:0; }
+    .move,.detective { padding:18px; border:1px solid var(--line); border-radius:18px; background:var(--paper); box-shadow:0 12px 34px rgba(80,52,24,.08); }
+    .move span,.detective span { color:var(--amber); font:800 13px/1 system-ui,-apple-system,Segoe UI,sans-serif; }
+    .move strong,.detective strong { display:block; margin:8px 0; font:800 24px/1.1 system-ui,-apple-system,Segoe UI,sans-serif; color:var(--blue); }
+    .move p,.detective p { margin:0; color:var(--muted); }
+    .timeline { list-style:none; padding:0; margin:0; }
+    .timeline li { margin:0 0 12px 0; padding:13px 14px; border:1px solid var(--line); border-radius:14px; background:rgba(255,253,248,.78); }
+    .timeline time { display:block; color:var(--muted); font-size:13px; }
+    .timeline strong { margin-right:8px; }
+    .timeline span { color:var(--muted); }
+    .caseStamp { display:inline-block; margin-bottom:12px; padding:6px 10px; border:1px solid #d8c5ad; border-radius:999px; color:var(--amber); font:800 12px/1 system-ui,-apple-system,Segoe UI,sans-serif; letter-spacing:.08em; }
+    .caseGrid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:18px 0; }
+    .caseGrid div { padding:14px; border-radius:16px; background:#f6ead9; }
+    .caseGrid span { display:block; color:var(--muted); font:700 12px/1 system-ui,-apple-system,Segoe UI,sans-serif; margin-bottom:8px; }
+    .caseGrid strong { font:800 22px/1.1 system-ui,-apple-system,Segoe UI,sans-serif; }
+    table { width:100%; border-collapse:collapse; background:var(--paper); border:1px solid var(--line); border-radius:14px; overflow:hidden; font-family:system-ui,-apple-system,Segoe UI,sans-serif; }
+    .tableWrap { overflow:auto; border-radius:14px; }
+    th,td { padding:10px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { background:#f3eadf; font-weight:700; }
+    td:nth-child(n+2), th:nth-child(n+2) { text-align:right; }
+    footer { border-top:1px solid var(--line); padding:24px 20px; color:var(--muted); }
+    a { color:var(--blue); }
+    @media (max-width: 850px) { .topbar { align-items:flex-start; flex-direction:column; } .grid3,.grid2,.caseGrid { grid-template-columns:1fr; } table { font-size:14px; } }
+    
+    #d3map { min-height:560px; border:1px solid var(--line); border-radius:24px; background:linear-gradient(180deg, rgba(255,253,248,.94), rgba(246,234,217,.78)); box-shadow:var(--shadow); overflow:hidden; }
+    .mapCards { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:16px; }
+    .mapCards article { padding:16px; border:1px solid var(--line); border-radius:16px; background:var(--paper); }
+    .mapCards span { color:var(--muted); font:800 12px/1 system-ui,-apple-system,Segoe UI,sans-serif; }
+    .mapCards strong { display:block; margin:7px 0; font:800 17px/1.15 system-ui,-apple-system,Segoe UI,sans-serif; }
+    .mapCards p { margin:0; color:var(--muted); font-size:14px; }
+    @media (max-width: 850px) { .mapCards { grid-template-columns:1fr; } #d3map { min-height:760px; } }
+  </style>
+</head>
+<body>
+  <header><div class="wrap"><div class="topbar"><div class="brand">Tibo Reset Lab</div>
+        <nav aria-label="页面导航">
+          <a href="index.html">今日</a>
+          <a href="map.html">事件地图</a>
+          <a href="learn.html">概率小课堂</a>
+          <a href="history.html">历史表现</a>
+        </nav>
+    </div><p class="eyebrow">OpenAI 事件地图</p><h1>把所有信号连成一条会转弯的路线</h1><p class="lead">事故、里程碑、发布和 reset 公告会改变近期节奏。这里按公开时间把它们串起来，看清预测不是盯着单个点，而是在读一段走势。</p></div></header>
+  <main>
+    <section>
+      <div id="d3map" role="img" aria-label="按时间连接的 OpenAI 相关事件路线图"></div>
+      <div class="chips">
+        <span class="chip">按公开时间前进</span><span class="chip">红：事故</span><span class="chip">蓝：里程碑</span><span class="chip">橙：发布/额度更新</span><span class="chip">绿：reset 公告</span>
+      </div>
+      <div id="mapCards" class="mapCards"></div>
+    </section>
+  </main>
+  <footer><div class="wrap">数据来自仓库 CSV。返回 <a href="index.html">今日概览</a>。</div></footer>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script>
+    const events = [{"date": "06/16", "at": "2026-06-16T10:32:11.139Z", "type": "incident", "title": "事故信号", "text": "Official Codex status incident; strength conservatively scored from the incident t"}, {"date": "06/25", "at": "2026-06-25T05:51:27.89Z", "type": "incident", "title": "事故信号", "text": "Official Codex status incident; strength conservatively scored from the incident t"}, {"date": "06/26", "at": "2026-06-26T17:04:02Z", "type": "incident", "title": "事故信号", "text": "Confirmed or claimed product shortfall with moderate disruption."}, {"date": "06/26", "at": "2026-06-26T17:04:02Z", "type": "incident", "title": "事故信号", "text": "Confirmed or claimed product shortfall with moderate disruption."}, {"date": "06/26", "at": "2026-06-26T17:04:02Z", "type": "incident", "title": "事故信号", "text": "Confirmed or claimed product shortfall with moderate disruption."}, {"date": "06/29", "at": "2026-06-29T07:00:00Z", "type": "incident", "title": "事故信号", "text": "Official Codex status incident; strength conservatively scored from the incident t"}, {"date": "07/10", "at": "2026-07-10T17:59:43.835Z", "type": "reset", "title": "hard_global", "text": "mixed_or_unclear"}, {"date": "07/11", "at": "2026-07-11T05:54:25.045Z", "type": "reset", "title": "hard_global", "text": "mixed_or_unclear"}, {"date": "07/12", "at": "2026-07-12T17:59:57.945Z", "type": "reset", "title": "hard_global", "text": "milestone_celebration"}, {"date": "07/12", "at": "2026-07-12T21:28:59.055Z", "type": "reset", "title": "banked_credit", "text": "incident_compensation"}, {"date": "07/13", "at": "2026-07-13T18:29:31.013Z", "type": "reset", "title": "banked_credit", "text": "milestone_celebration"}, {"date": "07/14", "at": "2026-07-14T19:34:54.638Z", "type": "reset", "title": "hard_global", "text": "milestone_celebration"}, {"date": "07/16", "at": "2026-07-16T04:14:09.822Z", "type": "reset", "title": "hard_global", "text": "milestone_celebration"}, {"date": "07/17", "at": "2026-07-17T15:32:26.6Z", "type": "incident", "title": "事故信号", "text": "Official Codex status incident; strength conservatively scored from the incident t"}, {"date": "07/17", "at": "2026-07-17T17:19:22.79Z", "type": "incident", "title": "事故信号", "text": "Official Codex status incident; strength conservatively scored from the incident t"}, {"date": "07/18", "at": "2026-07-18T03:28:22.589Z", "type": "reset", "title": "hard_global", "text": "mixed_or_unclear"}, {"date": "07/18", "at": "2026-07-18T08:05:37.238Z", "type": "incident", "title": "事故信号", "text": "Official Codex status incident; strength conservatively scored from the incident t"}, {"date": "07/20", "at": "2026-07-20T00:34:34.443Z", "type": "incident", "title": "事故信号", "text": "Official Codex status incident; strength conservatively scored from the incident t"}, {"date": "07/21", "at": "2026-07-21T16:47:15.178Z", "type": "reset", "title": "hard_global", "text": "milestone_celebration"}, {"date": "07/24", "at": "2026-07-24T07:55:28.019Z", "type": "incident", "title": "事故信号", "text": "Official Codex status incident; strength conservatively scored from the incident t"}, {"date": "07/25", "at": "2026-07-25T09:17:49Z", "type": "incident", "title": "事故信号", "text": "Near/global outage: novel, highly disruptive, core reliability."}, {"date": "07/25", "at": "2026-07-25T19:17:12.695Z", "type": "reset", "title": "hard_global", "text": "incident_compensation"}, {"date": "07/28", "at": "2026-07-28T03:09:23.666Z", "type": "reset", "title": "hard_global", "text": "launch_promotion"}, {"date": "07/29", "at": "2026-07-29T04:09:02.000Z", "type": "reset", "title": "hard_global", "text": "launch_promotion"}];
+    const colors = { incident:"#a64d56", reset:"#26735b", launch:"#b66a2d", milestone:"#315f7d", context:"#746b60" };
+    const labels = { incident:"事故", reset:"reset", launch:"发布", milestone:"里程碑", context:"背景" };
+    const wrap = document.getElementById("d3map");
+    const cards = document.getElementById("mapCards");
+
+    function renderCards() {
+      cards.innerHTML = events.map((event, index) => `
+        <article>
+          <span>${String(index + 1).padStart(2, "0")} · ${event.date} · ${labels[event.type] || "事件"}</span>
+          <strong>${event.title}</strong>
+          <p>${event.text}</p>
+        </article>
+      `).join("");
+    }
+
+    function renderMap() {
+      const box = wrap.getBoundingClientRect();
+      const width = Math.max(340, Math.round(box.width || 900));
+      const mobile = width < 620;
+      const cols = mobile ? 3 : 4;
+      const left = mobile ? 48 : 84;
+      const right = mobile ? 48 : 84;
+      const rowH = mobile ? 142 : 172;
+      const rows = Math.ceil(events.length / cols);
+      const height = 116 + Math.max(1, rows - 1) * rowH;
+      const step = cols === 1 ? 0 : (width - left - right) / (cols - 1);
+      const points = events.map((event, index) => {
+        const row = Math.floor(index / cols);
+        const col = index % cols;
+        const visualCol = row % 2 === 0 ? col : cols - 1 - col;
+        return { ...event, index, x:left + visualCol * step, y:64 + row * rowH };
+      });
+      const svg = d3.select(wrap).html("").append("svg")
+        .attr("viewBox", `0 0 ${width} ${height}`)
+        .attr("width", "100%")
+        .attr("height", height);
+      const line = d3.line().x(d => d.x).y(d => d.y).curve(d3.curveCatmullRom.alpha(.62));
+      svg.append("path")
+        .datum(points)
+        .attr("d", line)
+        .attr("fill", "none")
+        .attr("stroke", "#c49d72")
+        .attr("stroke-width", mobile ? 8 : 10)
+        .attr("stroke-linecap", "round")
+        .attr("opacity", .62);
+      svg.append("path")
+        .datum(points)
+        .attr("d", line)
+        .attr("fill", "none")
+        .attr("stroke", "#fff8ee")
+        .attr("stroke-width", mobile ? 2 : 3)
+        .attr("stroke-linecap", "round")
+        .attr("opacity", .9);
+      const node = svg.selectAll("g.event").data(points).join("g")
+        .attr("class", "event")
+        .attr("transform", d => `translate(${d.x},${d.y})`);
+      node.append("circle").attr("r", mobile ? 19 : 23).attr("fill", d => colors[d.type] || colors.context).attr("stroke", "#fff8ee").attr("stroke-width", 6);
+      node.append("text").attr("y", 5).attr("text-anchor", "middle").attr("fill", "#fff8ee").attr("font-family", "system-ui,-apple-system,Segoe UI,sans-serif").attr("font-weight", 800).attr("font-size", mobile ? 11 : 12).text(d => d.index + 1);
+      node.append("text").attr("x", mobile ? 0 : 0).attr("y", mobile ? 45 : 52).attr("text-anchor", "middle").attr("fill", "#746b60").attr("font-family", "system-ui,-apple-system,Segoe UI,sans-serif").attr("font-weight", 800).attr("font-size", 12).text(d => d.date);
+      node.append("text").attr("x", 0).attr("y", mobile ? 64 : 73).attr("text-anchor", "middle").attr("fill", "#27211b").attr("font-family", "system-ui,-apple-system,Segoe UI,sans-serif").attr("font-weight", 800).attr("font-size", mobile ? 12 : 13).text(d => {
+        const title = d.title.length > 9 ? d.title.slice(0, 9) + "..." : d.title;
+        return title;
+      });
+    }
+    renderCards();
+    renderMap();
+    addEventListener("resize", () => requestAnimationFrame(renderMap));
+  </script>
+</body>
+</html>

@@ -352,6 +352,19 @@ def main() -> int:
         )
         for row_index, chunk in enumerate(route_chunks)
     )
+    route_json = json.dumps(
+        [
+            {
+                "date": short_day(row["at"]),
+                "at": row["at"],
+                "type": row["type"],
+                "title": row["title"],
+                "text": row["text"],
+            }
+            for row in graph_events
+        ],
+        ensure_ascii=False,
+    )
 
     html_text = f"""<!doctype html>
 <html lang="zh-CN">
@@ -462,6 +475,11 @@ def main() -> int:
     .detective span {{ color:var(--amber); font:800 13px/1 system-ui,-apple-system,Segoe UI,sans-serif; }}
     .detective strong {{ display:block; margin:8px 0; font:800 24px/1.1 system-ui,-apple-system,Segoe UI,sans-serif; color:var(--blue); }}
     .detective p {{ margin:0; color:var(--muted); }}
+    .pageGrid {{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }}
+    .pageCard {{ min-height:190px; padding:22px; border:1px solid var(--line); border-radius:20px; background:var(--paper); box-shadow:var(--shadow); text-decoration:none; color:var(--ink); }}
+    .pageCard span {{ color:var(--amber); font:800 13px/1 system-ui,-apple-system,Segoe UI,sans-serif; }}
+    .pageCard strong {{ display:block; margin:10px 0; font:800 24px/1.08 system-ui,-apple-system,Segoe UI,sans-serif; }}
+    .pageCard p {{ margin:0; color:var(--muted); }}
     .routeMap {{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:14px; }}
     .routeMap div {{ padding:14px; border:1px solid var(--line); border-radius:16px; background:#f6ead9; }}
     .routeMap span {{ color:var(--muted); font:800 12px/1 system-ui,-apple-system,Segoe UI,sans-serif; }}
@@ -485,7 +503,7 @@ def main() -> int:
     .routeNode p {{ margin:0; color:var(--muted); font-size:14px; }}
     footer {{ border-top:1px solid var(--line); padding:24px 20px; color:var(--muted); }}
     a {{ color:var(--blue); }}
-    @media (max-width: 950px) {{ .topbar {{ align-items:flex-start; flex-direction:column; }} .heroCard,.chartCard {{ grid-column:1 / -1; }} .two,.facts,.metricRow,.evidenceGrid,.storyStrip,.labRibbon,.moveGrid,.watchList,.seasonBoard,.lessonIntro,.lessonGrid,.scoreExplainer,.caseGrid,.detectiveGrid,.routeMap {{ grid-template-columns:1fr; }} .routeRow,.routeRow.reverse {{ grid-template-columns:1fr; direction:ltr; }} .routeRow::before {{ left:30px; right:auto; top:12px; bottom:12px; width:8px; height:auto; background:repeating-linear-gradient(180deg,#d8c3a6 0 18px,#c49d72 18px 28px); }} .routeRow::after {{ display:none; }} .routeNode {{ min-height:auto; padding-left:62px; padding-top:18px; }} .routeNode::before {{ top:18px; left:18px; }} .dotRow {{ grid-template-columns:118px 1fr 48px; }} .predictionBox {{ grid-template-columns:1fr; }} .sliderValue {{ text-align:left; }} table {{ font-size:14px; }} }}
+    @media (max-width: 950px) {{ .topbar {{ align-items:flex-start; flex-direction:column; }} .heroCard,.chartCard {{ grid-column:1 / -1; }} .two,.facts,.metricRow,.evidenceGrid,.storyStrip,.labRibbon,.moveGrid,.watchList,.seasonBoard,.lessonIntro,.lessonGrid,.scoreExplainer,.caseGrid,.detectiveGrid,.routeMap,.pageGrid {{ grid-template-columns:1fr; }} .routeRow,.routeRow.reverse {{ grid-template-columns:1fr; direction:ltr; }} .routeRow::before {{ left:30px; right:auto; top:12px; bottom:12px; width:8px; height:auto; background:repeating-linear-gradient(180deg,#d8c3a6 0 18px,#c49d72 18px 28px); }} .routeRow::after {{ display:none; }} .routeNode {{ min-height:auto; padding-left:62px; padding-top:18px; }} .routeNode::before {{ top:18px; left:18px; }} .dotRow {{ grid-template-columns:118px 1fr 48px; }} .predictionBox {{ grid-template-columns:1fr; }} .sliderValue {{ text-align:left; }} table {{ font-size:14px; }} }}
   </style>
 </head>
 <body>
@@ -494,11 +512,10 @@ def main() -> int:
       <div class="topbar">
         <div class="brand">Tibo Reset Lab</div>
         <nav aria-label="页面导航">
-          <a href="#current">当前实验</a>
-          <a href="#learn">概率小课堂</a>
-          <a href="#why">证据天平</a>
-          <a href="#play">你的判断</a>
-          <a href="#history">历史表现</a>
+          <a href="index.html">今日</a>
+          <a href="map.html">事件地图</a>
+          <a href="learn.html">概率小课堂</a>
+          <a href="history.html">历史表现</a>
         </nav>
       </div>
       <p class="eyebrow">公开证据里的概率练习</p>
@@ -574,18 +591,15 @@ def main() -> int:
     <section>
       <div class="lessonIntro">
         <div>
-          <p class="eyebrow">OpenAI 事件路线</p>
-          <h2>预测看到的是一条节奏线</h2>
+          <p class="eyebrow">分页面浏览</p>
+          <h2>把长页面拆成几条清晰路线</h2>
         </div>
-        <p class="note">事故、里程碑、发布和 reset 公告不是孤立点。路线图把它们按公开时间排开，帮助你看到“为什么最近窗口会变热，为什么刚 reset 后又可能降温”。</p>
+        <p class="note">主页保留今天最重要的数字。想看事件节奏、概率原理或历史榜单，可以进入独立页面慢慢探索。</p>
       </div>
-      <div class="eventMap"><div class="routePath">{route_html}</div></div>
-      <div class="chips">
-        <span class="chip">按公开时间前进</span>
-        <span class="chip">红点：事故</span>
-        <span class="chip">蓝点：里程碑</span>
-        <span class="chip">橙点：发布/额度更新</span>
-        <span class="chip">绿点：reset 公告</span>
+      <div class="pageGrid">
+        <a class="pageCard" href="map.html"><span>事件地图</span><strong>OpenAI 相关事件路线</strong><p>用一条连续的动态路线串起事故、发布、里程碑和 reset 公告。</p></a>
+        <a class="pageCard" href="learn.html"><span>科普</span><strong>概率为什么可信</strong><p>用通俗语言解释基准率、最近窗口、时间间隔和评分。</p></a>
+        <a class="pageCard" href="history.html"><span>回放</span><strong>历史演练榜</strong><p>把统计模型、LLM、玩家和 Crowd 放到可比较的长期榜单里。</p></a>
       </div>
     </section>
 
@@ -723,8 +737,191 @@ def main() -> int:
 </body>
 </html>
 """
+    page_css = """
+    :root { color-scheme: light; --ink:#27211b; --muted:#746b60; --line:#e4d8c8; --bg:#fbf5ec; --paper:#fffdf8; --cream:#f4eadc; --blue:#315f7d; --green:#26735b; --amber:#b66a2d; --rose:#a64d56; --shadow:0 20px 60px rgba(80,52,24,.10); }
+    * { box-sizing: border-box; }
+    body { margin:0; font:16px/1.62 ui-serif,Georgia,"Times New Roman",serif; color:var(--ink); background:var(--bg); }
+    body::before { content:""; position:fixed; inset:0; pointer-events:none; opacity:.55; background-image:linear-gradient(rgba(92,64,32,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(92,64,32,.035) 1px, transparent 1px); background-size:28px 28px; }
+    .wrap { max-width:1120px; margin:0 auto; position:relative; }
+    header { padding:28px 20px 18px; }
+    main { padding:8px 20px 64px; }
+    .topbar { display:flex; justify-content:space-between; gap:16px; align-items:center; margin-bottom:24px; }
+    .brand { font:700 15px/1.2 system-ui,-apple-system,Segoe UI,sans-serif; letter-spacing:.08em; text-transform:uppercase; }
+    nav { display:flex; gap:8px; flex-wrap:wrap; }
+    nav a { color:var(--ink); background:rgba(255,255,255,.55); text-decoration:none; border:1px solid var(--line); border-radius:999px; padding:8px 12px; font:600 14px/1 system-ui,-apple-system,Segoe UI,sans-serif; }
+    .eyebrow { color:var(--blue); font:700 13px/1.2 system-ui,-apple-system,Segoe UI,sans-serif; margin:0 0 12px; }
+    h1 { margin:0; max-width:820px; font-size:clamp(42px,7vw,78px); line-height:.98; letter-spacing:0; }
+    h2 { margin:0 0 10px; font-size:28px; line-height:1.12; }
+    h3 { margin:0 0 10px; font-size:18px; }
+    .lead { max-width:720px; margin:18px 0 0; color:var(--muted); font-size:20px; }
+    section { margin:26px auto; max-width:1120px; }
+    .panel { background:rgba(255,253,248,.88); border:1px solid var(--line); border-radius:18px; padding:22px; box-shadow:var(--shadow); }
+    .note { color:var(--muted); margin:8px 0 14px; }
+    .chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+    .chip { border:1px solid var(--line); background:var(--paper); border-radius:999px; padding:7px 11px; color:var(--muted); font-family:system-ui,-apple-system,Segoe UI,sans-serif; }
+    .grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+    .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .lesson,.card { padding:20px; border:1px solid var(--line); border-radius:18px; background:var(--paper); box-shadow:0 12px 34px rgba(80,52,24,.08); }
+    .lesson span,.card span { color:var(--amber); font:800 13px/1 system-ui,-apple-system,Segoe UI,sans-serif; }
+    .lesson p,.card p { color:var(--muted); margin:0; }
+    .move,.detective { padding:18px; border:1px solid var(--line); border-radius:18px; background:var(--paper); box-shadow:0 12px 34px rgba(80,52,24,.08); }
+    .move span,.detective span { color:var(--amber); font:800 13px/1 system-ui,-apple-system,Segoe UI,sans-serif; }
+    .move strong,.detective strong { display:block; margin:8px 0; font:800 24px/1.1 system-ui,-apple-system,Segoe UI,sans-serif; color:var(--blue); }
+    .move p,.detective p { margin:0; color:var(--muted); }
+    .timeline { list-style:none; padding:0; margin:0; }
+    .timeline li { margin:0 0 12px 0; padding:13px 14px; border:1px solid var(--line); border-radius:14px; background:rgba(255,253,248,.78); }
+    .timeline time { display:block; color:var(--muted); font-size:13px; }
+    .timeline strong { margin-right:8px; }
+    .timeline span { color:var(--muted); }
+    .caseStamp { display:inline-block; margin-bottom:12px; padding:6px 10px; border:1px solid #d8c5ad; border-radius:999px; color:var(--amber); font:800 12px/1 system-ui,-apple-system,Segoe UI,sans-serif; letter-spacing:.08em; }
+    .caseGrid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:18px 0; }
+    .caseGrid div { padding:14px; border-radius:16px; background:#f6ead9; }
+    .caseGrid span { display:block; color:var(--muted); font:700 12px/1 system-ui,-apple-system,Segoe UI,sans-serif; margin-bottom:8px; }
+    .caseGrid strong { font:800 22px/1.1 system-ui,-apple-system,Segoe UI,sans-serif; }
+    table { width:100%; border-collapse:collapse; background:var(--paper); border:1px solid var(--line); border-radius:14px; overflow:hidden; font-family:system-ui,-apple-system,Segoe UI,sans-serif; }
+    .tableWrap { overflow:auto; border-radius:14px; }
+    th,td { padding:10px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { background:#f3eadf; font-weight:700; }
+    td:nth-child(n+2), th:nth-child(n+2) { text-align:right; }
+    footer { border-top:1px solid var(--line); padding:24px 20px; color:var(--muted); }
+    a { color:var(--blue); }
+    @media (max-width: 850px) { .topbar { align-items:flex-start; flex-direction:column; } .grid3,.grid2,.caseGrid { grid-template-columns:1fr; } table { font-size:14px; } }
+    """
+    nav_html = """
+        <nav aria-label="页面导航">
+          <a href="index.html">今日</a>
+          <a href="map.html">事件地图</a>
+          <a href="learn.html">概率小课堂</a>
+          <a href="history.html">历史表现</a>
+        </nav>
+    """
+    map_html = f"""<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OpenAI 事件地图 · Tibo Reset Lab</title>
+  <style>
+    {page_css}
+    #d3map {{ min-height:560px; border:1px solid var(--line); border-radius:24px; background:linear-gradient(180deg, rgba(255,253,248,.94), rgba(246,234,217,.78)); box-shadow:var(--shadow); overflow:hidden; }}
+    .mapCards {{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:16px; }}
+    .mapCards article {{ padding:16px; border:1px solid var(--line); border-radius:16px; background:var(--paper); }}
+    .mapCards span {{ color:var(--muted); font:800 12px/1 system-ui,-apple-system,Segoe UI,sans-serif; }}
+    .mapCards strong {{ display:block; margin:7px 0; font:800 17px/1.15 system-ui,-apple-system,Segoe UI,sans-serif; }}
+    .mapCards p {{ margin:0; color:var(--muted); font-size:14px; }}
+    @media (max-width: 850px) {{ .mapCards {{ grid-template-columns:1fr; }} #d3map {{ min-height:760px; }} }}
+  </style>
+</head>
+<body>
+  <header><div class="wrap"><div class="topbar"><div class="brand">Tibo Reset Lab</div>{nav_html}</div><p class="eyebrow">OpenAI 事件地图</p><h1>把所有信号连成一条会转弯的路线</h1><p class="lead">事故、里程碑、发布和 reset 公告会改变近期节奏。这里按公开时间把它们串起来，看清预测不是盯着单个点，而是在读一段走势。</p></div></header>
+  <main>
+    <section>
+      <div id="d3map" role="img" aria-label="按时间连接的 OpenAI 相关事件路线图"></div>
+      <div class="chips">
+        <span class="chip">按公开时间前进</span><span class="chip">红：事故</span><span class="chip">蓝：里程碑</span><span class="chip">橙：发布/额度更新</span><span class="chip">绿：reset 公告</span>
+      </div>
+      <div id="mapCards" class="mapCards"></div>
+    </section>
+  </main>
+  <footer><div class="wrap">数据来自仓库 CSV。返回 <a href="index.html">今日概览</a>。</div></footer>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script>
+    const events = {route_json};
+    const colors = {{ incident:"#a64d56", reset:"#26735b", launch:"#b66a2d", milestone:"#315f7d", context:"#746b60" }};
+    const labels = {{ incident:"事故", reset:"reset", launch:"发布", milestone:"里程碑", context:"背景" }};
+    const wrap = document.getElementById("d3map");
+    const cards = document.getElementById("mapCards");
+
+    function renderCards() {{
+      cards.innerHTML = events.map((event, index) => `
+        <article>
+          <span>${{String(index + 1).padStart(2, "0")}} · ${{event.date}} · ${{labels[event.type] || "事件"}}</span>
+          <strong>${{event.title}}</strong>
+          <p>${{event.text}}</p>
+        </article>
+      `).join("");
+    }}
+
+    function renderMap() {{
+      const box = wrap.getBoundingClientRect();
+      const width = Math.max(340, Math.round(box.width || 900));
+      const mobile = width < 620;
+      const cols = mobile ? 3 : 4;
+      const left = mobile ? 48 : 84;
+      const right = mobile ? 48 : 84;
+      const rowH = mobile ? 142 : 172;
+      const rows = Math.ceil(events.length / cols);
+      const height = 116 + Math.max(1, rows - 1) * rowH;
+      const step = cols === 1 ? 0 : (width - left - right) / (cols - 1);
+      const points = events.map((event, index) => {{
+        const row = Math.floor(index / cols);
+        const col = index % cols;
+        const visualCol = row % 2 === 0 ? col : cols - 1 - col;
+        return {{ ...event, index, x:left + visualCol * step, y:64 + row * rowH }};
+      }});
+      const svg = d3.select(wrap).html("").append("svg")
+        .attr("viewBox", `0 0 ${{width}} ${{height}}`)
+        .attr("width", "100%")
+        .attr("height", height);
+      const line = d3.line().x(d => d.x).y(d => d.y).curve(d3.curveCatmullRom.alpha(.62));
+      svg.append("path")
+        .datum(points)
+        .attr("d", line)
+        .attr("fill", "none")
+        .attr("stroke", "#c49d72")
+        .attr("stroke-width", mobile ? 8 : 10)
+        .attr("stroke-linecap", "round")
+        .attr("opacity", .62);
+      svg.append("path")
+        .datum(points)
+        .attr("d", line)
+        .attr("fill", "none")
+        .attr("stroke", "#fff8ee")
+        .attr("stroke-width", mobile ? 2 : 3)
+        .attr("stroke-linecap", "round")
+        .attr("opacity", .9);
+      const node = svg.selectAll("g.event").data(points).join("g")
+        .attr("class", "event")
+        .attr("transform", d => `translate(${{d.x}},${{d.y}})`);
+      node.append("circle").attr("r", mobile ? 19 : 23).attr("fill", d => colors[d.type] || colors.context).attr("stroke", "#fff8ee").attr("stroke-width", 6);
+      node.append("text").attr("y", 5).attr("text-anchor", "middle").attr("fill", "#fff8ee").attr("font-family", "system-ui,-apple-system,Segoe UI,sans-serif").attr("font-weight", 800).attr("font-size", mobile ? 11 : 12).text(d => d.index + 1);
+      node.append("text").attr("x", mobile ? 0 : 0).attr("y", mobile ? 45 : 52).attr("text-anchor", "middle").attr("fill", "#746b60").attr("font-family", "system-ui,-apple-system,Segoe UI,sans-serif").attr("font-weight", 800).attr("font-size", 12).text(d => d.date);
+      node.append("text").attr("x", 0).attr("y", mobile ? 64 : 73).attr("text-anchor", "middle").attr("fill", "#27211b").attr("font-family", "system-ui,-apple-system,Segoe UI,sans-serif").attr("font-weight", 800).attr("font-size", mobile ? 12 : 13).text(d => {{
+        const title = d.title.length > 9 ? d.title.slice(0, 9) + "..." : d.title;
+        return title;
+      }});
+    }}
+    renderCards();
+    renderMap();
+    addEventListener("resize", () => requestAnimationFrame(renderMap));
+  </script>
+</body>
+</html>
+"""
+    learn_html = f"""<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>概率小课堂 · Tibo Reset Lab</title><style>{page_css}</style></head>
+<body><header><div class="wrap"><div class="topbar"><div class="brand">Tibo Reset Lab</div>{nav_html}</div><p class="eyebrow">概率小课堂</p><h1>用人话解释这套预测为什么能被检验</h1><p class="lead">好的概率预测不是“说中了”这么简单。它要先有历史参照，再用新证据修正，最后接受已经揭晓结果的评分。</p></div></header>
+<main>
+  <section class="grid3">{lesson_html}</section>
+  <section><h2>为什么它会动？</h2><p class="note">这些变化来自数据表中能复核的事实。</p><div class="grid3">{move_html}</div></section>
+  <section class="panel"><h2>评分怎么读</h2><p class="note">Brier 可以理解成“离结果有多远”，Log Loss 会惩罚非常自信但错得离谱的判断，覆盖率说明这个模型有没有经历足够多的历史窗口。</p><div class="grid3"><article class="card"><span>Brier</span><h3>平均误差越小越好</h3><p>发生记为 1，未发生记为 0。预测越贴近最后结果，分数越低。</p></article><article class="card"><span>Log Loss</span><h3>别轻易说绝对</h3><p>它会重罚过度自信的错误，让模型不敢靠喊极端概率取巧。</p></article><article class="card"><span>覆盖率</span><h3>样本越多越稳</h3><p>完整历史窗口比少量回放更有说服力，所以榜单会同时显示 N。</p></article></div></section>
+  <section><h2>证据侦探</h2><div class="grid3">{detective_html}</div></section>
+</main><footer><div class="wrap">返回 <a href="index.html">今日概览</a>。</div></footer></body></html>
+"""
+    history_html = f"""<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>历史表现 · Tibo Reset Lab</title><style>{page_css}</style></head>
+<body><header><div class="wrap"><div class="topbar"><div class="brand">Tibo Reset Lab</div>{nav_html}</div><p class="eyebrow">历史演练榜</p><h1>把统计模型、LLM、玩家和 Crowd 放到同一张表里</h1><p class="lead">历史回放只允许使用当时已经公开的证据。这样比较的不是事后解释能力，而是事前判断是否稳定。</p></div></header>
+<main>
+  <section class="grid2"><div><h2>历史演练榜</h2><p class="note">full 是完整历史窗口；limited 是少量回放点。先看样本量，再看平均误差。</p><div class="tableWrap"><table><thead><tr><th>#</th><th>预测者</th><th>覆盖</th><th>N</th><th>平均误差</th><th>惩罚大错</th><th>相对基础模型</th></tr></thead><tbody>{leaderboard_rows}</tbody></table></div></div><div><h2>已揭晓预测</h2><p class="note">结果为 1 表示 24 小时内发生。误差越小，说明当时概率越贴近结果。</p><div class="tableWrap"><table><thead><tr><th>预测者</th><th>签发时间</th><th>当时猜24h</th><th>结果</th><th>误差</th><th>类型</th></tr></thead><tbody>{score_rows_html}</tbody></table></div></div></section>
+  <section class="panel">{autopsy_html}</section>
+  <section class="grid2"><div class="panel"><h2>最近 reset 公告</h2><ul class="timeline">{timeline_html}</ul></div><div class="panel"><h2>最近公开背景信号</h2><ul class="timeline">{context_html}</ul></div></section>
+</main><footer><div class="wrap">返回 <a href="index.html">今日概览</a>。</div></footer></body></html>
+"""
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "index.html").write_text(html_text, encoding="utf-8")
+    (OUT / "map.html").write_text(map_html, encoding="utf-8")
+    (OUT / "learn.html").write_text(learn_html, encoding="utf-8")
+    (OUT / "history.html").write_text(history_html, encoding="utf-8")
     # Keep the old path working.
     (OUT / "community.html").write_text(html_text, encoding="utf-8")
     print(f"Built {OUT / 'index.html'}")
