@@ -161,6 +161,26 @@ def main() -> int:
             for forecast in forecasts
         )
     }
+    forecast_by_id = {row["tournament_forecast_id"]: row for row in forecasts}
+    scored_rows = []
+    for score in scores:
+        forecast = forecast_by_id.get(score["tournament_forecast_id"])
+        if not forecast or forecast["horizon_hours"] != "24":
+            continue
+        predictor = predictors[forecast["predictor_id"]]["display_name"]
+        scored_rows.append((
+            forecast["issued_at_utc"],
+            predictor,
+            f"{float(forecast['probability']):.1%}",
+            score["label"],
+            f"{float(score['brier']):.4f}",
+            forecast["schedule_class"],
+        ))
+    scored_rows.sort(reverse=True)
+    scored_table = "\n".join(
+        f"| {predictor} | {issued} | {probability} | {label} | {brier} | {kind} |"
+        for issued, predictor, probability, label, brier, kind in scored_rows[:12]
+    )
     block = f"""{START}
 ## 当前预测快照
 
@@ -179,6 +199,14 @@ def main() -> int:
 - [查看中文理由、证据与完整 Dashboard](reports/community_dashboard.md)。
 
 概率不是官方消息，也不是“重置倒计时”。Bootstrap、迟交和未成熟结果不进入正式排名。
+
+### 已成熟展示评分
+
+| 预测者 | 签发时间 | 24h 概率 | 标签 | Brier | 轮次 |
+| --- | --- | ---: | ---: | ---: | --- |
+{scored_table if scored_table else "| 暂无成熟评分 | — | — | — | — | — |"}
+
+该表来自 tournament 展示层；`bootstrap` 评分用于演示和审计，不进入 scheduled 主分析。
 
 ### 统计预测者历史演练排行榜
 

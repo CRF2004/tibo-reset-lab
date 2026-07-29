@@ -1,6 +1,6 @@
 # 社区预测 Dashboard
 
-生成时间：2026-07-29T06:04:28Z
+生成时间：2026-07-29T06:13:20Z
 
 > 正式停止条件尚未满足：至少 180 个有效日级轮次且至少 20 个前瞻阳性。以下结果仅用于运行审计和描述，不宣称任何预测者优胜。
 
@@ -8,10 +8,10 @@
 
 | 预测者 | 窗口(h) | 概率 | 轮次类型 | 证据/来源 |
 |---|---|---|---|---|
-| Calendar model | 24 | 34.4% | bootstrap | 2910130812e9b0e17ac2a1ce9665406a2dadbd74f99ecb98 |
-| Calendar model | 168 | 86.0% | bootstrap | 2910130812e9b0e17ac2a1ce9665406a2dadbd74f99ecb98 |
-| Global event rate | 24 | 12.4% | bootstrap | 2910130812e9b0e17ac2a1ce9665406a2dadbd74f99ecb98 |
-| Global event rate | 168 | 60.4% | bootstrap | 2910130812e9b0e17ac2a1ce9665406a2dadbd74f99ecb98 |
+| Calendar model | 24 | 34.5% | bootstrap | 5a43d38475d1fc46f1e909693f21df4b3fe1d53c423aeaaa |
+| Calendar model | 168 | 84.1% | bootstrap | 5a43d38475d1fc46f1e909693f21df4b3fe1d53c423aeaaa |
+| Global event rate | 24 | 12.0% | bootstrap | 5a43d38475d1fc46f1e909693f21df4b3fe1d53c423aeaaa |
+| Global event rate | 168 | 59.2% | bootstrap | 5a43d38475d1fc46f1e909693f21df4b3fe1d53c423aeaaa |
 | LLM forecaster | 24 | 12.0% | bootstrap | ANN_X_2081940052154933696;CTX_208194005215493369 |
 | LLM forecaster | 168 | 58.0% | bootstrap | ANN_X_2081940052154933696;CTX_208194005215493369 |
 | DeepSeek V4 Pro | 24 | 40.0% | bootstrap | ANN_X_2081940052154933696;ANN_X_2081096447718723 |
@@ -24,8 +24,12 @@
 | Qwen 3.5 397B | 168 | 55.0% | bootstrap | ANN_X_2081940052154933696;ANN_X_2081096447718723 |
 | Step 3.5 Flash | 24 | 20.0% | bootstrap | ANN_X_2081940052154933696;ANN_X_2077114635308986 |
 | Step 3.5 Flash | 168 | 70.0% | bootstrap | ANN_X_2081940052154933696;ANN_X_2077114635308986 |
-| Theory model | 24 | 16.4% | bootstrap | 2910130812e9b0e17ac2a1ce9665406a2dadbd74f99ecb98 |
-| Theory model | 168 | 62.6% | bootstrap | 2910130812e9b0e17ac2a1ce9665406a2dadbd74f99ecb98 |
+| Recent 30-day rate | 24 | 40.6% | bootstrap | 5a43d38475d1fc46f1e909693f21df4b3fe1d53c423aeaaa |
+| Recent 30-day rate | 168 | 95.5% | bootstrap | 5a43d38475d1fc46f1e909693f21df4b3fe1d53c423aeaaa |
+| Renewal model | 24 | 22.5% | bootstrap | 5a43d38475d1fc46f1e909693f21df4b3fe1d53c423aeaaa |
+| Renewal model | 168 | 69.6% | bootstrap | 5a43d38475d1fc46f1e909693f21df4b3fe1d53c423aeaaa |
+| Theory model | 24 | 17.7% | bootstrap | 5a43d38475d1fc46f1e909693f21df4b3fe1d53c423aeaaa |
+| Theory model | 168 | 61.2% | bootstrap | 5a43d38475d1fc46f1e909693f21df4b3fe1d53c423aeaaa |
 
 ## 正式前瞻表现
 

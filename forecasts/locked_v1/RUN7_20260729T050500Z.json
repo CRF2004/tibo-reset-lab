@@ -1,0 +1,231 @@
+{
+  "run_id": "RUN7_20260729T050500Z",
+  "issued_at_utc": "2026-07-29T05:05:00Z",
+  "data_cutoff_at_utc": "2026-07-29T05:05:00Z",
+  "schedule_class": "bootstrap",
+  "event_unit": "cluster_first",
+  "training_end_utc": "2026-07-28T17:00:00Z",
+  "training_rows": 314,
+  "last_primary_event_at_utc": "2026-07-29T04:09:02Z",
+  "models": {
+    "M0_beta11_v1": {
+      "p_24h": 0.12025316,
+      "p_7d": 0.59214669,
+      "daily_hazards_7d": [
+        0.12025316,
+        0.12025316,
+        0.12025316,
+        0.12025316,
+        0.12025316,
+        0.12025316,
+        0.12025316
+      ]
+    },
+    "M0_rolling30_v1": {
+      "p_24h": 0.40625,
+      "p_7d": 0.95483207,
+      "daily_hazards_7d": [
+        0.40625,
+        0.375,
+        0.34375,
+        0.34375,
+        0.34375,
+        0.34375,
+        0.34375
+      ]
+    },
+    "M0_rolling60_v1": {
+      "p_24h": 0.29032258,
+      "p_7d": 0.89630175,
+      "daily_hazards_7d": [
+        0.29032258,
+        0.29032258,
+        0.27419355,
+        0.27419355,
+        0.27419355,
+        0.27419355,
+        0.25806452
+      ]
+    },
+    "M0_ewma_hl30_v1": {
+      "p_24h": 0.281918,
+      "p_7d": 0.88393808,
+      "daily_hazards_7d": [
+        0.281918,
+        0.27597394,
+        0.27016582,
+        0.26449052,
+        0.25894501,
+        0.25352631,
+        0.24823153
+      ]
+    },
+    "M0_regime_rate_v1": {
+      "p_24h": 0.32653061,
+      "p_7d": 0.92420485,
+      "daily_hazards_7d": [
+        0.32653061,
+        0.32,
+        0.31372549,
+        0.30769231,
+        0.30188679,
+        0.2962963,
+        0.29090909
+      ]
+    },
+    "M0_km_renewal_v1": {
+      "p_24h": 0.17948718,
+      "p_7d": 0.78778384,
+      "daily_hazards_7d": [
+        0.17948718,
+        0.24242424,
+        0.15384615,
+        0.13043478,
+        0.23809524,
+        0.05882353,
+        0.35294118
+      ]
+    },
+    "M0_same_gap30_v1": {
+      "p_24h": 0.15625,
+      "p_7d": 0.73896679,
+      "daily_hazards_7d": [
+        0.15625,
+        0.21875,
+        0.1875,
+        0.1875,
+        0.15625,
+        0.125,
+        0.1875
+      ]
+    },
+    "M1_logistic_C0.25_v1": {
+      "p_24h": 0.22516128,
+      "p_7d": 0.69551119,
+      "daily_hazards_7d": [
+        0.22516128,
+        0.18156757,
+        0.15902118,
+        0.14437557,
+        0.13377652,
+        0.12559895,
+        0.11901538
+      ]
+    },
+    "M2_logistic_C0.25_v1": {
+      "p_24h": 0.34496067,
+      "p_7d": 0.84138399,
+      "daily_hazards_7d": [
+        0.34496067,
+        0.28808973,
+        0.23581629,
+        0.20869102,
+        0.14215741,
+        0.16249443,
+        0.21708391
+      ]
+    },
+    "M3_lite_C0.25_v1": {
+      "p_24h": 0.17697501,
+      "p_7d": 0.61225848,
+      "daily_hazards_7d": [
+        0.17697501,
+        0.14531643,
+        0.12888908,
+        0.11816754,
+        0.11037205,
+        0.1043313,
+        0.09944845
+      ]
+    }
+  },
+  "context_projection_at_issue": [
+    {
+      "at_utc": "2026-07-29T05:05:00Z",
+      "visible": 0.0,
+      "active": 0.0,
+      "resolved": 0.0,
+      "strength": 0.0,
+      "attention": 0.0,
+      "age": 72.0,
+      "context_ids": []
+    },
+    {
+      "at_utc": "2026-07-30T05:05:00Z",
+      "visible": 0.0,
+      "active": 0.0,
+      "resolved": 0.0,
+      "strength": 0.0,
+      "attention": 0.0,
+      "age": 72.0,
+      "context_ids": []
+    },
+    {
+      "at_utc": "2026-07-31T05:05:00Z",
+      "visible": 0.0,
+      "active": 0.0,
+      "resolved": 0.0,
+      "strength": 0.0,
+      "attention": 0.0,
+      "age": 72.0,
+      "context_ids": []
+    },
+    {
+      "at_utc": "2026-08-01T05:05:00Z",
+      "visible": 0.0,
+      "active": 0.0,
+      "resolved": 0.0,
+      "strength": 0.0,
+      "attention": 0.0,
+      "age": 72.0,
+      "context_ids": []
+    },
+    {
+      "at_utc": "2026-08-02T05:05:00Z",
+      "visible": 0.0,
+      "active": 0.0,
+      "resolved": 0.0,
+      "strength": 0.0,
+      "attention": 0.0,
+      "age": 72.0,
+      "context_ids": []
+    },
+    {
+      "at_utc": "2026-08-03T05:05:00Z",
+      "visible": 0.0,
+      "active": 0.0,
+      "resolved": 0.0,
+      "strength": 0.0,
+      "attention": 0.0,
+      "age": 72.0,
+      "context_ids": []
+    },
+    {
+      "at_utc": "2026-08-04T05:05:00Z",
+      "visible": 0.0,
+      "active": 0.0,
+      "resolved": 0.0,
+      "strength": 0.0,
+      "attention": 0.0,
+      "age": 72.0,
+      "context_ids": []
+    }
+  ],
+  "input_sha256": {
+    "data/processed/person_period_daily.csv": "86fc2afed2abc93c14534268dd75f05e57e2eca4d5de8c6e73ebec7b58aa9ee9",
+    "data/processed/reset_announcements.csv": "78661f4483ce3018bda3be22caf2f1cbedc8ea0d212344f9e957b5992eb7e2b7",
+    "data/processed/reset_actions.csv": "81aa3a9ecd2fb97e497841b1d9609de2e18224c83168f99f07759a8eabe4ca6e",
+    "data/processed/announcement_cluster_overrides.csv": "74858d6be9c3d59fc9c80f9202df96a35fc69eaebd4fb95a137145f9f03f4246",
+    "data/processed/daily_context_features.csv": "bda48d9400a5d5d5fa82cf0a6a9589a88c11cea2bf2c7019266943b3c0d5d925",
+    "data/processed/context_events.csv": "55ce72b1704099cbcf7e46ba93e1e319dadb950f7dbc7b883720da5511bfc4ca",
+    "scripts/issue_task7_forecast.py": "bd07774e0cda3e698fcab9c32b402774a3d84cab5205273f099620a52a42ee71",
+    "scripts/event_units.py": "0e86b19ff3fbd81e45c3d252683cd6f06b7046642d052551ad946e189a65982f"
+  },
+  "notes": [
+    "Primary outcome is the first accepted announcement per action cluster.",
+    "Historical and prospective 24-hour windows share the 17:00 UTC landmark.",
+    "Seven-day probabilities condition on no intervening primary event.",
+    "Future context resolution timestamps unknown at issuance are not used."
+  ],
+  "payload_sha256": "5a43d38475d1fc46f1e909693f21df4b3fe1d53c423aeaaa08aaab2963a7589b"
+}

@@ -12,15 +12,17 @@ Tibo Reset Lab 是一个关于 Codex / ChatGPT Work 特殊额度重置公告的�
 <!-- LIVE_SNAPSHOT_START -->
 ## 当前预测快照
 
-**状态：Bootstrap 演示** · 数据更新至 `2026-07-28T09:33:42Z` · 正式成熟预测 `0` 条
+**状态：Bootstrap 演示** · 数据更新至 `2026-07-29T05:05:00Z` · 正式成熟预测 `0` 条
 
 > **注意：** 尚无正式 scheduled 轮次。下表来自不同时间的 bootstrap，只展示系统如何工作，不能用于比较高低，也不进入排行榜。
 
 | 预测者 | 未来24小时 | 未来7天 | 证据截止（UTC） |
 | --- | ---: | ---: | --- |
-| Global event rate | 12.4% | 60.4% | 2026-07-28T07:42:56Z |
-| Calendar model | 34.4% | 86.0% | 2026-07-28T07:42:56Z |
-| Theory model | 16.4% | 62.6% | 2026-07-28T07:42:56Z |
+| Global event rate | 12.0% | 59.2% | 2026-07-29T05:05:00Z |
+| Recent 30-day rate | 40.6% | 95.5% | 2026-07-29T05:05:00Z |
+| Renewal model | 22.5% | 69.6% | 2026-07-29T05:05:00Z |
+| Calendar model | 34.5% | 84.1% | 2026-07-29T05:05:00Z |
+| Theory model | 17.7% | 61.2% | 2026-07-29T05:05:00Z |
 | DeepSeek V4 Pro | 40.0% | 95.0% | 2026-07-28T09:22:34Z |
 | Qwen 3.5 397B | 15.0% | 55.0% | 2026-07-28T09:22:34Z |
 | Kimi K2.5 | 8.0% | 35.0% | 2026-07-28T09:22:34Z |
@@ -31,10 +33,26 @@ Tibo Reset Lab 是一个关于 Codex / ChatGPT Work 特殊额度重置公告的�
 
 - 最近一次合格公告：[原始 X 帖](https://x.com/thsottiaux/status/2082317452755751098)，时间 `2026-07-29T04:09:02.000Z`；
 - 类型：`hard_global`；原因：`launch_promotion`；
-- 距该公告约 `0.0` 小时；
+- 距该公告约 `0.9` 小时；
 - [查看中文理由、证据与完整 Dashboard](reports/community_dashboard.md)。
 
 概率不是官方消息，也不是“重置倒计时”。Bootstrap、迟交和未成熟结果不进入正式排名。
+
+### 已成熟展示评分
+
+| 预测者 | 签发时间 | 24h 概率 | 标签 | Brier | 轮次 |
+| --- | --- | ---: | ---: | ---: | --- |
+| Step 3.5 Flash | 2026-07-28T09:38:00Z | 20.0% | 1 | 0.6400 | bootstrap |
+| Qwen 3.5 397B | 2026-07-28T09:30:00Z | 15.0% | 1 | 0.7225 | bootstrap |
+| MiniMax M2.7 | 2026-07-28T09:30:00Z | 6.0% | 1 | 0.8836 | bootstrap |
+| Kimi K2.5 | 2026-07-28T09:30:00Z | 8.0% | 1 | 0.8464 | bootstrap |
+| DeepSeek V4 Pro | 2026-07-28T09:30:00Z | 40.0% | 1 | 0.3600 | bootstrap |
+| LLM forecaster | 2026-07-28T08:46:00Z | 12.0% | 1 | 0.7744 | bootstrap |
+| Theory model | 2026-07-28T07:42:56Z | 16.4% | 1 | 0.6991 | bootstrap |
+| Global event rate | 2026-07-28T07:42:56Z | 12.4% | 1 | 0.7677 | bootstrap |
+| Calendar model | 2026-07-28T07:42:56Z | 34.4% | 1 | 0.4306 | bootstrap |
+
+该表来自 tournament 展示层；`bootstrap` 评分用于演示和审计，不进入 scheduled 主分析。
 
 ### 统计预测者历史演练排行榜
 

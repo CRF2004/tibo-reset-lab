@@ -6,6 +6,7 @@ from __future__ import annotations
 import csv
 import hashlib
 import math
+import argparse
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -41,7 +42,10 @@ def source_hash() -> str:
 
 
 def main() -> int:
-    now = datetime.now(timezone.utc)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--evaluated-at", help="UTC timestamp; defaults to now")
+    args = parser.parse_args()
+    now = dt(args.evaluated_at) if args.evaluated_at else datetime.now(timezone.utc)
     events = accepted_event_times(
         read_csv(ANN), read_csv(ACTIONS), read_csv(OVERRIDES), "cluster_first"
     )
