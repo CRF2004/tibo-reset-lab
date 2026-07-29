@@ -101,9 +101,16 @@ REQUIRED_HEADERS = {
         "p_rolling30", "p_rolling60", "p_ewma_hl30", "p_regime_rate",
         "p_km_renewal", "p_same_gap30", "p_m2_no_regime", "p_m2",
     ],
+    "data/processed/person_period_daily.csv": [
+        "window_start_utc", "window_end_utc", "announcement_in_next_window",
+        "days_since_last_announcement", "event_count_in_window", "event_unit",
+    ],
     "data/processed/reset_actions.csv": [
         "action_id", "action_cluster_id", "announcement_id", "action_at_utc",
         "action_type", "reason_type", "gold_version",
+    ],
+    "data/processed/announcement_cluster_overrides.csv": [
+        "announcement_id", "action_cluster_id", "confidence", "rationale",
     ],
     "data/processed/tournament_predictors.csv": [
         "predictor_id", "display_name", "predictor_class", "model_version",
@@ -256,6 +263,43 @@ def main() -> int:
         row["announcement_id"]
         for row in tables.get("data/processed/reset_announcements.csv", [])
     }
+    action_announcement_ids = {
+        row["announcement_id"]
+        for row in tables.get("data/processed/reset_actions.csv", [])
+    }
+    override_ids = set()
+    for line, row in enumerate(
+        tables.get("data/processed/announcement_cluster_overrides.csv", []), start=2
+    ):
+        if row["announcement_id"] not in announcement_ids:
+            errors.append(
+                f"data/processed/announcement_cluster_overrides.csv:{line}: "
+                "unknown announcement_id"
+            )
+        if row["announcement_id"] in action_announcement_ids:
+            errors.append(
+                f"data/processed/announcement_cluster_overrides.csv:{line}: "
+                "override duplicates an action-derived mapping"
+            )
+        if row["announcement_id"] in override_ids:
+            errors.append(
+                f"data/processed/announcement_cluster_overrides.csv:{line}: "
+                "duplicate announcement override"
+            )
+        override_ids.add(row["announcement_id"])
+
+    accepted_ids = {
+        row["announcement_id"]
+        for row in tables.get("data/processed/reset_announcements.csv", [])
+        if row["adjudication_status"] == "accepted"
+    }
+    missing_cluster = sorted(accepted_ids - action_announcement_ids - override_ids)
+    if missing_cluster:
+        errors.append(
+            "Accepted announcements missing action cluster mapping: "
+            + ", ".join(missing_cluster)
+        )
+
     for line, row in enumerate(
         tables.get("data/processed/reset_confirmations.csv", []), start=2
     ):
@@ -293,6 +337,29 @@ def main() -> int:
             errors.append(
                 f"data/processed/forward_forecasts_v1.csv:{line}: "
                 "invalid schedule_class"
+            )
+    for line, row in enumerate(
+        tables.get("data/processed/person_period_daily.csv", []), start=2
+    ):
+        try:
+            start = datetime.fromisoformat(row["window_start_utc"].replace("Z", "+00:00"))
+            end = datetime.fromisoformat(row["window_end_utc"].replace("Z", "+00:00"))
+        except ValueError:
+            continue
+        if start.hour != 17 or start.minute or start.second:
+            errors.append(
+                f"data/processed/person_period_daily.csv:{line}: "
+                "window_start_utc must use the 17:00:00 UTC landmark"
+            )
+        if (end - start).total_seconds() != 86400:
+            errors.append(
+                f"data/processed/person_period_daily.csv:{line}: "
+                "window must be exactly 24 hours"
+            )
+        if row["event_unit"] != "cluster_first":
+            errors.append(
+                f"data/processed/person_period_daily.csv:{line}: "
+                "event_unit must be cluster_first"
             )
     for line, row in enumerate(
         tables.get("data/processed/forecast_outcomes_v1.csv", []), start=2

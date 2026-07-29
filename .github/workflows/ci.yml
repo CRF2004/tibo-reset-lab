@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: pip install -r requirements.txt
+      - name: Unit tests
+        run: python -m unittest discover -s tests -v
+      - name: Validate committed research tables
+        run: python scripts/validate_data.py
+      - name: Smoke-test aligned landmark construction
+        run: |
+          python scripts/build_person_period.py \
+            --start 2025-09-17T17:00:00Z \
+            --end 2026-07-28T17:00:00Z \
+            --event-unit cluster_first \
+            --output /tmp/person_period_daily.csv
+          python - <<'PY'
+          import csv
+          with open('/tmp/person_period_daily.csv', newline='') as handle:
+              rows = list(csv.DictReader(handle))
+          assert rows
+          assert all(row['window_start_utc'].endswith('T17:00:00Z') for row in rows)
+          assert all(row['event_unit'] == 'cluster_first' for row in rows)
+          print(f'validated {len(rows)} aligned landmark rows')
+          PY

@@ -181,16 +181,16 @@ def main() -> int:
                     or now - dt(preflight["checked_at_utc"]) > timedelta(minutes=30)
                 ):
                     raise RuntimeError("preflight missing, mismatched, or older than 30 minutes")
-                period_end = (scheduled + timedelta(days=1)).replace(
-                    hour=0, minute=0, second=0, microsecond=0
-                )
+                # Historical training landmarks must match the prospective
+                # 17:00 UTC issuance and (issued_at, issued_at + 24h] target.
                 for command in (
                     ["python3", "scripts/collect_status_context.py"],
                     ["python3", "scripts/build_context_events.py"],
                     [
                         "python3", "scripts/build_person_period.py",
-                        "--start", "2025-09-17T00:00:00Z",
-                        "--end", stamp(period_end),
+                        "--start", "2025-09-17T17:00:00Z",
+                        "--end", stamp(scheduled),
+                        "--event-unit", "cluster_first",
                     ],
                     ["python3", "scripts/build_daily_context_features.py"],
                     ["python3", "scripts/validate_data.py"],

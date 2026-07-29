@@ -1,0 +1,2 @@
+announcement_id,action_cluster_id,confidence,rationale
+ANN_X_2066956441173323943,RESET_2026_06_18,medium,"The 2026-06-16 post promised a reset within 24 hours; the 2026-06-18 post reported the subsequent double reset. Kept explicit rather than inferred by date."
