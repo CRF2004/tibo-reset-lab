@@ -9,6 +9,12 @@ Tibo Reset Lab 是一个关于 Codex / ChatGPT Work 特殊额度重置公告的�
 本项目追踪公开的组织行动，不推断个人性格、私生活或未公开动机，也不是 OpenAI
 官方服务。
 
+## 在线入口
+
+- [Tibo Reset Lab 网站](https://crf2004.github.io/tibo-reset-lab/)：今日概率、预测者分歧和证据解释。
+- [OpenAI 事件地图](https://crf2004.github.io/tibo-reset-lab/map.html)：按时间串起 reset 公告、事故、发布和里程碑，点击节点可查看 Tibo 帖子内容与分析。
+- [概率小课堂](https://crf2004.github.io/tibo-reset-lab/learn.html) / [历史表现](https://crf2004.github.io/tibo-reset-lab/history.html)：用通俗解释和历史回放理解模型是否可信。
+
 <!-- LIVE_SNAPSHOT_START -->
 ## 现在各预测者怎么猜？
 
@@ -232,7 +238,8 @@ python3 scripts/build_community_dashboard.py
 - [统计功效分析](reports/power_analysis_v1.md)
 - [社区预测协议](community/README.md)
 - [玩家与审计教程](community/PLAYER_AND_AUDIT_GUIDE_V1.md)
-- [当前静态 Dashboard](dashboard/community.html)
+- [在线公众网站](https://crf2004.github.io/tibo-reset-lab/)
+- [本地静态 Dashboard 入口](dashboard/community.html)
 
 ## 结果应该如何解读？
 
