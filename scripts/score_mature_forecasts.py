@@ -42,6 +42,20 @@ def source_hash() -> str:
     return digest.hexdigest()
 
 
+def should_score_forecast(
+    forecast: dict[str, str],
+    scored: set[str],
+    excluded_runs: set[str],
+    evaluated: datetime,
+) -> bool:
+    return not (
+        forecast["run_id"] in excluded_runs
+        or forecast["forecast_id"] in scored
+        or forecast["schedule_class"] != "scheduled"
+        or dt(forecast["window_end_utc"]) > evaluated
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--evaluated-at", help="UTC timestamp; defaults to now")
@@ -57,11 +71,7 @@ def main() -> int:
     source_sha = source_hash()
     rows = []
     for forecast in forecasts:
-        if (
-            forecast["run_id"] in excluded_runs
-            or forecast["forecast_id"] in scored
-            or dt(forecast["window_end_utc"]) > evaluated
-        ):
+        if not should_score_forecast(forecast, scored, excluded_runs, evaluated):
             continue
         start, end = dt(forecast["issued_at_utc"]), dt(forecast["window_end_utc"])
         observed = [event for event in events if start < event <= end]

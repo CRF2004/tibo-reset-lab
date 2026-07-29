@@ -11,6 +11,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from build_person_period import build_rows  # noqa: E402
 from event_units import accepted_event_times  # noqa: E402
+from score_mature_forecasts import should_score_forecast  # noqa: E402
 
 
 def t(value: str) -> datetime:
@@ -77,6 +78,26 @@ class EventUnitTests(unittest.TestCase):
                 datetime(2026, 7, 2, 16, tzinfo=timezone.utc),
                 "cluster_first",
             )
+
+    def test_bootstrap_forecasts_are_not_formally_scored(self) -> None:
+        forecast = {
+            "run_id": "RUN_BOOTSTRAP",
+            "forecast_id": "FC_BOOTSTRAP",
+            "schedule_class": "bootstrap",
+            "window_end_utc": "2026-07-29T17:00:00Z",
+        }
+        self.assertFalse(
+            should_score_forecast(
+                forecast, set(), set(), t("2026-07-30T17:00:00Z")
+            )
+        )
+
+        forecast["schedule_class"] = "scheduled"
+        self.assertTrue(
+            should_score_forecast(
+                forecast, set(), set(), t("2026-07-30T17:00:00Z")
+            )
+        )
 
 
 if __name__ == "__main__":
