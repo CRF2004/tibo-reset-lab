@@ -144,6 +144,7 @@ def main() -> int:
             leaderboard.append({"name": name, "coverage": "limited", "n": n, "brier": brier, "log_loss": log_loss, "prevalence": prevalence})
     global_brier = next(row["brier"] for row in leaderboard if row["name"] == "Global event rate")
     leaderboard.sort(key=lambda row: (row["coverage"] != "full", row["brier"]))
+    best_full = next(row for row in leaderboard if row["coverage"] == "full")
 
     probabilities_json = json.dumps(
         [{"name": row["name"], "p24": row["p24"], "p168": row["p168"]} for row in rows],
@@ -233,6 +234,42 @@ def main() -> int:
     move_html = "\n".join(
         f"<article class='move'><span>{esc(label)}</span><strong>{esc(value)}</strong><p>{esc(text)}</p></article>"
         for label, value, text in move_items
+    )
+    lesson_items = [
+        (
+            "先看基准率",
+            "不要从零开始猜",
+            f"历史里已经有 {len(announcements)} 条合格公告。全局基准率先回答：长期平均来看，一天内发生的机会有多大？",
+        ),
+        (
+            "再看最近窗口",
+            "让新节奏说话",
+            f"最近 30 天模型当前给出 {pct(current_recent30)}。它像天气预报里的“近况雷达”，能快速反映最近公告变密或变稀。",
+        ),
+        (
+            "时间间隔模型",
+            "刚发生过会影响下一次",
+            f"最新公告距证据截止约 {hours_since:.1f} 小时。Renewal 类模型会问：历史上刚 reset 后，下一次通常隔多久？",
+        ),
+        (
+            "日历与背景信号",
+            "把节奏和事件放在一起",
+            "Calendar / Theory 模型会参考星期、最近事故、发布、里程碑等公开背景，避免只盯着一条最新消息。",
+        ),
+        (
+            "多模型不是投票",
+            "看分歧比看平均更有用",
+            f"当前有 {len(rows)} 个预测者。它们方法不同，所以分歧本身也是信息：一致时更稳，分散时说明证据还不够单向。",
+        ),
+        (
+            "用结果反过来约束模型",
+            "猜完必须算账",
+            f"历史完整榜目前每个 full 模型有 {best_full['n']} 个回放点，最好 full 模型是 {best_full['name']}，平均误差 {best_full['brier']:.3f}。",
+        ),
+    ]
+    lesson_html = "\n".join(
+        f"<article class='lesson'><span>{esc(kicker)}</span><h3>{esc(title)}</h3><p>{esc(text)}</p></article>"
+        for kicker, title, text in lesson_items
     )
     timeline_html = "\n".join(
         f"<li><time>{esc(row['announced_at_utc'])}</time><strong>{esc(row['reset_type'])}</strong><span>{esc(row['reason_type'])}</span></li>"
@@ -330,9 +367,19 @@ def main() -> int:
     .season {{ padding:18px; border-radius:18px; border:1px solid var(--line); background:var(--paper); }}
     .season span {{ color:var(--muted); font-family:system-ui,-apple-system,Segoe UI,sans-serif; font-size:13px; }}
     .season strong {{ display:block; font:800 24px/1.1 system-ui,-apple-system,Segoe UI,sans-serif; margin-top:8px; }}
+    .lessonIntro {{ display:grid; grid-template-columns:.8fr 1.2fr; gap:18px; align-items:end; margin-bottom:14px; }}
+    .lessonIntro strong {{ display:block; font:800 clamp(42px,8vw,86px)/.92 system-ui,-apple-system,Segoe UI,sans-serif; color:var(--blue); }}
+    .lessonGrid {{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }}
+    .lesson {{ position:relative; padding:20px; border:1px solid var(--line); border-radius:20px; background:var(--paper); min-height:190px; }}
+    .lesson::before {{ content:""; position:absolute; width:34px; height:4px; border-radius:999px; background:var(--blue); top:16px; right:18px; opacity:.8; }}
+    .lesson span {{ color:var(--amber); font:800 13px/1 system-ui,-apple-system,Segoe UI,sans-serif; }}
+    .lesson p {{ color:var(--muted); margin:0; }}
+    .scoreExplainer {{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:14px; }}
+    .scoreExplainer div {{ background:#f6ead9; border-radius:16px; padding:16px; }}
+    .scoreExplainer strong {{ display:block; margin-bottom:6px; }}
     footer {{ border-top:1px solid var(--line); padding:24px 20px; color:var(--muted); }}
     a {{ color:var(--blue); }}
-    @media (max-width: 950px) {{ .topbar {{ align-items:flex-start; flex-direction:column; }} .heroCard,.chartCard {{ grid-column:1 / -1; }} .two,.facts,.metricRow,.evidenceGrid,.storyStrip,.labRibbon,.moveGrid,.watchList,.seasonBoard {{ grid-template-columns:1fr; }} .dotRow {{ grid-template-columns:118px 1fr 48px; }} .predictionBox {{ grid-template-columns:1fr; }} .sliderValue {{ text-align:left; }} table {{ font-size:14px; }} }}
+    @media (max-width: 950px) {{ .topbar {{ align-items:flex-start; flex-direction:column; }} .heroCard,.chartCard {{ grid-column:1 / -1; }} .two,.facts,.metricRow,.evidenceGrid,.storyStrip,.labRibbon,.moveGrid,.watchList,.seasonBoard,.lessonIntro,.lessonGrid,.scoreExplainer {{ grid-template-columns:1fr; }} .dotRow {{ grid-template-columns:118px 1fr 48px; }} .predictionBox {{ grid-template-columns:1fr; }} .sliderValue {{ text-align:left; }} table {{ font-size:14px; }} }}
   </style>
 </head>
 <body>
@@ -342,6 +389,7 @@ def main() -> int:
         <div class="brand">Tibo Reset Lab</div>
         <nav aria-label="页面导航">
           <a href="#current">当前实验</a>
+          <a href="#learn">概率小课堂</a>
           <a href="#why">证据天平</a>
           <a href="#play">你的判断</a>
           <a href="#history">历史表现</a>
@@ -400,6 +448,17 @@ def main() -> int:
       </div>
     </section>
 
+    <section id="learn">
+      <div class="lessonIntro">
+        <div>
+          <p class="eyebrow">概率小课堂</p>
+          <h2>这个数字不是拍脑袋来的</h2>
+        </div>
+        <p class="note">我们的做法很朴素：先尊重历史频率，再看最近节奏、时间间隔和公开背景信号；最后用已经揭晓的结果检验模型有没有过度自信。</p>
+      </div>
+      <div class="lessonGrid">{lesson_html}</div>
+    </section>
+
     <section id="why">
       <h2>证据天平</h2>
       <p class="note">这些卡片把模型输入翻译成人话：哪些信号把概率往上推，哪些信号让它慢下来。</p>
@@ -454,6 +513,16 @@ def main() -> int:
         <h2>历史演练榜</h2>
         <p class="note">full 是完整历史窗口；limited 是少量回放点。先看样本量，再看误差。</p>
         <div class="tableWrap"><table><thead><tr><th>#</th><th>预测者</th><th>覆盖</th><th>N</th><th>平均误差</th><th>惩罚大错</th><th>相对基础模型</th></tr></thead><tbody>{leaderboard_rows}</tbody></table></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>评分为什么有说服力？</h2>
+      <p class="note">概率预测不能只看“猜中了没有”。一个报 55% 的人和一个报 99% 的人，即使都猜对了，承担的风险也不一样。</p>
+      <div class="scoreExplainer">
+        <div><strong>Brier：离结果有多远</strong>结果发生记为 1，没发生记为 0。预测 40% 后发生，误差就是 0.6 的平方。</div>
+        <div><strong>Log Loss：惩罚过度自信</strong>如果把几乎不可能的事说成 99%，一旦错了会被重罚。</div>
+        <div><strong>覆盖率：不能挑题</strong>样本量越多，越能看出一个预测者是不是真的稳定。</div>
       </div>
     </section>
 
