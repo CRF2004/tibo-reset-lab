@@ -111,11 +111,16 @@
     .routeMap div { padding:14px; border:1px solid var(--line); border-radius:16px; background:#f6ead9; }
     .routeMap span { color:var(--muted); font:800 12px/1 system-ui,-apple-system,Segoe UI,sans-serif; }
     .routeMap strong { display:block; margin-top:8px; }
-    .eventMap { overflow-x:auto; padding:10px 4px 18px; }
-    .routePath { display:grid; grid-auto-flow:column; grid-auto-columns:minmax(190px,1fr); gap:18px; align-items:start; min-width:980px; position:relative; padding-top:28px; }
-    .routePath::before { content:""; position:absolute; left:20px; right:20px; top:45px; height:5px; border-radius:999px; background:linear-gradient(90deg,#d6c3aa,#315f7d,#26735b,#b66a2d); opacity:.72; }
-    .routeNode { position:relative; padding:44px 16px 16px; border:1px solid var(--line); border-radius:18px; background:rgba(255,253,248,.94); box-shadow:0 12px 34px rgba(80,52,24,.08); }
-    .routeNode::before { content:""; position:absolute; top:8px; left:18px; width:24px; height:24px; border-radius:50%; border:5px solid #fff8ee; background:var(--blue); box-shadow:0 0 0 1px var(--line); }
+    .eventMap { padding:18px; border:1px solid var(--line); border-radius:24px; background:rgba(255,253,248,.72); box-shadow:var(--shadow); }
+    .routePath { display:flex; flex-direction:column; gap:28px; position:relative; }
+    .routeRow { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; position:relative; }
+    .routeRow.reverse { direction:rtl; }
+    .routeRow.reverse .routeNode { direction:ltr; }
+    .routeRow::before { content:""; position:absolute; left:8%; right:8%; top:34px; height:8px; border-radius:999px; background:repeating-linear-gradient(90deg,#d8c3a6 0 18px,#c49d72 18px 28px); opacity:.64; }
+    .routeRow:not(:last-child)::after { content:""; position:absolute; width:52px; height:70px; border:8px solid #d8c3a6; border-left:0; border-bottom:0; border-radius:0 40px 0 0; right:3%; top:34px; opacity:.64; }
+    .routeRow.reverse:not(:last-child)::after { right:auto; left:3%; transform:scaleX(-1); }
+    .routeNode { position:relative; z-index:1; padding:54px 16px 16px; border:1px solid var(--line); border-radius:20px; background:rgba(255,253,248,.96); box-shadow:0 12px 34px rgba(80,52,24,.08); min-height:170px; }
+    .routeNode::before { content:""; position:absolute; top:20px; left:18px; width:24px; height:24px; border-radius:50%; border:5px solid #fff8ee; background:var(--blue); box-shadow:0 0 0 1px var(--line); }
     .routeNode.reset::before { background:var(--green); }
     .routeNode.incident::before { background:var(--rose); }
     .routeNode.launch::before { background:var(--amber); }
@@ -125,7 +130,7 @@
     .routeNode p { margin:0; color:var(--muted); font-size:14px; }
     footer { border-top:1px solid var(--line); padding:24px 20px; color:var(--muted); }
     a { color:var(--blue); }
-    @media (max-width: 950px) { .topbar { align-items:flex-start; flex-direction:column; } .heroCard,.chartCard { grid-column:1 / -1; } .two,.facts,.metricRow,.evidenceGrid,.storyStrip,.labRibbon,.moveGrid,.watchList,.seasonBoard,.lessonIntro,.lessonGrid,.scoreExplainer,.caseGrid,.detectiveGrid,.routeMap { grid-template-columns:1fr; } .dotRow { grid-template-columns:118px 1fr 48px; } .predictionBox { grid-template-columns:1fr; } .sliderValue { text-align:left; } table { font-size:14px; } }
+    @media (max-width: 950px) { .topbar { align-items:flex-start; flex-direction:column; } .heroCard,.chartCard { grid-column:1 / -1; } .two,.facts,.metricRow,.evidenceGrid,.storyStrip,.labRibbon,.moveGrid,.watchList,.seasonBoard,.lessonIntro,.lessonGrid,.scoreExplainer,.caseGrid,.detectiveGrid,.routeMap { grid-template-columns:1fr; } .routeRow,.routeRow.reverse { grid-template-columns:1fr; direction:ltr; } .routeRow::before { left:30px; right:auto; top:12px; bottom:12px; width:8px; height:auto; background:repeating-linear-gradient(180deg,#d8c3a6 0 18px,#c49d72 18px 28px); } .routeRow::after { display:none; } .routeNode { min-height:auto; padding-left:62px; padding-top:18px; } .routeNode::before { top:18px; left:18px; } .dotRow { grid-template-columns:118px 1fr 48px; } .predictionBox { grid-template-columns:1fr; } .sliderValue { text-align:left; } table { font-size:14px; } }
   </style>
 </head>
 <body>
@@ -236,20 +241,14 @@
         </div>
         <p class="note">事故、里程碑、发布和 reset 公告不是孤立点。路线图把它们按公开时间排开，帮助你看到“为什么最近窗口会变热，为什么刚 reset 后又可能降温”。</p>
       </div>
-      <div class="eventMap"><div class="routePath"><article class='routeNode incident'><span>06/29</span><b>事故信号</b><p>Official Codex status incident; strength conservatively scored from the incident t</p></article>
-<article class='routeNode incident'><span>07/17</span><b>事故信号</b><p>Official Codex status incident; strength conservatively scored from the incident t</p></article>
-<article class='routeNode incident'><span>07/17</span><b>事故信号</b><p>Official Codex status incident; strength conservatively scored from the incident t</p></article>
-<article class='routeNode reset'><span>07/18</span><b>hard_global</b><p>mixed_or_unclear</p></article>
-<article class='routeNode incident'><span>07/18</span><b>事故信号</b><p>Official Codex status incident; strength conservatively scored from the incident t</p></article>
-<article class='routeNode incident'><span>07/20</span><b>事故信号</b><p>Official Codex status incident; strength conservatively scored from the incident t</p></article>
-<article class='routeNode reset'><span>07/21</span><b>hard_global</b><p>milestone_celebration</p></article>
-<article class='routeNode incident'><span>07/24</span><b>事故信号</b><p>Official Codex status incident; strength conservatively scored from the incident t</p></article>
-<article class='routeNode incident'><span>07/25</span><b>事故信号</b><p>Near/global outage: novel, highly disruptive, core reliability.</p></article>
-<article class='routeNode reset'><span>07/25</span><b>hard_global</b><p>incident_compensation</p></article>
-<article class='routeNode reset'><span>07/28</span><b>hard_global</b><p>launch_promotion</p></article>
-<article class='routeNode reset'><span>07/29</span><b>hard_global</b><p>launch_promotion</p></article></div></div>
+      <div class="eventMap"><div class="routePath"><div class='routeRow '><article class='routeNode incident'><span>06/16</span><b>事故信号</b><p>Official Codex status incident; strength conservatively scored from the incident t</p></article><article class='routeNode incident'><span>06/25</span><b>事故信号</b><p>Official Codex status incident; strength conservatively scored from the incident t</p></article><article class='routeNode incident'><span>06/26</span><b>事故信号</b><p>Confirmed or claimed product shortfall with moderate disruption.</p></article><article class='routeNode incident'><span>06/26</span><b>事故信号</b><p>Confirmed or claimed product shortfall with moderate disruption.</p></article></div>
+<div class='routeRow reverse'><article class='routeNode incident'><span>06/26</span><b>事故信号</b><p>Confirmed or claimed product shortfall with moderate disruption.</p></article><article class='routeNode incident'><span>06/29</span><b>事故信号</b><p>Official Codex status incident; strength conservatively scored from the incident t</p></article><article class='routeNode reset'><span>07/10</span><b>hard_global</b><p>mixed_or_unclear</p></article><article class='routeNode reset'><span>07/11</span><b>hard_global</b><p>mixed_or_unclear</p></article></div>
+<div class='routeRow '><article class='routeNode reset'><span>07/12</span><b>hard_global</b><p>milestone_celebration</p></article><article class='routeNode reset'><span>07/12</span><b>banked_credit</b><p>incident_compensation</p></article><article class='routeNode reset'><span>07/13</span><b>banked_credit</b><p>milestone_celebration</p></article><article class='routeNode reset'><span>07/14</span><b>hard_global</b><p>milestone_celebration</p></article></div>
+<div class='routeRow reverse'><article class='routeNode reset'><span>07/16</span><b>hard_global</b><p>milestone_celebration</p></article><article class='routeNode incident'><span>07/17</span><b>事故信号</b><p>Official Codex status incident; strength conservatively scored from the incident t</p></article><article class='routeNode incident'><span>07/17</span><b>事故信号</b><p>Official Codex status incident; strength conservatively scored from the incident t</p></article><article class='routeNode reset'><span>07/18</span><b>hard_global</b><p>mixed_or_unclear</p></article></div>
+<div class='routeRow '><article class='routeNode incident'><span>07/18</span><b>事故信号</b><p>Official Codex status incident; strength conservatively scored from the incident t</p></article><article class='routeNode incident'><span>07/20</span><b>事故信号</b><p>Official Codex status incident; strength conservatively scored from the incident t</p></article><article class='routeNode reset'><span>07/21</span><b>hard_global</b><p>milestone_celebration</p></article><article class='routeNode incident'><span>07/24</span><b>事故信号</b><p>Official Codex status incident; strength conservatively scored from the incident t</p></article></div>
+<div class='routeRow reverse'><article class='routeNode incident'><span>07/25</span><b>事故信号</b><p>Near/global outage: novel, highly disruptive, core reliability.</p></article><article class='routeNode reset'><span>07/25</span><b>hard_global</b><p>incident_compensation</p></article><article class='routeNode reset'><span>07/28</span><b>hard_global</b><p>launch_promotion</p></article><article class='routeNode reset'><span>07/29</span><b>hard_global</b><p>launch_promotion</p></article></div></div></div>
       <div class="chips">
-        <span class="chip">手机上可横向滑动</span>
+        <span class="chip">按公开时间前进</span>
         <span class="chip">红点：事故</span>
         <span class="chip">蓝点：里程碑</span>
         <span class="chip">橙点：发布/额度更新</span>

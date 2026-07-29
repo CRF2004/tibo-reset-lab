@@ -312,7 +312,7 @@ def main() -> int:
         for label, value, text in detective_items
     )
     graph_events = []
-    for row in sorted_contexts[:7]:
+    for row in sorted_contexts[:12]:
         if row["event_type"] == "product_incident":
             node_type = "incident"
             title = "事故信号"
@@ -331,7 +331,7 @@ def main() -> int:
             "title": title,
             "text": row["scoring_rationale"][:82],
         })
-    for row in sorted_ann[:5]:
+    for row in sorted_ann[:12]:
         graph_events.append({
             "at": row["announced_at_utc"],
             "type": "reset",
@@ -339,10 +339,18 @@ def main() -> int:
             "text": row["reason_type"],
         })
     graph_events.sort(key=lambda row: row["at"])
-    graph_events = graph_events[-12:]
+    route_chunks = [graph_events[index:index + 4] for index in range(0, len(graph_events), 4)]
     route_html = "\n".join(
-        f"<article class='routeNode {esc(row['type'])}'><span>{esc(short_day(row['at']))}</span><b>{esc(row['title'])}</b><p>{esc(row['text'])}</p></article>"
-        for row in graph_events
+        (
+            f"<div class='routeRow {'reverse' if row_index % 2 else ''}'>"
+            + "".join(
+                f"<article class='routeNode {esc(item['type'])}'>"
+                f"<span>{esc(short_day(item['at']))}</span><b>{esc(item['title'])}</b><p>{esc(item['text'])}</p></article>"
+                for item in chunk
+            )
+            + "</div>"
+        )
+        for row_index, chunk in enumerate(route_chunks)
     )
 
     html_text = f"""<!doctype html>
@@ -458,11 +466,16 @@ def main() -> int:
     .routeMap div {{ padding:14px; border:1px solid var(--line); border-radius:16px; background:#f6ead9; }}
     .routeMap span {{ color:var(--muted); font:800 12px/1 system-ui,-apple-system,Segoe UI,sans-serif; }}
     .routeMap strong {{ display:block; margin-top:8px; }}
-    .eventMap {{ overflow-x:auto; padding:10px 4px 18px; }}
-    .routePath {{ display:grid; grid-auto-flow:column; grid-auto-columns:minmax(190px,1fr); gap:18px; align-items:start; min-width:980px; position:relative; padding-top:28px; }}
-    .routePath::before {{ content:""; position:absolute; left:20px; right:20px; top:45px; height:5px; border-radius:999px; background:linear-gradient(90deg,#d6c3aa,#315f7d,#26735b,#b66a2d); opacity:.72; }}
-    .routeNode {{ position:relative; padding:44px 16px 16px; border:1px solid var(--line); border-radius:18px; background:rgba(255,253,248,.94); box-shadow:0 12px 34px rgba(80,52,24,.08); }}
-    .routeNode::before {{ content:""; position:absolute; top:8px; left:18px; width:24px; height:24px; border-radius:50%; border:5px solid #fff8ee; background:var(--blue); box-shadow:0 0 0 1px var(--line); }}
+    .eventMap {{ padding:18px; border:1px solid var(--line); border-radius:24px; background:rgba(255,253,248,.72); box-shadow:var(--shadow); }}
+    .routePath {{ display:flex; flex-direction:column; gap:28px; position:relative; }}
+    .routeRow {{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px; position:relative; }}
+    .routeRow.reverse {{ direction:rtl; }}
+    .routeRow.reverse .routeNode {{ direction:ltr; }}
+    .routeRow::before {{ content:""; position:absolute; left:8%; right:8%; top:34px; height:8px; border-radius:999px; background:repeating-linear-gradient(90deg,#d8c3a6 0 18px,#c49d72 18px 28px); opacity:.64; }}
+    .routeRow:not(:last-child)::after {{ content:""; position:absolute; width:52px; height:70px; border:8px solid #d8c3a6; border-left:0; border-bottom:0; border-radius:0 40px 0 0; right:3%; top:34px; opacity:.64; }}
+    .routeRow.reverse:not(:last-child)::after {{ right:auto; left:3%; transform:scaleX(-1); }}
+    .routeNode {{ position:relative; z-index:1; padding:54px 16px 16px; border:1px solid var(--line); border-radius:20px; background:rgba(255,253,248,.96); box-shadow:0 12px 34px rgba(80,52,24,.08); min-height:170px; }}
+    .routeNode::before {{ content:""; position:absolute; top:20px; left:18px; width:24px; height:24px; border-radius:50%; border:5px solid #fff8ee; background:var(--blue); box-shadow:0 0 0 1px var(--line); }}
     .routeNode.reset::before {{ background:var(--green); }}
     .routeNode.incident::before {{ background:var(--rose); }}
     .routeNode.launch::before {{ background:var(--amber); }}
@@ -472,7 +485,7 @@ def main() -> int:
     .routeNode p {{ margin:0; color:var(--muted); font-size:14px; }}
     footer {{ border-top:1px solid var(--line); padding:24px 20px; color:var(--muted); }}
     a {{ color:var(--blue); }}
-    @media (max-width: 950px) {{ .topbar {{ align-items:flex-start; flex-direction:column; }} .heroCard,.chartCard {{ grid-column:1 / -1; }} .two,.facts,.metricRow,.evidenceGrid,.storyStrip,.labRibbon,.moveGrid,.watchList,.seasonBoard,.lessonIntro,.lessonGrid,.scoreExplainer,.caseGrid,.detectiveGrid,.routeMap {{ grid-template-columns:1fr; }} .dotRow {{ grid-template-columns:118px 1fr 48px; }} .predictionBox {{ grid-template-columns:1fr; }} .sliderValue {{ text-align:left; }} table {{ font-size:14px; }} }}
+    @media (max-width: 950px) {{ .topbar {{ align-items:flex-start; flex-direction:column; }} .heroCard,.chartCard {{ grid-column:1 / -1; }} .two,.facts,.metricRow,.evidenceGrid,.storyStrip,.labRibbon,.moveGrid,.watchList,.seasonBoard,.lessonIntro,.lessonGrid,.scoreExplainer,.caseGrid,.detectiveGrid,.routeMap {{ grid-template-columns:1fr; }} .routeRow,.routeRow.reverse {{ grid-template-columns:1fr; direction:ltr; }} .routeRow::before {{ left:30px; right:auto; top:12px; bottom:12px; width:8px; height:auto; background:repeating-linear-gradient(180deg,#d8c3a6 0 18px,#c49d72 18px 28px); }} .routeRow::after {{ display:none; }} .routeNode {{ min-height:auto; padding-left:62px; padding-top:18px; }} .routeNode::before {{ top:18px; left:18px; }} .dotRow {{ grid-template-columns:118px 1fr 48px; }} .predictionBox {{ grid-template-columns:1fr; }} .sliderValue {{ text-align:left; }} table {{ font-size:14px; }} }}
   </style>
 </head>
 <body>
@@ -568,7 +581,7 @@ def main() -> int:
       </div>
       <div class="eventMap"><div class="routePath">{route_html}</div></div>
       <div class="chips">
-        <span class="chip">手机上可横向滑动</span>
+        <span class="chip">按公开时间前进</span>
         <span class="chip">红点：事故</span>
         <span class="chip">蓝点：里程碑</span>
         <span class="chip">橙点：发布/额度更新</span>
