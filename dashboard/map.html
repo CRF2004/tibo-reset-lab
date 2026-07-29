@@ -56,12 +56,13 @@
     @media (max-width: 850px) { .topbar { align-items:flex-start; flex-direction:column; } .grid3,.grid2,.caseGrid { grid-template-columns:1fr; } table { font-size:14px; } }
     
     #d3map { min-height:560px; border:1px solid var(--line); border-radius:24px; background:linear-gradient(180deg, rgba(255,253,248,.94), rgba(246,234,217,.78)); box-shadow:var(--shadow); overflow:hidden; }
-    .mapCards { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:16px; }
-    .mapCards article { padding:16px; border:1px solid var(--line); border-radius:16px; background:var(--paper); }
-    .mapCards span { color:var(--muted); font:800 12px/1 system-ui,-apple-system,Segoe UI,sans-serif; }
-    .mapCards strong { display:block; margin:7px 0; font:800 17px/1.15 system-ui,-apple-system,Segoe UI,sans-serif; }
-    .mapCards p { margin:0; color:var(--muted); font-size:14px; }
-    @media (max-width: 850px) { .mapCards { grid-template-columns:1fr; } #d3map { min-height:760px; } }
+    .mapStage { display:grid; grid-template-columns:1fr 320px; gap:16px; align-items:start; }
+    .eventDetail { position:sticky; top:18px; min-height:300px; padding:22px; border:1px solid var(--line); border-radius:22px; background:var(--paper); box-shadow:var(--shadow); }
+    .eventDetail span { color:var(--amber); font:800 13px/1 system-ui,-apple-system,Segoe UI,sans-serif; }
+    .eventDetail strong { display:block; margin:10px 0; font:800 28px/1.08 system-ui,-apple-system,Segoe UI,sans-serif; }
+    .eventDetail p { color:var(--muted); margin:0 0 12px; }
+    .eventDetail code { display:block; white-space:normal; color:var(--muted); font-size:13px; }
+    @media (max-width: 950px) { .mapStage { grid-template-columns:1fr; } .eventDetail { position:relative; top:auto; } #d3map { min-height:760px; } }
   </style>
 </head>
 <body>
@@ -75,11 +76,13 @@
     </div><p class="eyebrow">OpenAI 事件地图</p><h1>把所有信号连成一条会转弯的路线</h1><p class="lead">事故、里程碑、发布和 reset 公告会改变近期节奏。这里按公开时间把它们串起来，看清预测不是盯着单个点，而是在读一段走势。</p></div></header>
   <main>
     <section>
-      <div id="d3map" role="img" aria-label="按时间连接的 OpenAI 相关事件路线图"></div>
+      <div class="mapStage">
+        <div id="d3map" role="img" aria-label="按时间连接的 OpenAI 相关事件路线图"></div>
+        <aside id="eventDetail" class="eventDetail" aria-live="polite"></aside>
+      </div>
       <div class="chips">
         <span class="chip">按公开时间前进</span><span class="chip">红：事故</span><span class="chip">蓝：里程碑</span><span class="chip">橙：发布/额度更新</span><span class="chip">绿：reset 公告</span>
       </div>
-      <div id="mapCards" class="mapCards"></div>
     </section>
   </main>
   <footer><div class="wrap">数据来自仓库 CSV。返回 <a href="index.html">今日概览</a>。</div></footer>
@@ -89,16 +92,21 @@
     const colors = { incident:"#a64d56", reset:"#26735b", launch:"#b66a2d", milestone:"#315f7d", context:"#746b60" };
     const labels = { incident:"事故", reset:"reset", launch:"发布", milestone:"里程碑", context:"背景" };
     const wrap = document.getElementById("d3map");
-    const cards = document.getElementById("mapCards");
+    const detail = document.getElementById("eventDetail");
+    let activeIndex = events.length - 1;
 
-    function renderCards() {
-      cards.innerHTML = events.map((event, index) => `
-        <article>
-          <span>${String(index + 1).padStart(2, "0")} · ${event.date} · ${labels[event.type] || "事件"}</span>
-          <strong>${event.title}</strong>
-          <p>${event.text}</p>
-        </article>
-      `).join("");
+    function renderDetail(index) {
+      activeIndex = index;
+      const event = events[index];
+      detail.innerHTML = `
+        <span>${String(index + 1).padStart(2, "0")} · ${event.date} · ${labels[event.type] || "事件"}</span>
+        <strong>${event.title}</strong>
+        <p>${event.text}</p>
+        <code>${event.at}</code>
+      `;
+      d3.selectAll("g.event circle")
+        .attr("stroke-width", d => d.index === activeIndex ? 9 : 6)
+        .attr("stroke", d => d.index === activeIndex ? "#27211b" : "#fff8ee");
     }
 
     function renderMap() {
@@ -141,8 +149,13 @@
         .attr("opacity", .9);
       const node = svg.selectAll("g.event").data(points).join("g")
         .attr("class", "event")
-        .attr("transform", d => `translate(${d.x},${d.y})`);
-      node.append("circle").attr("r", mobile ? 19 : 23).attr("fill", d => colors[d.type] || colors.context).attr("stroke", "#fff8ee").attr("stroke-width", 6);
+        .attr("transform", d => `translate(${d.x},${d.y})`)
+        .attr("tabindex", 0)
+        .attr("role", "button")
+        .style("cursor", "pointer")
+        .on("click", (event, d) => renderDetail(d.index))
+        .on("keydown", (event, d) => { if (event.key === "Enter" || event.key === " ") renderDetail(d.index); });
+      node.append("circle").attr("r", mobile ? 19 : 23).attr("fill", d => colors[d.type] || colors.context).attr("stroke", d => d.index === activeIndex ? "#27211b" : "#fff8ee").attr("stroke-width", d => d.index === activeIndex ? 9 : 6);
       node.append("text").attr("y", 5).attr("text-anchor", "middle").attr("fill", "#fff8ee").attr("font-family", "system-ui,-apple-system,Segoe UI,sans-serif").attr("font-weight", 800).attr("font-size", mobile ? 11 : 12).text(d => d.index + 1);
       node.append("text").attr("x", mobile ? 0 : 0).attr("y", mobile ? 45 : 52).attr("text-anchor", "middle").attr("fill", "#746b60").attr("font-family", "system-ui,-apple-system,Segoe UI,sans-serif").attr("font-weight", 800).attr("font-size", 12).text(d => d.date);
       node.append("text").attr("x", 0).attr("y", mobile ? 64 : 73).attr("text-anchor", "middle").attr("fill", "#27211b").attr("font-family", "system-ui,-apple-system,Segoe UI,sans-serif").attr("font-weight", 800).attr("font-size", mobile ? 12 : 13).text(d => {
@@ -150,8 +163,8 @@
         return title;
       });
     }
-    renderCards();
     renderMap();
+    renderDetail(activeIndex);
     addEventListener("resize", () => requestAnimationFrame(renderMap));
   </script>
 </body>

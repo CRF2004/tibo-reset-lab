@@ -388,6 +388,12 @@ def main() -> int:
     nav {{ display:flex; gap:8px; flex-wrap:wrap; }}
     nav a {{ color:var(--ink); background:rgba(255,255,255,.55); text-decoration:none; border:1px solid var(--line); border-radius:999px; padding:8px 12px; font:600 14px/1 system-ui,-apple-system,Segoe UI,sans-serif; }}
     main {{ padding:8px 20px 64px; }}
+    .siteLayout {{ max-width:1320px; margin:0 auto; display:grid; grid-template-columns:190px minmax(0,1fr); gap:22px; align-items:start; }}
+    .sideNav {{ position:sticky; top:18px; display:flex; flex-direction:column; gap:8px; padding:14px; border:1px solid var(--line); border-radius:18px; background:rgba(255,253,248,.82); box-shadow:var(--shadow); }}
+    .sideNav a {{ text-decoration:none; color:var(--ink); border-radius:12px; padding:9px 10px; font:700 14px/1.2 system-ui,-apple-system,Segoe UI,sans-serif; }}
+    .sideNav a:hover {{ background:#f6ead9; }}
+    .contentFlow {{ min-width:0; }}
+    .siteLayout section {{ margin:22px 0; }}
     section {{ margin:26px auto; max-width:1120px; }}
     h2 {{ margin:0 0 10px; font-size:28px; line-height:1.12; }}
     h3 {{ margin:0 0 10px; font-size:18px; }}
@@ -503,7 +509,7 @@ def main() -> int:
     .routeNode p {{ margin:0; color:var(--muted); font-size:14px; }}
     footer {{ border-top:1px solid var(--line); padding:24px 20px; color:var(--muted); }}
     a {{ color:var(--blue); }}
-    @media (max-width: 950px) {{ .topbar {{ align-items:flex-start; flex-direction:column; }} .heroCard,.chartCard {{ grid-column:1 / -1; }} .two,.facts,.metricRow,.evidenceGrid,.storyStrip,.labRibbon,.moveGrid,.watchList,.seasonBoard,.lessonIntro,.lessonGrid,.scoreExplainer,.caseGrid,.detectiveGrid,.routeMap,.pageGrid {{ grid-template-columns:1fr; }} .routeRow,.routeRow.reverse {{ grid-template-columns:1fr; direction:ltr; }} .routeRow::before {{ left:30px; right:auto; top:12px; bottom:12px; width:8px; height:auto; background:repeating-linear-gradient(180deg,#d8c3a6 0 18px,#c49d72 18px 28px); }} .routeRow::after {{ display:none; }} .routeNode {{ min-height:auto; padding-left:62px; padding-top:18px; }} .routeNode::before {{ top:18px; left:18px; }} .dotRow {{ grid-template-columns:118px 1fr 48px; }} .predictionBox {{ grid-template-columns:1fr; }} .sliderValue {{ text-align:left; }} table {{ font-size:14px; }} }}
+    @media (max-width: 950px) {{ .topbar {{ align-items:flex-start; flex-direction:column; }} .siteLayout {{ display:block; }} .sideNav {{ position:relative; top:auto; flex-direction:row; overflow:auto; margin:0 auto 14px; max-width:1120px; }} .sideNav a {{ white-space:nowrap; }} .heroCard,.chartCard {{ grid-column:1 / -1; }} .two,.facts,.metricRow,.evidenceGrid,.storyStrip,.labRibbon,.moveGrid,.watchList,.seasonBoard,.lessonIntro,.lessonGrid,.scoreExplainer,.caseGrid,.detectiveGrid,.routeMap,.pageGrid {{ grid-template-columns:1fr; }} .routeRow,.routeRow.reverse {{ grid-template-columns:1fr; direction:ltr; }} .routeRow::before {{ left:30px; right:auto; top:12px; bottom:12px; width:8px; height:auto; background:repeating-linear-gradient(180deg,#d8c3a6 0 18px,#c49d72 18px 28px); }} .routeRow::after {{ display:none; }} .routeNode {{ min-height:auto; padding-left:62px; padding-top:18px; }} .routeNode::before {{ top:18px; left:18px; }} .dotRow {{ grid-template-columns:118px 1fr 48px; }} .predictionBox {{ grid-template-columns:1fr; }} .sliderValue {{ text-align:left; }} table {{ font-size:14px; }} }}
   </style>
 </head>
 <body>
@@ -524,6 +530,14 @@ def main() -> int:
     </div>
   </header>
   <main>
+    <div class="siteLayout">
+      <aside class="sideNav" aria-label="今日页目录">
+        <a href="#current">现在几成</a>
+        <a href="#why">为什么变化</a>
+        <a href="#play">我来猜</a>
+        <a href="#more">继续看</a>
+      </aside>
+      <div class="contentFlow">
     <section class="metricRow" aria-label="关键数字">
       <div class="metric"><span class="subtle">最高 24h 概率</span><strong>{pct(max_p)}</strong></div>
       <div class="metric"><span class="subtle">平均 24h 概率</span><strong>{pct(avg_p)}</strong></div>
@@ -554,41 +568,13 @@ def main() -> int:
       </div>
     </section>
 
-    <section class="labRibbon">
-      <div class="alertCard">
-        <span>6小时观察层</span>
-        <strong>{esc(alert_level)}</strong>
-        <p>{esc(alert_copy)} 这一层先作为公开展示，后续会用历史回测冻结阈值。</p>
-      </div>
-      <div class="panel">
-        <h2>下一步会补什么</h2>
-        <p class="note">产品路线里的第一阶段正在落地：解释概率、展示分歧、让读者先做一次自己的判断。</p>
-        <div class="chips">
-          <span class="chip">概率变动解释器</span>
-          <span class="chip">Tibo Watch</span>
-          <span class="chip">历史回放</span>
-        </div>
-      </div>
-    </section>
-
-    <section id="learn">
-      <div class="lessonIntro">
-        <div>
-          <p class="eyebrow">概率小课堂</p>
-          <h2>这个数字不是拍脑袋来的</h2>
-        </div>
-        <p class="note">我们的做法很朴素：先尊重历史频率，再看最近节奏、时间间隔和公开背景信号；最后用已经揭晓的结果检验模型有没有过度自信。</p>
-      </div>
-      <div class="lessonGrid">{lesson_html}</div>
-    </section>
-
     <section id="why">
       <h2>证据天平</h2>
       <p class="note">这些卡片把模型输入翻译成人话：哪些信号把概率往上推，哪些信号让它慢下来。</p>
       <div class="evidenceGrid">{evidence_html}</div>
     </section>
 
-    <section>
+    <section id="more">
       <div class="lessonIntro">
         <div>
           <p class="eyebrow">分页面浏览</p>
@@ -601,12 +587,6 @@ def main() -> int:
         <a class="pageCard" href="learn.html"><span>科普</span><strong>概率为什么可信</strong><p>用通俗语言解释基准率、最近窗口、时间间隔和评分。</p></a>
         <a class="pageCard" href="history.html"><span>回放</span><strong>历史演练榜</strong><p>把统计模型、LLM、玩家和 Crowd 放到可比较的长期榜单里。</p></a>
       </div>
-    </section>
-
-    <section>
-      <h2>为什么它会动？</h2>
-      <p class="note">这是“Why did it move”的第一版：先把可直接从数据表读出的变化讲清楚，之后再接入特征消融。</p>
-      <div class="moveGrid">{move_html}</div>
     </section>
 
     <section class="panel" id="play">
@@ -625,107 +605,17 @@ def main() -> int:
       </div>
     </section>
 
-    <section>
-      <h2>Tibo Watch 订阅草图</h2>
-      <p class="note">不是所有新帖都值得打扰你。订阅层级会把“明确 reset”和“可能相关背景”分开。</p>
-      <div class="watchList">
-        <article class="watch"><strong>Only confirmed</strong><p class="note">只看明确 reset / usage limit 公告，适合只关心结果的人。</p></article>
-        <article class="watch"><strong>Relevant posts</strong><p class="note">加入事故、里程碑、发布和额度讨论，适合想看概率为什么变化的人。</p></article>
-        <article class="watch"><strong>Research feed</strong><p class="note">保留发现时间、来源、分类和通知延迟，适合核查数据的人。</p></article>
-      </div>
-    </section>
-
-    <section>
-      <div class="lessonIntro">
-        <div>
-          <p class="eyebrow">证据侦探</p>
-          <h2>证据是怎么被放进数据集的？</h2>
-        </div>
-        <p class="note">预测可信，前提是事件定义清楚。我们把“看到帖子”“确认含义”“切分动作”“等待结果”拆成几步，避免把不同性质的 reset 混在一起。</p>
-      </div>
-      <div class="detectiveGrid">{detective_html}</div>
-      <div class="routeMap">
-        <div><span>1</span><strong>发现新帖</strong></div>
-        <div><span>2</span><strong>回到原始来源</strong></div>
-        <div><span>3</span><strong>分类 hard / banked / conditional</strong></div>
-        <div><span>4</span><strong>锁定预测与结果</strong></div>
-      </div>
-    </section>
-
-    <section>
-      <h2>当前概率表</h2>
-      <p class="note">证据截止时间说明预测者最多只能看到该时间以前的信息。</p>
-      <div class="tableWrap"><table><thead><tr><th>预测者</th><th>未来24小时</th><th>未来7天</th><th>证据截止</th></tr></thead><tbody>{probability_rows}</tbody></table></div>
-    </section>
-
-    <section class="two" id="scores">
-      <div>
-        <h2>已经揭晓的预测</h2>
-        <p class="note">结果为 1 表示 24 小时内发生。误差越小，说明当时的概率判断越贴近结果。</p>
-        <div class="tableWrap"><table><thead><tr><th>预测者</th><th>签发时间</th><th>当时猜24h</th><th>结果</th><th>误差</th><th>类型</th></tr></thead><tbody>{score_rows_html}</tbody></table></div>
-      </div>
-      <div id="history">
-        <h2>历史演练榜</h2>
-        <p class="note">full 是完整历史窗口；limited 是少量回放点。先看样本量，再看误差。</p>
-        <div class="tableWrap"><table><thead><tr><th>#</th><th>预测者</th><th>覆盖</th><th>N</th><th>平均误差</th><th>惩罚大错</th><th>相对基础模型</th></tr></thead><tbody>{leaderboard_rows}</tbody></table></div>
-      </div>
-    </section>
-
-    <section class="caseFile">
-      {autopsy_html}
-    </section>
-
     <section class="panel">
-      <h2>评分为什么有说服力？</h2>
-      <p class="note">概率预测不能只看“猜中了没有”。一个报 55% 的人和一个报 99% 的人，即使都猜对了，承担的风险也不一样。</p>
-      <div class="scoreExplainer">
-        <div><strong>Brier：离结果有多远</strong>结果发生记为 1，没发生记为 0。预测 40% 后发生，误差就是 0.6 的平方。</div>
-        <div><strong>Log Loss：惩罚过度自信</strong>如果把几乎不可能的事说成 99%，一旦错了会被重罚。</div>
-        <div><strong>覆盖率：不能挑题</strong>样本量越多，越能看出一个预测者是不是真的稳定。</div>
-      </div>
-    </section>
-
-    <section>
-      <h2>赛季制竞猜会长什么样？</h2>
-      <div class="seasonBoard">
-        <article class="season"><span>玩家</span><strong>看校准</strong><p class="note">敢押高概率也要承担误差，长期稳定比蒙中一次更重要。</p></article>
-        <article class="season"><span>LLM</span><strong>看分歧</strong><p class="note">同一份证据，不同模型会怎样权衡新公告和冷却期。</p></article>
-        <article class="season"><span>Crowd</span><strong>看群体</strong><p class="note">匿名提交后再展示分布，减少被当前模型数字锚定。</p></article>
-        <article class="season"><span>统计模型</span><strong>看基准</strong><p class="note">用简单、可复现的规则作为所有判断的参照系。</p></article>
-      </div>
-    </section>
-
-    <section>
-      <h2>历史故事模式</h2>
-      <div class="storyStrip">
-        <article class="story"><h3>回到当时</h3><p class="note">只看某个时间点以前的公开证据，再猜未来一天会不会出现 reset。</p></article>
-        <article class="story"><h3>揭晓答案</h3><p class="note">窗口结束后展示公告、原因类型和各预测者当时的概率。</p></article>
-        <article class="story"><h3>复盘判断</h3><p class="note">比较人、LLM、Crowd 和统计模型，看看谁更稳、谁更敢押。</p></article>
-      </div>
-    </section>
-
-    <section class="two">
-      <div class="panel">
-        <h2>最近 reset 公告</h2>
-        <ul class="timeline">{timeline_html}</ul>
-      </div>
-      <div class="panel">
-        <h2>最近公开背景信号</h2>
-        <ul class="timeline">{context_html}</ul>
-      </div>
-    </section>
-
-    <section class="panel">
-      <h2>怎么看这些指标？</h2>
+      <h2>主页只保留一个读法</h2>
       <div class="chips">
-        <span class="chip">平均误差越小越好</span>
-        <span class="chip">N 越大越可信</span>
-        <span class="chip">24h 看短线</span>
-        <span class="chip">7d 看趋势</span>
-        <span class="chip">证据截止表示当时能看到什么</span>
+        <span class="chip">先看最高 24h 概率</span>
+        <span class="chip">再看预测者分歧</span>
+        <span class="chip">最后看证据天平</span>
       </div>
-      <p class="note">每个数字都来自公开表格、冻结预测或评分记录；想深挖时可以直接打开仓库数据。</p>
+      <p class="note">如果想知道模型为什么可信，去“概率小课堂”；如果想看事件如何连接，去“事件地图”；如果想比较谁更准，去“历史表现”。</p>
     </section>
+      </div>
+    </div>
   </main>
   <footer><div class="wrap">数据来自仓库 CSV。查看 <a href="https://github.com/CRF2004/tibo-reset-lab/blob/main/README.md">README</a>、<a href="https://github.com/CRF2004/tibo-reset-lab/blob/main/reports/community_dashboard.md">Markdown Dashboard</a> 和 <a href="https://github.com/CRF2004/tibo-reset-lab/blob/main/PUBLIC_PRODUCT_IDEAS.md">产品路线</a>。</div></footer>
   <script>
@@ -804,23 +694,26 @@ def main() -> int:
   <style>
     {page_css}
     #d3map {{ min-height:560px; border:1px solid var(--line); border-radius:24px; background:linear-gradient(180deg, rgba(255,253,248,.94), rgba(246,234,217,.78)); box-shadow:var(--shadow); overflow:hidden; }}
-    .mapCards {{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:16px; }}
-    .mapCards article {{ padding:16px; border:1px solid var(--line); border-radius:16px; background:var(--paper); }}
-    .mapCards span {{ color:var(--muted); font:800 12px/1 system-ui,-apple-system,Segoe UI,sans-serif; }}
-    .mapCards strong {{ display:block; margin:7px 0; font:800 17px/1.15 system-ui,-apple-system,Segoe UI,sans-serif; }}
-    .mapCards p {{ margin:0; color:var(--muted); font-size:14px; }}
-    @media (max-width: 850px) {{ .mapCards {{ grid-template-columns:1fr; }} #d3map {{ min-height:760px; }} }}
+    .mapStage {{ display:grid; grid-template-columns:1fr 320px; gap:16px; align-items:start; }}
+    .eventDetail {{ position:sticky; top:18px; min-height:300px; padding:22px; border:1px solid var(--line); border-radius:22px; background:var(--paper); box-shadow:var(--shadow); }}
+    .eventDetail span {{ color:var(--amber); font:800 13px/1 system-ui,-apple-system,Segoe UI,sans-serif; }}
+    .eventDetail strong {{ display:block; margin:10px 0; font:800 28px/1.08 system-ui,-apple-system,Segoe UI,sans-serif; }}
+    .eventDetail p {{ color:var(--muted); margin:0 0 12px; }}
+    .eventDetail code {{ display:block; white-space:normal; color:var(--muted); font-size:13px; }}
+    @media (max-width: 950px) {{ .mapStage {{ grid-template-columns:1fr; }} .eventDetail {{ position:relative; top:auto; }} #d3map {{ min-height:760px; }} }}
   </style>
 </head>
 <body>
   <header><div class="wrap"><div class="topbar"><div class="brand">Tibo Reset Lab</div>{nav_html}</div><p class="eyebrow">OpenAI 事件地图</p><h1>把所有信号连成一条会转弯的路线</h1><p class="lead">事故、里程碑、发布和 reset 公告会改变近期节奏。这里按公开时间把它们串起来，看清预测不是盯着单个点，而是在读一段走势。</p></div></header>
   <main>
     <section>
-      <div id="d3map" role="img" aria-label="按时间连接的 OpenAI 相关事件路线图"></div>
+      <div class="mapStage">
+        <div id="d3map" role="img" aria-label="按时间连接的 OpenAI 相关事件路线图"></div>
+        <aside id="eventDetail" class="eventDetail" aria-live="polite"></aside>
+      </div>
       <div class="chips">
         <span class="chip">按公开时间前进</span><span class="chip">红：事故</span><span class="chip">蓝：里程碑</span><span class="chip">橙：发布/额度更新</span><span class="chip">绿：reset 公告</span>
       </div>
-      <div id="mapCards" class="mapCards"></div>
     </section>
   </main>
   <footer><div class="wrap">数据来自仓库 CSV。返回 <a href="index.html">今日概览</a>。</div></footer>
@@ -830,16 +723,21 @@ def main() -> int:
     const colors = {{ incident:"#a64d56", reset:"#26735b", launch:"#b66a2d", milestone:"#315f7d", context:"#746b60" }};
     const labels = {{ incident:"事故", reset:"reset", launch:"发布", milestone:"里程碑", context:"背景" }};
     const wrap = document.getElementById("d3map");
-    const cards = document.getElementById("mapCards");
+    const detail = document.getElementById("eventDetail");
+    let activeIndex = events.length - 1;
 
-    function renderCards() {{
-      cards.innerHTML = events.map((event, index) => `
-        <article>
-          <span>${{String(index + 1).padStart(2, "0")}} · ${{event.date}} · ${{labels[event.type] || "事件"}}</span>
-          <strong>${{event.title}}</strong>
-          <p>${{event.text}}</p>
-        </article>
-      `).join("");
+    function renderDetail(index) {{
+      activeIndex = index;
+      const event = events[index];
+      detail.innerHTML = `
+        <span>${{String(index + 1).padStart(2, "0")}} · ${{event.date}} · ${{labels[event.type] || "事件"}}</span>
+        <strong>${{event.title}}</strong>
+        <p>${{event.text}}</p>
+        <code>${{event.at}}</code>
+      `;
+      d3.selectAll("g.event circle")
+        .attr("stroke-width", d => d.index === activeIndex ? 9 : 6)
+        .attr("stroke", d => d.index === activeIndex ? "#27211b" : "#fff8ee");
     }}
 
     function renderMap() {{
@@ -882,8 +780,13 @@ def main() -> int:
         .attr("opacity", .9);
       const node = svg.selectAll("g.event").data(points).join("g")
         .attr("class", "event")
-        .attr("transform", d => `translate(${{d.x}},${{d.y}})`);
-      node.append("circle").attr("r", mobile ? 19 : 23).attr("fill", d => colors[d.type] || colors.context).attr("stroke", "#fff8ee").attr("stroke-width", 6);
+        .attr("transform", d => `translate(${{d.x}},${{d.y}})`)
+        .attr("tabindex", 0)
+        .attr("role", "button")
+        .style("cursor", "pointer")
+        .on("click", (event, d) => renderDetail(d.index))
+        .on("keydown", (event, d) => {{ if (event.key === "Enter" || event.key === " ") renderDetail(d.index); }});
+      node.append("circle").attr("r", mobile ? 19 : 23).attr("fill", d => colors[d.type] || colors.context).attr("stroke", d => d.index === activeIndex ? "#27211b" : "#fff8ee").attr("stroke-width", d => d.index === activeIndex ? 9 : 6);
       node.append("text").attr("y", 5).attr("text-anchor", "middle").attr("fill", "#fff8ee").attr("font-family", "system-ui,-apple-system,Segoe UI,sans-serif").attr("font-weight", 800).attr("font-size", mobile ? 11 : 12).text(d => d.index + 1);
       node.append("text").attr("x", mobile ? 0 : 0).attr("y", mobile ? 45 : 52).attr("text-anchor", "middle").attr("fill", "#746b60").attr("font-family", "system-ui,-apple-system,Segoe UI,sans-serif").attr("font-weight", 800).attr("font-size", 12).text(d => d.date);
       node.append("text").attr("x", 0).attr("y", mobile ? 64 : 73).attr("text-anchor", "middle").attr("fill", "#27211b").attr("font-family", "system-ui,-apple-system,Segoe UI,sans-serif").attr("font-weight", 800).attr("font-size", mobile ? 12 : 13).text(d => {{
@@ -891,8 +794,8 @@ def main() -> int:
         return title;
       }});
     }}
-    renderCards();
     renderMap();
+    renderDetail(activeIndex);
     addEventListener("resize", () => requestAnimationFrame(renderMap));
   </script>
 </body>

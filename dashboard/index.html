@@ -20,6 +20,12 @@
     nav { display:flex; gap:8px; flex-wrap:wrap; }
     nav a { color:var(--ink); background:rgba(255,255,255,.55); text-decoration:none; border:1px solid var(--line); border-radius:999px; padding:8px 12px; font:600 14px/1 system-ui,-apple-system,Segoe UI,sans-serif; }
     main { padding:8px 20px 64px; }
+    .siteLayout { max-width:1320px; margin:0 auto; display:grid; grid-template-columns:190px minmax(0,1fr); gap:22px; align-items:start; }
+    .sideNav { position:sticky; top:18px; display:flex; flex-direction:column; gap:8px; padding:14px; border:1px solid var(--line); border-radius:18px; background:rgba(255,253,248,.82); box-shadow:var(--shadow); }
+    .sideNav a { text-decoration:none; color:var(--ink); border-radius:12px; padding:9px 10px; font:700 14px/1.2 system-ui,-apple-system,Segoe UI,sans-serif; }
+    .sideNav a:hover { background:#f6ead9; }
+    .contentFlow { min-width:0; }
+    .siteLayout section { margin:22px 0; }
     section { margin:26px auto; max-width:1120px; }
     h2 { margin:0 0 10px; font-size:28px; line-height:1.12; }
     h3 { margin:0 0 10px; font-size:18px; }
@@ -135,7 +141,7 @@
     .routeNode p { margin:0; color:var(--muted); font-size:14px; }
     footer { border-top:1px solid var(--line); padding:24px 20px; color:var(--muted); }
     a { color:var(--blue); }
-    @media (max-width: 950px) { .topbar { align-items:flex-start; flex-direction:column; } .heroCard,.chartCard { grid-column:1 / -1; } .two,.facts,.metricRow,.evidenceGrid,.storyStrip,.labRibbon,.moveGrid,.watchList,.seasonBoard,.lessonIntro,.lessonGrid,.scoreExplainer,.caseGrid,.detectiveGrid,.routeMap,.pageGrid { grid-template-columns:1fr; } .routeRow,.routeRow.reverse { grid-template-columns:1fr; direction:ltr; } .routeRow::before { left:30px; right:auto; top:12px; bottom:12px; width:8px; height:auto; background:repeating-linear-gradient(180deg,#d8c3a6 0 18px,#c49d72 18px 28px); } .routeRow::after { display:none; } .routeNode { min-height:auto; padding-left:62px; padding-top:18px; } .routeNode::before { top:18px; left:18px; } .dotRow { grid-template-columns:118px 1fr 48px; } .predictionBox { grid-template-columns:1fr; } .sliderValue { text-align:left; } table { font-size:14px; } }
+    @media (max-width: 950px) { .topbar { align-items:flex-start; flex-direction:column; } .siteLayout { display:block; } .sideNav { position:relative; top:auto; flex-direction:row; overflow:auto; margin:0 auto 14px; max-width:1120px; } .sideNav a { white-space:nowrap; } .heroCard,.chartCard { grid-column:1 / -1; } .two,.facts,.metricRow,.evidenceGrid,.storyStrip,.labRibbon,.moveGrid,.watchList,.seasonBoard,.lessonIntro,.lessonGrid,.scoreExplainer,.caseGrid,.detectiveGrid,.routeMap,.pageGrid { grid-template-columns:1fr; } .routeRow,.routeRow.reverse { grid-template-columns:1fr; direction:ltr; } .routeRow::before { left:30px; right:auto; top:12px; bottom:12px; width:8px; height:auto; background:repeating-linear-gradient(180deg,#d8c3a6 0 18px,#c49d72 18px 28px); } .routeRow::after { display:none; } .routeNode { min-height:auto; padding-left:62px; padding-top:18px; } .routeNode::before { top:18px; left:18px; } .dotRow { grid-template-columns:118px 1fr 48px; } .predictionBox { grid-template-columns:1fr; } .sliderValue { text-align:left; } table { font-size:14px; } }
   </style>
 </head>
 <body>
@@ -156,6 +162,14 @@
     </div>
   </header>
   <main>
+    <div class="siteLayout">
+      <aside class="sideNav" aria-label="今日页目录">
+        <a href="#current">现在几成</a>
+        <a href="#why">为什么变化</a>
+        <a href="#play">我来猜</a>
+        <a href="#more">继续看</a>
+      </aside>
+      <div class="contentFlow">
     <section class="metricRow" aria-label="关键数字">
       <div class="metric"><span class="subtle">最高 24h 概率</span><strong>40.6%</strong></div>
       <div class="metric"><span class="subtle">平均 24h 概率</span><strong>24.8%</strong></div>
@@ -195,39 +209,6 @@
       </div>
     </section>
 
-    <section class="labRibbon">
-      <div class="alertCard">
-        <span>6小时观察层</span>
-        <strong>Watch</strong>
-        <p>值得留意，但还不是压倒性信号。 这一层先作为公开展示，后续会用历史回测冻结阈值。</p>
-      </div>
-      <div class="panel">
-        <h2>下一步会补什么</h2>
-        <p class="note">产品路线里的第一阶段正在落地：解释概率、展示分歧、让读者先做一次自己的判断。</p>
-        <div class="chips">
-          <span class="chip">概率变动解释器</span>
-          <span class="chip">Tibo Watch</span>
-          <span class="chip">历史回放</span>
-        </div>
-      </div>
-    </section>
-
-    <section id="learn">
-      <div class="lessonIntro">
-        <div>
-          <p class="eyebrow">概率小课堂</p>
-          <h2>这个数字不是拍脑袋来的</h2>
-        </div>
-        <p class="note">我们的做法很朴素：先尊重历史频率，再看最近节奏、时间间隔和公开背景信号；最后用已经揭晓的结果检验模型有没有过度自信。</p>
-      </div>
-      <div class="lessonGrid"><article class='lesson'><span>先看基准率</span><h3>不要从零开始猜</h3><p>历史里已经有 42 条合格公告。全局基准率先回答：长期平均来看，一天内发生的机会有多大？</p></article>
-<article class='lesson'><span>再看最近窗口</span><h3>让新节奏说话</h3><p>最近 30 天模型当前给出 40.6%。它像天气预报里的“近况雷达”，能快速反映最近公告变密或变稀。</p></article>
-<article class='lesson'><span>时间间隔模型</span><h3>刚发生过会影响下一次</h3><p>最新公告距证据截止约 3.6 小时。Renewal 类模型会问：历史上刚 reset 后，下一次通常隔多久？</p></article>
-<article class='lesson'><span>日历与背景信号</span><h3>把节奏和事件放在一起</h3><p>Calendar / Theory 模型会参考星期、最近事故、发布、里程碑等公开背景，避免只盯着一条最新消息。</p></article>
-<article class='lesson'><span>多模型不是投票</span><h3>看分歧比看平均更有用</h3><p>当前有 10 个预测者。它们方法不同，所以分歧本身也是信息：一致时更稳，分散时说明证据还不够单向。</p></article>
-<article class='lesson'><span>用结果反过来约束模型</span><h3>猜完必须算账</h3><p>历史完整榜目前每个 full 模型有 248 个回放点，最好 full 模型是 Recent 30-day rate，平均误差 0.118。</p></article></div>
-    </section>
-
     <section id="why">
       <h2>证据天平</h2>
       <p class="note">这些卡片把模型输入翻译成人话：哪些信号把概率往上推，哪些信号让它慢下来。</p>
@@ -237,7 +218,7 @@
 <article class='evidence support'><span>LLM 已更新</span><p>五个 LLM 席位读到了 2026-07-29T07:45:50Z 以前的公开证据，包括最新 reset 公告。</p></article></div>
     </section>
 
-    <section>
+    <section id="more">
       <div class="lessonIntro">
         <div>
           <p class="eyebrow">分页面浏览</p>
@@ -250,14 +231,6 @@
         <a class="pageCard" href="learn.html"><span>科普</span><strong>概率为什么可信</strong><p>用通俗语言解释基准率、最近窗口、时间间隔和评分。</p></a>
         <a class="pageCard" href="history.html"><span>回放</span><strong>历史演练榜</strong><p>把统计模型、LLM、玩家和 Crowd 放到可比较的长期榜单里。</p></a>
       </div>
-    </section>
-
-    <section>
-      <h2>为什么它会动？</h2>
-      <p class="note">这是“Why did it move”的第一版：先把可直接从数据表读出的变化讲清楚，之后再接入特征消融。</p>
-      <div class="moveGrid"><article class='move'><span>近 30 天基准</span><strong>+3.1%</strong><p>最近窗口的事件密度变化，是当前 24h 概率最直观的推力。</p></article>
-<article class='move'><span>刚刚 reset</span><strong>降温项</strong><p>最新公告距证据截止约 3.6 小时，短期内会让部分模型更谨慎。</p></article>
-<article class='move'><span>LLM 共识</span><strong>5 席</strong><p>多个 LLM 在同一份冻结证据上给出判断，用来观察分歧而不是投票定案。</p></article></div>
     </section>
 
     <section class="panel" id="play">
@@ -276,160 +249,17 @@
       </div>
     </section>
 
-    <section>
-      <h2>Tibo Watch 订阅草图</h2>
-      <p class="note">不是所有新帖都值得打扰你。订阅层级会把“明确 reset”和“可能相关背景”分开。</p>
-      <div class="watchList">
-        <article class="watch"><strong>Only confirmed</strong><p class="note">只看明确 reset / usage limit 公告，适合只关心结果的人。</p></article>
-        <article class="watch"><strong>Relevant posts</strong><p class="note">加入事故、里程碑、发布和额度讨论，适合想看概率为什么变化的人。</p></article>
-        <article class="watch"><strong>Research feed</strong><p class="note">保留发现时间、来源、分类和通知延迟，适合核查数据的人。</p></article>
-      </div>
-    </section>
-
-    <section>
-      <div class="lessonIntro">
-        <div>
-          <p class="eyebrow">证据侦探</p>
-          <h2>证据是怎么被放进数据集的？</h2>
-        </div>
-        <p class="note">预测可信，前提是事件定义清楚。我们把“看到帖子”“确认含义”“切分动作”“等待结果”拆成几步，避免把不同性质的 reset 混在一起。</p>
-      </div>
-      <div class="detectiveGrid"><article class='detective'><span>官方公告</span><strong>42 条</strong><p>先确认来源是不是 Tibo / OpenAI 可追溯公开信息。</p></article>
-<article class='detective'><span>实际到账</span><strong>17 条成功线索</strong><p>把“宣布会 reset”和“用户看到额度变化”分开记录。</p></article>
-<article class='detective'><span>事件切分</span><strong>41 个独立事件</strong><p>一条公告可能包含 hard reset、banked credit 或条件性处理，需要拆成动作。</p></article>
-<article class='detective'><span>背景信号</span><strong>55 条</strong><p>事故、发布、里程碑会进入公开背景，但不会直接改写结果标签。</p></article></div>
-      <div class="routeMap">
-        <div><span>1</span><strong>发现新帖</strong></div>
-        <div><span>2</span><strong>回到原始来源</strong></div>
-        <div><span>3</span><strong>分类 hard / banked / conditional</strong></div>
-        <div><span>4</span><strong>锁定预测与结果</strong></div>
-      </div>
-    </section>
-
-    <section>
-      <h2>当前概率表</h2>
-      <p class="note">证据截止时间说明预测者最多只能看到该时间以前的信息。</p>
-      <div class="tableWrap"><table><thead><tr><th>预测者</th><th>未来24小时</th><th>未来7天</th><th>证据截止</th></tr></thead><tbody><tr><td>Global event rate</td><td>12.0%</td><td>59.2%</td><td>2026-07-29T05:05:00Z</td></tr>
-<tr><td>Recent 30-day rate</td><td>40.6%</td><td>95.5%</td><td>2026-07-29T05:05:00Z</td></tr>
-<tr><td>Renewal model</td><td>22.5%</td><td>69.6%</td><td>2026-07-29T05:05:00Z</td></tr>
-<tr><td>Calendar model</td><td>34.5%</td><td>84.1%</td><td>2026-07-29T05:05:00Z</td></tr>
-<tr><td>Theory model</td><td>17.7%</td><td>61.2%</td><td>2026-07-29T05:05:00Z</td></tr>
-<tr><td>DeepSeek V4 Pro</td><td>25.0%</td><td>97.0%</td><td>2026-07-29T07:45:50Z</td></tr>
-<tr><td>Qwen 3.5 397B</td><td>35.0%</td><td>80.0%</td><td>2026-07-29T07:45:50Z</td></tr>
-<tr><td>Kimi K2.5</td><td>8.0%</td><td>35.0%</td><td>2026-07-29T07:45:50Z</td></tr>
-<tr><td>MiniMax M2.7</td><td>25.0%</td><td>58.0%</td><td>2026-07-29T07:45:50Z</td></tr>
-<tr><td>Step 3.5 Flash</td><td>28.0%</td><td>72.0%</td><td>2026-07-29T07:45:50Z</td></tr></tbody></table></div>
-    </section>
-
-    <section class="two" id="scores">
-      <div>
-        <h2>已经揭晓的预测</h2>
-        <p class="note">结果为 1 表示 24 小时内发生。误差越小，说明当时的概率判断越贴近结果。</p>
-        <div class="tableWrap"><table><thead><tr><th>预测者</th><th>签发时间</th><th>当时猜24h</th><th>结果</th><th>误差</th><th>类型</th></tr></thead><tbody><tr><td>Step 3.5 Flash</td><td>2026-07-28T09:38:00Z</td><td>20.0%</td><td>1</td><td>0.6400</td><td>bootstrap</td></tr>
-<tr><td>DeepSeek V4 Pro</td><td>2026-07-28T09:30:00Z</td><td>40.0%</td><td>1</td><td>0.3600</td><td>bootstrap</td></tr>
-<tr><td>Qwen 3.5 397B</td><td>2026-07-28T09:30:00Z</td><td>15.0%</td><td>1</td><td>0.7225</td><td>bootstrap</td></tr>
-<tr><td>Kimi K2.5</td><td>2026-07-28T09:30:00Z</td><td>8.0%</td><td>1</td><td>0.8464</td><td>bootstrap</td></tr>
-<tr><td>MiniMax M2.7</td><td>2026-07-28T09:30:00Z</td><td>6.0%</td><td>1</td><td>0.8836</td><td>bootstrap</td></tr>
-<tr><td>LLM forecaster</td><td>2026-07-28T08:46:00Z</td><td>12.0%</td><td>1</td><td>0.7744</td><td>bootstrap</td></tr>
-<tr><td>Global event rate</td><td>2026-07-28T07:42:56Z</td><td>12.4%</td><td>1</td><td>0.7677</td><td>bootstrap</td></tr>
-<tr><td>Calendar model</td><td>2026-07-28T07:42:56Z</td><td>34.4%</td><td>1</td><td>0.4306</td><td>bootstrap</td></tr>
-<tr><td>Theory model</td><td>2026-07-28T07:42:56Z</td><td>16.4%</td><td>1</td><td>0.6991</td><td>bootstrap</td></tr></tbody></table></div>
-      </div>
-      <div id="history">
-        <h2>历史演练榜</h2>
-        <p class="note">full 是完整历史窗口；limited 是少量回放点。先看样本量，再看误差。</p>
-        <div class="tableWrap"><table><thead><tr><th>#</th><th>预测者</th><th>覆盖</th><th>N</th><th>平均误差</th><th>惩罚大错</th><th>相对基础模型</th></tr></thead><tbody><tr><td>1</td><td>Recent 30-day rate</td><td>full</td><td>248</td><td>0.118385</td><td>0.392663</td><td>6.8%</td></tr>
-<tr><td>2</td><td>EWMA half-life 30d</td><td>full</td><td>248</td><td>0.118941</td><td>0.395390</td><td>6.3%</td></tr>
-<tr><td>3</td><td>Two-regime rate</td><td>full</td><td>248</td><td>0.119744</td><td>0.401472</td><td>5.7%</td></tr>
-<tr><td>4</td><td>Recent 60-day rate</td><td>full</td><td>248</td><td>0.120119</td><td>0.406460</td><td>5.4%</td></tr>
-<tr><td>5</td><td>Calendar model</td><td>full</td><td>248</td><td>0.122875</td><td>0.422946</td><td>3.2%</td></tr>
-<tr><td>6</td><td>Global event rate</td><td>full</td><td>248</td><td>0.126972</td><td>0.432011</td><td>0.0%</td></tr>
-<tr><td>7</td><td>Kimi K2.5</td><td>limited</td><td>2</td><td>0.006400</td><td>0.083382</td><td>95.0%</td></tr>
-<tr><td>8</td><td>MiniMax M2.7</td><td>limited</td><td>3</td><td>0.008133</td><td>0.091030</td><td>93.6%</td></tr>
-<tr><td>9</td><td>DeepSeek V4 Pro</td><td>limited</td><td>2</td><td>0.014400</td><td>0.127833</td><td>88.7%</td></tr>
-<tr><td>10</td><td>Step 3.5 Flash</td><td>limited</td><td>4</td><td>0.016425</td><td>0.136505</td><td>87.1%</td></tr>
-<tr><td>11</td><td>Qwen 3.5 397B</td><td>limited</td><td>2</td><td>0.018450</td><td>0.145176</td><td>85.5%</td></tr></tbody></table></div>
-      </div>
-    </section>
-
-    <section class="caseFile">
-      
-        <div class="caseStamp">最近复盘</div>
-        <h2>Step 3.5 Flash 的一次已揭晓预测</h2>
-        <p class="note">这张卡把一次预测拆开看：当时给了多少概率，后来结果是什么，误差又意味着什么。</p>
-        <div class="caseGrid">
-          <div><span>签发时间</span><strong>2026-07-28T09:38:00Z</strong></div>
-          <div><span>当时概率</span><strong>20.0%</strong></div>
-          <div><span>结果</span><strong>发生</strong></div>
-          <div><span>Brier 误差</span><strong>0.6400</strong></div>
-        </div>
-        <p class="note">读法：如果预测偏低但事件发生，误差会变大；如果预测很高却没发生，误差也会变大。这个机制会奖励长期校准，而不是奖励单次喊得最响。</p>
-        
-    </section>
-
     <section class="panel">
-      <h2>评分为什么有说服力？</h2>
-      <p class="note">概率预测不能只看“猜中了没有”。一个报 55% 的人和一个报 99% 的人，即使都猜对了，承担的风险也不一样。</p>
-      <div class="scoreExplainer">
-        <div><strong>Brier：离结果有多远</strong>结果发生记为 1，没发生记为 0。预测 40% 后发生，误差就是 0.6 的平方。</div>
-        <div><strong>Log Loss：惩罚过度自信</strong>如果把几乎不可能的事说成 99%，一旦错了会被重罚。</div>
-        <div><strong>覆盖率：不能挑题</strong>样本量越多，越能看出一个预测者是不是真的稳定。</div>
-      </div>
-    </section>
-
-    <section>
-      <h2>赛季制竞猜会长什么样？</h2>
-      <div class="seasonBoard">
-        <article class="season"><span>玩家</span><strong>看校准</strong><p class="note">敢押高概率也要承担误差，长期稳定比蒙中一次更重要。</p></article>
-        <article class="season"><span>LLM</span><strong>看分歧</strong><p class="note">同一份证据，不同模型会怎样权衡新公告和冷却期。</p></article>
-        <article class="season"><span>Crowd</span><strong>看群体</strong><p class="note">匿名提交后再展示分布，减少被当前模型数字锚定。</p></article>
-        <article class="season"><span>统计模型</span><strong>看基准</strong><p class="note">用简单、可复现的规则作为所有判断的参照系。</p></article>
-      </div>
-    </section>
-
-    <section>
-      <h2>历史故事模式</h2>
-      <div class="storyStrip">
-        <article class="story"><h3>回到当时</h3><p class="note">只看某个时间点以前的公开证据，再猜未来一天会不会出现 reset。</p></article>
-        <article class="story"><h3>揭晓答案</h3><p class="note">窗口结束后展示公告、原因类型和各预测者当时的概率。</p></article>
-        <article class="story"><h3>复盘判断</h3><p class="note">比较人、LLM、Crowd 和统计模型，看看谁更稳、谁更敢押。</p></article>
-      </div>
-    </section>
-
-    <section class="two">
-      <div class="panel">
-        <h2>最近 reset 公告</h2>
-        <ul class="timeline"><li><time>2026-07-29T04:09:02.000Z</time><strong>hard_global</strong><span>launch_promotion</span></li>
-<li><time>2026-07-28T03:09:23.666Z</time><strong>hard_global</strong><span>launch_promotion</span></li>
-<li><time>2026-07-25T19:17:12.695Z</time><strong>hard_global</strong><span>incident_compensation</span></li>
-<li><time>2026-07-21T16:47:15.178Z</time><strong>hard_global</strong><span>milestone_celebration</span></li>
-<li><time>2026-07-18T03:28:22.589Z</time><strong>hard_global</strong><span>mixed_or_unclear</span></li>
-<li><time>2026-07-16T04:14:09.822Z</time><strong>hard_global</strong><span>milestone_celebration</span></li>
-<li><time>2026-07-14T19:34:54.638Z</time><strong>hard_global</strong><span>milestone_celebration</span></li>
-<li><time>2026-07-13T18:29:31.013Z</time><strong>banked_credit</strong><span>milestone_celebration</span></li></ul>
-      </div>
-      <div class="panel">
-        <h2>最近公开背景信号</h2>
-        <ul class="timeline"><li><time>2026-07-25T09:17:49Z</time><strong>product_incident</strong><span>Near/global outage: novel, highly disruptive, core reliability.</span></li>
-<li><time>2026-07-24T07:55:28.019Z</time><strong>product_incident</strong><span>Official Codex status incident; strength conservatively scored from the incident title.</span></li>
-<li><time>2026-07-20T00:34:34.443Z</time><strong>product_incident</strong><span>Official Codex status incident; strength conservatively scored from the incident title.</span></li>
-<li><time>2026-07-18T08:05:37.238Z</time><strong>product_incident</strong><span>Official Codex status incident; strength conservatively scored from the incident title.</span></li>
-<li><time>2026-07-17T17:19:22.79Z</time><strong>product_incident</strong><span>Official Codex status incident; strength conservatively scored from the incident title.</span></li>
-<li><time>2026-07-17T15:32:26.6Z</time><strong>product_incident</strong><span>Official Codex status incident; strength conservatively scored from the incident title.</span></li></ul>
-      </div>
-    </section>
-
-    <section class="panel">
-      <h2>怎么看这些指标？</h2>
+      <h2>主页只保留一个读法</h2>
       <div class="chips">
-        <span class="chip">平均误差越小越好</span>
-        <span class="chip">N 越大越可信</span>
-        <span class="chip">24h 看短线</span>
-        <span class="chip">7d 看趋势</span>
-        <span class="chip">证据截止表示当时能看到什么</span>
+        <span class="chip">先看最高 24h 概率</span>
+        <span class="chip">再看预测者分歧</span>
+        <span class="chip">最后看证据天平</span>
       </div>
-      <p class="note">每个数字都来自公开表格、冻结预测或评分记录；想深挖时可以直接打开仓库数据。</p>
+      <p class="note">如果想知道模型为什么可信，去“概率小课堂”；如果想看事件如何连接，去“事件地图”；如果想比较谁更准，去“历史表现”。</p>
     </section>
+      </div>
+    </div>
   </main>
   <footer><div class="wrap">数据来自仓库 CSV。查看 <a href="https://github.com/CRF2004/tibo-reset-lab/blob/main/README.md">README</a>、<a href="https://github.com/CRF2004/tibo-reset-lab/blob/main/reports/community_dashboard.md">Markdown Dashboard</a> 和 <a href="https://github.com/CRF2004/tibo-reset-lab/blob/main/PUBLIC_PRODUCT_IDEAS.md">产品路线</a>。</div></footer>
   <script>
