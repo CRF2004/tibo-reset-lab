@@ -313,3 +313,4 @@ window_start_utc,window_end_utc,announcement_in_next_window,days_since_last_anno
 2026-07-25T17:00:00Z,2026-07-26T17:00:00Z,1,4.008852,1,cluster_first
 2026-07-26T17:00:00Z,2026-07-27T17:00:00Z,0,0.904714,0,cluster_first
 2026-07-27T17:00:00Z,2026-07-28T17:00:00Z,1,1.904714,1,cluster_first
+2026-07-28T17:00:00Z,2026-07-29T17:00:00Z,1,0.576809,1,cluster_first

@@ -60,14 +60,14 @@ class EventUnitTests(unittest.TestCase):
         self.assertEqual([row["event_count_in_window"] for row in built], [1, 1])
         self.assertEqual(built[0]["days_since_last_announcement"], "0.000000")
 
-    def test_real_gold_has_41_posts_and_40_primary_clusters(self) -> None:
+    def test_real_gold_has_42_posts_and_41_primary_clusters(self) -> None:
         announcements = rows("data/processed/reset_announcements.csv")
         actions = rows("data/processed/reset_actions.csv")
         overrides = rows("data/processed/announcement_cluster_overrides.csv")
         posts = accepted_event_times(announcements, actions, overrides, "announcement_post")
         clusters = accepted_event_times(announcements, actions, overrides, "cluster_first")
-        self.assertEqual(len(posts), 41)
-        self.assertEqual(len(clusters), 40)
+        self.assertEqual(len(posts), 42)
+        self.assertEqual(len(clusters), 41)
         self.assertLessEqual(max(clusters), max(posts))
 
     def test_partial_daily_window_is_rejected(self) -> None:

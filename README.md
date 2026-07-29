@@ -29,9 +29,9 @@ Tibo Reset Lab 是一个关于 Codex / ChatGPT Work 特殊额度重置公告的�
 
 ### 当前已知事实
 
-- 最近一次合格公告：[原始 X 帖](https://x.com/thsottiaux/status/2081940052154933696)，时间 `2026-07-28T03:09:23.666Z`；
+- 最近一次合格公告：[原始 X 帖](https://x.com/thsottiaux/status/2082317452755751098)，时间 `2026-07-29T04:09:02.000Z`；
 - 类型：`hard_global`；原因：`launch_promotion`；
-- 距该公告约 `6.4` 小时；
+- 距该公告约 `0.0` 小时；
 - [查看中文理由、证据与完整 Dashboard](reports/community_dashboard.md)。
 
 概率不是官方消息，也不是“重置倒计时”。Bootstrap、迟交和未成熟结果不进入正式排名。
@@ -44,23 +44,23 @@ Tibo Reset Lab 是一个关于 Codex / ChatGPT Work 特殊额度重置公告的�
 
 | 排名 | 预测者 | 覆盖 | N | Brier | Log Loss | Skill vs global |
 | ---: | --- | --- | ---: | ---: | ---: | ---: |
-| 1 | EWMA half-life 30d | full | 247 | 0.117336 | 0.391868 | 5.6% |
-| 2 | Recent 30-day rate | full | 247 | 0.117437 | 0.390606 | 5.6% |
-| 3 | Two-regime rate | full | 247 | 0.118392 | 0.398566 | 4.8% |
-| 4 | Recent 60-day rate | full | 247 | 0.118566 | 0.403098 | 4.7% |
-| 5 | Calendar model | full | 247 | 0.121546 | 0.420149 | 2.3% |
-| 6 | Same-gap nearest 30 | full | 247 | 0.122434 | 0.412941 | 1.5% |
-| 7 | Calendar model without regime | full | 247 | 0.123121 | 0.426222 | 1.0% |
-| 8 | Global event rate | full | 247 | 0.124353 | 0.425184 | 0.0% |
-| 9 | Discrete renewal hazard | full | 247 | 0.153615 | 0.489800 | -23.5% |
-| 10 | Step 3.5 Flash | limited | 4 | 0.016425 | 0.136505 | 86.8% |
-| 11 | MiniMax M2.7 | limited | 3 | 0.008133 | 0.091030 | 93.5% |
-| 12 | Kimi K2.5 | limited | 2 | 0.006400 | 0.083382 | 94.9% |
-| 13 | DeepSeek V4 Pro | limited | 2 | 0.014400 | 0.127833 | 88.4% |
-| 14 | Qwen 3.5 397B | limited | 2 | 0.018450 | 0.145176 | 85.2% |
+| 1 | Recent 30-day rate | full | 248 | 0.118385 | 0.392663 | 6.8% |
+| 2 | EWMA half-life 30d | full | 248 | 0.118941 | 0.395390 | 6.3% |
+| 3 | Two-regime rate | full | 248 | 0.119744 | 0.401472 | 5.7% |
+| 4 | Recent 60-day rate | full | 248 | 0.120119 | 0.406460 | 5.4% |
+| 5 | Calendar model | full | 248 | 0.122875 | 0.422946 | 3.2% |
+| 6 | Same-gap nearest 30 | full | 248 | 0.124602 | 0.418026 | 1.9% |
+| 7 | Calendar model without regime | full | 248 | 0.124728 | 0.429669 | 1.8% |
+| 8 | Global event rate | full | 248 | 0.126972 | 0.432011 | 0.0% |
+| 9 | Discrete renewal hazard | full | 248 | 0.155710 | 0.494751 | -22.6% |
+| 10 | Step 3.5 Flash | limited | 4 | 0.016425 | 0.136505 | 87.1% |
+| 11 | MiniMax M2.7 | limited | 3 | 0.008133 | 0.091030 | 93.6% |
+| 12 | Kimi K2.5 | limited | 2 | 0.006400 | 0.083382 | 95.0% |
+| 13 | DeepSeek V4 Pro | limited | 2 | 0.014400 | 0.127833 | 88.7% |
+| 14 | Qwen 3.5 397B | limited | 2 | 0.018450 | 0.145176 | 85.5% |
 
-共同窗口 `2025-11-23T17:00:00Z` 至 `2026-07-27T17:00:00Z`；
-正例率 `14.2%`。这是模型开发期历史演练，不替代未来 scheduled 排行榜。
+共同窗口 `2025-11-23T17:00:00Z` 至 `2026-07-28T17:00:00Z`；
+正例率 `14.5%`。这是模型开发期历史演练，不替代未来 scheduled 排行榜。
 暂无可评分 replay：Independent player, Crowd aggregate。
 <!-- LIVE_SNAPSHOT_END -->
 
@@ -82,17 +82,17 @@ Tibo Reset Lab 是一个关于 Codex / ChatGPT Work 特殊额度重置公告的�
 
 | 项目 | 状态 |
 | --- | --- |
-| 历史官方公告 | 41 条 |
-| 主结果：独立决策 cluster | 40 个 |
-| 拆分后的额度动作 | 42 个 |
+| 历史官方公告 | 42 条 |
+| 主结果：独立决策 cluster | 41 个 |
+| 拆分后的额度动作 | 43 个 |
 | 官方事故上下文 | 已回填至 2025-09 |
 | 历史模型比较 | 17:00 UTC / cluster-first 的 v1.2 历史演练已重建 |
 | 前瞻设计 | v1 冻结；v1.1 强基线修订；v1.2 对齐时间与事件单位 |
 | 实时比赛 | 数据结构、冻结、Crowd 与评分流程已建立 |
 | 正式前瞻样本 | 尚未积累到停止条件 |
 
-v1.2 历史演练中，EWMA half-life 30d 的 Brier Score 为 `0.117336`，略优于近期
-30 天事件率的 `0.117437` 和 Calendar M2 的 `0.121546`。这些结果只覆盖可严格回放的
+v1.2 历史演练中，近期 30 天事件率的 Brier Score 为 `0.118385`，略优于
+EWMA half-life 30d 的 `0.118941` 和 Calendar M2 的 `0.122875`。这些结果只覆盖可严格回放的
 统计预测者；LLM、玩家和 Crowd 需要当时冻结的上下文提交，等待前瞻 scheduled 排名。
 详细结果见 [strong_baselines_v1.md](reports/strong_baselines_v1.md)。
 
