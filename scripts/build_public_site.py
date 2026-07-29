@@ -20,6 +20,11 @@ def read(name: str) -> list[dict[str, str]]:
         return list(csv.DictReader(handle))
 
 
+def read_file(path: Path) -> list[dict[str, str]]:
+    with path.open(encoding="utf-8", newline="") as handle:
+        return list(csv.DictReader(handle))
+
+
 def dt(value: str) -> datetime:
     return datetime.fromisoformat(value.replace("Z", "+00:00"))
 
@@ -42,6 +47,40 @@ def short_day(value: str) -> str:
 
 def esc(value: object) -> str:
     return html.escape(str(value), quote=True)
+
+
+def plain(value: object) -> str:
+    return html.unescape(str(value or ""))
+
+
+def event_type_label(value: str) -> str:
+    return {
+        "product_incident": "产品事故",
+        "milestone": "里程碑",
+        "product_launch_or_promotion": "发布或额度更新",
+        "mixed_or_unclear": "原因混合或不明确",
+    }.get(value, value)
+
+
+def confidence_label(value: str) -> str:
+    return {"high": "高", "medium": "中", "low": "低"}.get(value, value)
+
+
+def reset_type_label(value: str) -> str:
+    return {
+        "hard_global": "全局硬重置",
+        "banked_credit": "存入一次可用重置",
+        "conditional": "条件性重置",
+    }.get(value, value)
+
+
+def reason_label(value: str) -> str:
+    return {
+        "launch_promotion": "发布或额度政策更新",
+        "incident_compensation": "事故补偿",
+        "milestone_celebration": "里程碑庆祝",
+        "mixed_or_unclear": "原因混合或不明确",
+    }.get(value, value)
 
 
 def score_probability_rows(rows: list[dict[str, str]]) -> tuple[int, float, float, float]:
@@ -76,6 +115,13 @@ def main() -> int:
     actions = read("reset_actions.csv")
     historical = read("strong_daily_baseline_forecasts.csv")
     replay = read("historical_replay_forecasts.csv")
+    sources = {row["source_id"]: row for row in read("../raw/sources.csv")}
+    status_sources = {row["status_incident_id"]: row for row in read("../raw/status_context_universe.csv")}
+    x_primary = {row["source_id"]: row for row in read_file(ROOT / "annotation/evidence/x_primary_sources.csv")}
+    x_bilingual = {
+        "SRC_X_" + row["post_id"]: row
+        for row in read_file(ROOT / "annotation/evidence/historical_x_posts_bilingual.csv")
+    }
 
     latest_by_key: dict[tuple[str, str], dict[str, str]] = {}
     for row in forecasts:
@@ -229,18 +275,18 @@ def main() -> int:
     evidence_items = [
         {
             "tone": "support",
-            "label": "新公告刚落地",
-            "text": f"最新 reset 公告在 {latest_ann['announced_at_utc']} 出现，近期频率模型会更敏感。",
+            "label": "短期频率升高",
+            "text": f"最新 reset 公告出现在 {latest_ann['announced_at_utc']}。近期公告越密，滚动窗口模型给 24h 概率的权重越高。",
         },
         {
             "tone": "support",
-            "label": "最近节奏偏密",
-            "text": "近 30 天模型给出最高 24h 概率，说明最近窗口比长期平均更活跃。",
+            "label": "近期窗口强于长期平均",
+            "text": f"近 30 天基准当前为 {pct(current_recent30)}，用最近样本估计当下节奏，避免长期平均掩盖新一轮密集 reset。",
         },
         {
             "tone": "caution",
-            "label": "短期可能降温",
-            "text": "刚完成一次 reset 后，再次发生通常需要新的事故、里程碑或发布信号。",
+            "label": "刚 reset 后存在冷却",
+            "text": f"最新公告距证据截止约 {hours_since:.1f} 小时。时间间隔模型会降低“刚发生后立刻再发生”的概率，除非有新触发事件。",
         },
         llm_evidence,
     ]
@@ -313,6 +359,9 @@ def main() -> int:
     )
     graph_events = []
     for row in sorted_contexts[:12]:
+        source_ids = [part for part in row["source_ids"].split(";") if part]
+        source = sources.get(source_ids[0], {}) if source_ids else {}
+        status_source = status_sources.get(source_ids[0], {}) if source_ids else {}
         if row["event_type"] == "product_incident":
             node_type = "incident"
             title = "事故信号"
@@ -330,13 +379,54 @@ def main() -> int:
             "type": node_type,
             "title": title,
             "text": row["scoring_rationale"][:82],
+            "source_label": plain(status_source.get("name") or source.get("raw_text") or event_type_label(row["event_type"])),
+            "source_text_en": plain(status_source.get("name") or source.get("raw_text") or event_type_label(row["event_type"])),
+            "source_text_zh": "",
+            "source_url": status_source.get("source_url") or source.get("url") or "",
+            "source_author": source.get("author") or ("OpenAI Status" if status_source else ""),
+            "analysis": (
+                f"事件强度 {row['event_strength_0_9']}/9，关注度 {row['attention_state_0_5']}/5。"
+                f"分类为{event_type_label(row['event_type'])}，判断置信度{confidence_label(row['confidence'])}。"
+                f"{row['scoring_rationale']}"
+            ),
         })
     for row in sorted_ann[:12]:
+        source = sources.get(row["source_id"], {})
+        primary_post = x_primary.get(row["source_id"], {})
+        bilingual_post = x_bilingual.get(row["source_id"], {})
+        source_text_en = plain(
+            bilingual_post.get("english_text")
+            or primary_post.get("normalized_excerpt_not_verbatim")
+            or source.get("raw_text")
+            or f"Tibo announced {row['reset_type']}"
+        )
+        source_text_zh = plain(bilingual_post.get("chinese_translation"))
+        linked_context = next(
+            (context for context in contexts if context["linked_announcement_id"] == row["announcement_id"]),
+            None,
+        )
+        linked_analysis = ""
+        if linked_context:
+            linked_analysis = (
+                f"关联背景分类为{event_type_label(linked_context['event_type'])}，事件强度 "
+                f"{linked_context['event_strength_0_9']}/9，关注度 "
+                f"{linked_context['attention_state_0_5']}/5。{linked_context['scoring_rationale']}"
+            )
         graph_events.append({
             "at": row["announced_at_utc"],
             "type": "reset",
-            "title": row["reset_type"],
-            "text": row["reason_type"],
+            "title": reset_type_label(row["reset_type"]),
+            "text": reason_label(row["reason_type"]),
+            "source_label": source_text_zh or source_text_en,
+            "source_text_en": source_text_en,
+            "source_text_zh": source_text_zh,
+            "source_url": source.get("url") or ("https://x.com/thsottiaux/status/" + row["announcement_id"].removeprefix("ANN_X_")),
+            "source_author": source.get("author") or row["announcer"],
+            "analysis": (
+                f"这条记录已纳入 reset 数据集，类型为{reset_type_label(row['reset_type'])}，"
+                f"原因归类为{reason_label(row['reason_type'])}。"
+                f"{linked_analysis}"
+            ),
         })
     graph_events.sort(key=lambda row: row["at"])
     route_chunks = [graph_events[index:index + 4] for index in range(0, len(graph_events), 4)]
@@ -360,11 +450,18 @@ def main() -> int:
                 "type": row["type"],
                 "title": row["title"],
                 "text": row["text"],
+                "sourceLabel": row["source_label"],
+                "sourceTextEn": row["source_text_en"],
+                "sourceTextZh": row["source_text_zh"],
+                "sourceUrl": row["source_url"],
+                "sourceAuthor": row["source_author"],
+                "analysis": row["analysis"],
             }
             for row in graph_events
         ],
         ensure_ascii=False,
     )
+    route_json = route_json.replace("</", "<\\/")
 
     html_text = f"""<!doctype html>
 <html lang="zh-CN">
@@ -427,12 +524,15 @@ def main() -> int:
     .chips {{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }}
     .chip {{ border:1px solid var(--line); background:var(--paper); border-radius:999px; padding:7px 11px; color:var(--muted); font-family:system-ui,-apple-system,Segoe UI,sans-serif; }}
     .two {{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }}
-    .evidenceGrid {{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }}
-    .evidence {{ border:1px solid var(--line); border-radius:16px; padding:16px; background:var(--paper); min-height:150px; }}
+    .evidenceGrid {{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }}
+    .evidence {{ border:1px solid var(--line); border-radius:16px; padding:18px; background:var(--paper); min-height:150px; }}
     .evidence span {{ display:inline-block; font-weight:700; margin-bottom:8px; }}
     .evidence p {{ margin:0; color:var(--muted); }}
     .evidence.support {{ border-top:5px solid var(--green); }}
     .evidence.caution {{ border-top:5px solid var(--amber); }}
+    .methodLine {{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:12px 0 16px; }}
+    .methodLine div {{ padding:14px 16px; border:1px solid var(--line); border-radius:14px; background:#f6ead9; color:#57493b; }}
+    .methodLine strong {{ display:block; margin-bottom:4px; font:800 14px/1.2 system-ui,-apple-system,Segoe UI,sans-serif; color:var(--ink); }}
     .timeline {{ list-style:none; padding:0; margin:0; }}
     .timeline li {{ margin:0 0 12px 0; padding:13px 14px; border:1px solid var(--line); border-radius:14px; background:rgba(255,253,248,.78); }}
     .timeline time {{ display:block; color:var(--muted); font-size:13px; }}
@@ -509,7 +609,7 @@ def main() -> int:
     .routeNode p {{ margin:0; color:var(--muted); font-size:14px; }}
     footer {{ border-top:1px solid var(--line); padding:24px 20px; color:var(--muted); }}
     a {{ color:var(--blue); }}
-    @media (max-width: 950px) {{ .topbar {{ align-items:flex-start; flex-direction:column; }} .siteLayout {{ display:block; }} .sideNav {{ position:relative; top:auto; flex-direction:row; overflow:auto; margin:0 auto 14px; max-width:1120px; }} .sideNav a {{ white-space:nowrap; }} .heroCard,.chartCard {{ grid-column:1 / -1; }} .two,.facts,.metricRow,.evidenceGrid,.storyStrip,.labRibbon,.moveGrid,.watchList,.seasonBoard,.lessonIntro,.lessonGrid,.scoreExplainer,.caseGrid,.detectiveGrid,.routeMap,.pageGrid {{ grid-template-columns:1fr; }} .routeRow,.routeRow.reverse {{ grid-template-columns:1fr; direction:ltr; }} .routeRow::before {{ left:30px; right:auto; top:12px; bottom:12px; width:8px; height:auto; background:repeating-linear-gradient(180deg,#d8c3a6 0 18px,#c49d72 18px 28px); }} .routeRow::after {{ display:none; }} .routeNode {{ min-height:auto; padding-left:62px; padding-top:18px; }} .routeNode::before {{ top:18px; left:18px; }} .dotRow {{ grid-template-columns:118px 1fr 48px; }} .predictionBox {{ grid-template-columns:1fr; }} .sliderValue {{ text-align:left; }} table {{ font-size:14px; }} }}
+    @media (max-width: 950px) {{ .topbar {{ align-items:flex-start; flex-direction:column; }} .siteLayout {{ display:block; }} .sideNav {{ position:relative; top:auto; flex-direction:row; overflow:auto; margin:0 auto 14px; max-width:1120px; }} .sideNav a {{ white-space:nowrap; }} .heroCard,.chartCard {{ grid-column:1 / -1; }} .two,.facts,.metricRow,.evidenceGrid,.methodLine,.storyStrip,.labRibbon,.moveGrid,.watchList,.seasonBoard,.lessonIntro,.lessonGrid,.scoreExplainer,.caseGrid,.detectiveGrid,.routeMap,.pageGrid {{ grid-template-columns:1fr; }} .routeRow,.routeRow.reverse {{ grid-template-columns:1fr; direction:ltr; }} .routeRow::before {{ left:30px; right:auto; top:12px; bottom:12px; width:8px; height:auto; background:repeating-linear-gradient(180deg,#d8c3a6 0 18px,#c49d72 18px 28px); }} .routeRow::after {{ display:none; }} .routeNode {{ min-height:auto; padding-left:62px; padding-top:18px; }} .routeNode::before {{ top:18px; left:18px; }} .dotRow {{ grid-template-columns:118px 1fr 48px; }} .predictionBox {{ grid-template-columns:1fr; }} .sliderValue {{ text-align:left; }} table {{ font-size:14px; }} }}
   </style>
 </head>
 <body>
@@ -526,7 +626,7 @@ def main() -> int:
       </div>
       <p class="eyebrow">公开证据里的概率练习</p>
       <h1>下一次额度重置，会在什么时候出现？</h1>
-      <p class="lead">这里把公开公告、背景事件、统计模型和 LLM 判断放在同一张桌面上。你看到的不只是一个数字，而是它为什么会变。</p>
+      <p class="lead">最新 reset 刚在 {esc(latest_ann['announced_at_utc'])} 出现。当前问题是：这是一轮密集节奏的延续，还是刚 reset 后进入短暂冷却？</p>
     </div>
   </header>
   <main>
@@ -569,18 +669,23 @@ def main() -> int:
     </section>
 
     <section id="why">
-      <h2>证据天平</h2>
-      <p class="note">这些卡片把模型输入翻译成人话：哪些信号把概率往上推，哪些信号让它慢下来。</p>
+      <h2>为什么现在是 {pct(hero_p)}？</h2>
+      <p class="note">模型先看历史频率，再看最近 30 天是否变密；随后用“距上次 reset 多久”和公开背景事件修正。下面四张卡分别对应一类可复核输入。</p>
+      <div class="methodLine">
+        <div><strong>频率项</strong>长期基准给底座，近期窗口决定是否加速。</div>
+        <div><strong>间隔项</strong>刚发生过会降温，间隔拉长会回到常态。</div>
+        <div><strong>背景项</strong>事故、发布、里程碑会改变触发 reset 的先验。</div>
+      </div>
       <div class="evidenceGrid">{evidence_html}</div>
     </section>
 
     <section id="more">
       <div class="lessonIntro">
         <div>
-          <p class="eyebrow">分页面浏览</p>
-          <h2>把长页面拆成几条清晰路线</h2>
+          <p class="eyebrow">更多视角</p>
+          <h2>看路线、看原理、看历史表现</h2>
         </div>
-        <p class="note">主页保留今天最重要的数字。想看事件节奏、概率原理或历史榜单，可以进入独立页面慢慢探索。</p>
+        <p class="note">同一个概率可以拆成三件事：发生了什么、算法怎样理解、过去表现如何。</p>
       </div>
       <div class="pageGrid">
         <a class="pageCard" href="map.html"><span>事件地图</span><strong>OpenAI 相关事件路线</strong><p>用一条连续的动态路线串起事故、发布、里程碑和 reset 公告。</p></a>
@@ -593,7 +698,7 @@ def main() -> int:
       <h2>你的判断是多少？</h2>
       <div class="predictionBox">
         <div>
-          <p class="note">拖动滑块，给出你自己的 24h 概率。这个版本先在浏览器本地显示，后续会接入匿名提交和 Crowd 分布。</p>
+          <p class="note">拖动滑块，给出你自己的 24h 概率。先独立判断，再和模型分布对照，能减少被当前数字锚定。</p>
           <input id="guess" type="range" min="0" max="100" value="{hero_p * 100:.0f}" aria-label="你的24小时概率">
           <div class="chips">
             <span class="chip">10%：很冷</span>
@@ -606,13 +711,13 @@ def main() -> int:
     </section>
 
     <section class="panel">
-      <h2>主页只保留一个读法</h2>
+      <h2>今天先看这三件事</h2>
       <div class="chips">
         <span class="chip">先看最高 24h 概率</span>
         <span class="chip">再看预测者分歧</span>
         <span class="chip">最后看证据天平</span>
       </div>
-      <p class="note">如果想知道模型为什么可信，去“概率小课堂”；如果想看事件如何连接，去“事件地图”；如果想比较谁更准，去“历史表现”。</p>
+      <p class="note">概率不是结论本身，而是把“最近发生得有多密”“刚发生后是否冷却”“有没有新触发信号”压缩成一个可检验数字。</p>
     </section>
       </div>
     </div>
@@ -700,6 +805,10 @@ def main() -> int:
     .eventDetail strong {{ display:block; margin:10px 0; font:800 28px/1.08 system-ui,-apple-system,Segoe UI,sans-serif; }}
     .eventDetail p {{ color:var(--muted); margin:0 0 12px; }}
     .eventDetail code {{ display:block; white-space:normal; color:var(--muted); font-size:13px; }}
+    .detailBlock {{ margin-top:14px; padding-top:14px; border-top:1px solid var(--line); }}
+    .detailBlock b {{ display:block; margin-bottom:6px; font:800 14px/1.2 system-ui,-apple-system,Segoe UI,sans-serif; }}
+    .sourceOriginal {{ color:#8b8174; font-size:14px; }}
+    .sourceLink {{ display:inline-block; margin-top:8px; font:800 14px/1.2 system-ui,-apple-system,Segoe UI,sans-serif; }}
     @media (max-width: 950px) {{ .mapStage {{ grid-template-columns:1fr; }} .eventDetail {{ position:relative; top:auto; }} #d3map {{ min-height:760px; }} }}
   </style>
 </head>
@@ -725,15 +834,28 @@ def main() -> int:
     const wrap = document.getElementById("d3map");
     const detail = document.getElementById("eventDetail");
     let activeIndex = events.length - 1;
+    const escapeHtml = value => String(value || "").replace(/[&<>"']/g, ch => ({{ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }}[ch]));
 
     function renderDetail(index) {{
       activeIndex = index;
       const event = events[index];
+      const sourceBody = event.sourceTextZh
+        ? `<p>${{escapeHtml(event.sourceTextZh)}}</p><p class="sourceOriginal">原文：${{escapeHtml(event.sourceTextEn)}}</p>`
+        : `<p>${{escapeHtml(event.sourceTextEn || event.sourceLabel)}}</p>`;
       detail.innerHTML = `
-        <span>${{String(index + 1).padStart(2, "0")}} · ${{event.date}} · ${{labels[event.type] || "事件"}}</span>
-        <strong>${{event.title}}</strong>
-        <p>${{event.text}}</p>
-        <code>${{event.at}}</code>
+        <span>${{String(index + 1).padStart(2, "0")}} · ${{escapeHtml(event.date)}} · ${{escapeHtml(labels[event.type] || "事件")}}</span>
+        <strong>${{escapeHtml(event.title)}}</strong>
+        <p>${{escapeHtml(event.text)}}</p>
+        <code>${{escapeHtml(event.at)}}</code>
+        <div class="detailBlock">
+          <b>${{event.type === "reset" ? "Tibo 帖子内容" : "公开来源内容"}}</b>
+          ${{sourceBody}}
+          ${{event.sourceUrl ? `<a class="sourceLink" href="${{escapeHtml(event.sourceUrl)}}" target="_blank" rel="noopener">打开原始来源</a>` : ""}}
+        </div>
+        <div class="detailBlock">
+          <b>相关分析</b>
+          <p>${{escapeHtml(event.analysis)}}</p>
+        </div>
       `;
       d3.selectAll("g.event circle")
         .attr("stroke-width", d => d.index === activeIndex ? 9 : 6)
