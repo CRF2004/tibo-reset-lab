@@ -622,6 +622,7 @@ def main() -> int:
           <a href="map.html">事件地图</a>
           <a href="learn.html">概率小课堂</a>
           <a href="history.html">历史表现</a>
+          <a href="https://github.com/CRF2004/tibo-reset-lab">GitHub</a>
         </nav>
       </div>
       <p class="eyebrow">公开证据里的概率练习</p>
@@ -722,7 +723,7 @@ def main() -> int:
       </div>
     </div>
   </main>
-  <footer><div class="wrap">数据来自仓库 CSV。查看 <a href="https://github.com/CRF2004/tibo-reset-lab/blob/main/README.md">README</a>、<a href="https://github.com/CRF2004/tibo-reset-lab/blob/main/reports/community_dashboard.md">Markdown Dashboard</a> 和 <a href="https://github.com/CRF2004/tibo-reset-lab/blob/main/PUBLIC_PRODUCT_IDEAS.md">产品路线</a>。</div></footer>
+  <footer><div class="wrap">数据来自 <a href="https://github.com/CRF2004/tibo-reset-lab">GitHub 仓库</a>。查看 <a href="https://github.com/CRF2004/tibo-reset-lab/blob/main/README.md">README</a>、<a href="https://github.com/CRF2004/tibo-reset-lab/blob/main/reports/community_dashboard.md">Markdown Dashboard</a> 和 <a href="https://github.com/CRF2004/tibo-reset-lab/blob/main/PUBLIC_PRODUCT_IDEAS.md">产品路线</a>。</div></footer>
   <script>
     const data = {probabilities_json};
     const guess = document.getElementById('guess');
@@ -788,6 +789,7 @@ def main() -> int:
           <a href="map.html">事件地图</a>
           <a href="learn.html">概率小课堂</a>
           <a href="history.html">历史表现</a>
+          <a href="https://github.com/CRF2004/tibo-reset-lab">GitHub</a>
         </nav>
     """
     map_html = f"""<!doctype html>
@@ -825,7 +827,7 @@ def main() -> int:
       </div>
     </section>
   </main>
-  <footer><div class="wrap">数据来自仓库 CSV。返回 <a href="index.html">今日概览</a>。</div></footer>
+  <footer><div class="wrap">数据来自 <a href="https://github.com/CRF2004/tibo-reset-lab">GitHub 仓库</a>。返回 <a href="index.html">今日概览</a>。</div></footer>
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
   <script>
     const events = {route_json};
@@ -931,7 +933,7 @@ def main() -> int:
   <section><h2>为什么它会动？</h2><p class="note">这些变化来自数据表中能复核的事实。</p><div class="grid3">{move_html}</div></section>
   <section class="panel"><h2>评分怎么读</h2><p class="note">Brier 可以理解成“离结果有多远”，Log Loss 会惩罚非常自信但错得离谱的判断，覆盖率说明这个模型有没有经历足够多的历史窗口。</p><div class="grid3"><article class="card"><span>Brier</span><h3>平均误差越小越好</h3><p>发生记为 1，未发生记为 0。预测越贴近最后结果，分数越低。</p></article><article class="card"><span>Log Loss</span><h3>别轻易说绝对</h3><p>它会重罚过度自信的错误，让模型不敢靠喊极端概率取巧。</p></article><article class="card"><span>覆盖率</span><h3>样本越多越稳</h3><p>完整历史窗口比少量回放更有说服力，所以榜单会同时显示 N。</p></article></div></section>
   <section><h2>证据侦探</h2><div class="grid3">{detective_html}</div></section>
-</main><footer><div class="wrap">返回 <a href="index.html">今日概览</a>。</div></footer></body></html>
+</main><footer><div class="wrap">返回 <a href="index.html">今日概览</a>，或查看 <a href="https://github.com/CRF2004/tibo-reset-lab">GitHub 仓库</a>。</div></footer></body></html>
 """
     history_html = f"""<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>历史表现 · Tibo Reset Lab</title><style>{page_css}</style></head>
@@ -940,7 +942,7 @@ def main() -> int:
   <section class="grid2"><div><h2>历史演练榜</h2><p class="note">full 是完整历史窗口；limited 是少量回放点。先看样本量，再看平均误差。</p><div class="tableWrap"><table><thead><tr><th>#</th><th>预测者</th><th>覆盖</th><th>N</th><th>平均误差</th><th>惩罚大错</th><th>相对基础模型</th></tr></thead><tbody>{leaderboard_rows}</tbody></table></div></div><div><h2>已揭晓预测</h2><p class="note">结果为 1 表示 24 小时内发生。误差越小，说明当时概率越贴近结果。</p><div class="tableWrap"><table><thead><tr><th>预测者</th><th>签发时间</th><th>当时猜24h</th><th>结果</th><th>误差</th><th>类型</th></tr></thead><tbody>{score_rows_html}</tbody></table></div></div></section>
   <section class="panel">{autopsy_html}</section>
   <section class="grid2"><div class="panel"><h2>最近 reset 公告</h2><ul class="timeline">{timeline_html}</ul></div><div class="panel"><h2>最近公开背景信号</h2><ul class="timeline">{context_html}</ul></div></section>
-</main><footer><div class="wrap">返回 <a href="index.html">今日概览</a>。</div></footer></body></html>
+</main><footer><div class="wrap">返回 <a href="index.html">今日概览</a>，或查看 <a href="https://github.com/CRF2004/tibo-reset-lab">GitHub 仓库</a>。</div></footer></body></html>
 """
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "index.html").write_text(html_text, encoding="utf-8")
