@@ -251,6 +251,14 @@ def main() -> int:
             errors.append(
                 f"data/processed/reset_announcements.csv:{line}: unknown source_id"
             )
+    confirmation_source_ids = {
+        row["source_id"]
+        for row in tables.get("data/raw/confirmation_evidence.csv", [])
+    }
+    announcement_ids = {
+        row["announcement_id"]
+        for row in tables.get("data/processed/reset_announcements.csv", [])
+    }
     action_announcement_ids = {
         row["announcement_id"]
         for row in tables.get("data/processed/reset_actions.csv", [])
@@ -288,14 +296,6 @@ def main() -> int:
             + ", ".join(missing_cluster)
         )
 
-    confirmation_source_ids = {
-        row["source_id"]
-        for row in tables.get("data/raw/confirmation_evidence.csv", [])
-    }
-    announcement_ids = {
-        row["announcement_id"]
-        for row in tables.get("data/processed/reset_announcements.csv", [])
-    }
     for line, row in enumerate(
         tables.get("data/processed/reset_confirmations.csv", []), start=2
     ):
