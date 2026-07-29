@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Score mature tournament forecasts against accepted reset announcements."""
+"""Score mature tournament forecasts against cluster-first reset events."""
 
 from __future__ import annotations
 
@@ -9,10 +9,14 @@ import math
 from datetime import datetime, timezone
 from pathlib import Path
 
+from event_units import accepted_event_times
+
 ROOT = Path(__file__).resolve().parents[1]
 FORECASTS = ROOT / "data/processed/tournament_forecasts.csv"
 SCORES = ROOT / "data/processed/tournament_scores.csv"
 ANN = ROOT / "data/processed/reset_announcements.csv"
+ACTIONS = ROOT / "data/processed/reset_actions.csv"
+OVERRIDES = ROOT / "data/processed/announcement_cluster_overrides.csv"
 
 
 def dt(value: str) -> datetime:
@@ -23,20 +27,30 @@ def stamp(value: datetime) -> str:
     return value.astimezone(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
 
 
+def read_csv(path: Path) -> list[dict[str, str]]:
+    with path.open(encoding="utf-8", newline="") as handle:
+        return list(csv.DictReader(handle))
+
+
+def source_hash() -> str:
+    digest = hashlib.sha256()
+    for path in (ANN, ACTIONS, OVERRIDES):
+        digest.update(path.name.encode())
+        digest.update(path.read_bytes())
+    return digest.hexdigest()
+
+
 def main() -> int:
     now = datetime.now(timezone.utc)
-    raw = ANN.read_bytes()
-    source_hash = hashlib.sha256(raw).hexdigest()
-    with ANN.open(encoding="utf-8", newline="") as handle:
-        events = [
-            dt(row["announced_at_utc"]) for row in csv.DictReader(handle)
-            if row["adjudication_status"] == "accepted"
-        ]
-    with FORECASTS.open(encoding="utf-8", newline="") as handle:
-        forecasts = list(csv.DictReader(handle))
-    with SCORES.open(encoding="utf-8", newline="") as handle:
-        scored = {row["tournament_forecast_id"] for row in csv.DictReader(handle)}
-    by_key = {(row["round_id"], row["horizon_hours"], row["predictor_id"]): row for row in forecasts}
+    events = accepted_event_times(
+        read_csv(ANN), read_csv(ACTIONS), read_csv(OVERRIDES), "cluster_first"
+    )
+    forecasts = read_csv(FORECASTS)
+    scored = {row["tournament_forecast_id"] for row in read_csv(SCORES)}
+    by_key = {
+        (row["round_id"], row["horizon_hours"], row["predictor_id"]): row
+        for row in forecasts
+    }
     created = []
     for row in forecasts:
         if (
@@ -66,13 +80,13 @@ def main() -> int:
             "brier": f"{brier:.8f}",
             "log_loss": f"{log_loss:.8f}",
             "rolling30_brier_skill": skill,
-            "score_status": "final",
-            "source_data_sha256": source_hash,
+            "score_status": "final_cluster_first",
+            "source_data_sha256": source_hash(),
         })
     if created:
         with SCORES.open("a", encoding="utf-8", newline="") as handle:
             csv.DictWriter(handle, fieldnames=list(created[0])).writerows(created)
-    print(f"Scored {len(created)} tournament forecasts")
+    print(f"Scored {len(created)} cluster-first tournament forecasts")
     return 0
 
 
