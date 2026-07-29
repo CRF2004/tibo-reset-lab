@@ -144,6 +144,10 @@ def main() -> int:
         [{"name": row["name"], "p24": row["p24"], "p168": row["p168"]} for row in rows],
         ensure_ascii=False,
     )
+    predictor_dots = "\n".join(
+        f"<div class='dotRow'><span>{esc(row['name'])}</span><div class='dotLine'><i style='left:{(row['p24'] or 0) * 100:.2f}%'></i></div><b>{pct(row['p24'])}</b></div>"
+        for row in rows
+    )
 
     probability_rows = "\n".join(
         f"<tr><td>{esc(row['name'])}</td><td>{pct(row['p24'])}</td><td>{pct(row['p168'])}</td><td>{esc(row['cutoff'])}</td></tr>"
@@ -173,29 +177,29 @@ def main() -> int:
         llm_evidence = {
             "tone": "support",
             "label": "LLM 已更新",
-            "text": f"五个 LLM 席位的最新证据截止到 {llm_cutoff}，已经覆盖最新 reset 公告。",
+            "text": f"五个 LLM 席位读到了 {llm_cutoff} 以前的公开证据，包括最新 reset 公告。",
         }
     else:
         llm_evidence = {
             "tone": "caution",
             "label": "LLM 待更新",
-            "text": "LLM 席位的最新证据还没有覆盖最新 reset 公告；请优先看统计模型或等待下一轮。",
+            "text": "LLM 席位还在等待下一轮刷新，当前统计模型先反映最新公告。",
         }
     evidence_items = [
         {
             "tone": "support",
-            "label": "刚出现新公告",
-            "text": f"最新合格 reset 公告发生在 {latest_ann['announced_at_utc']}，短期历史率会被抬高。",
+            "label": "新公告刚落地",
+            "text": f"最新 reset 公告在 {latest_ann['announced_at_utc']} 出现，近期频率模型会更敏感。",
         },
         {
             "tone": "support",
-            "label": "近期频率偏高",
-            "text": "Recent 30-day rate 给出当前最高 24h 概率，说明最近窗口内事件密度高于长期平均。",
+            "label": "最近节奏偏密",
+            "text": "近 30 天模型给出最高 24h 概率，说明最近窗口比长期平均更活跃。",
         },
         {
             "tone": "caution",
-            "label": "刚重置后的冷却效应",
-            "text": "多次模型仍低于 50%，因为刚完成一次 reset 后，马上再次发生通常需要新的触发因素。",
+            "label": "短期可能降温",
+            "text": "刚完成一次 reset 后，再次发生通常需要新的事故、里程碑或发布信号。",
         },
         llm_evidence,
     ]
@@ -220,72 +224,90 @@ def main() -> int:
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%232563eb'/%3E%3Cpath d='M14 39h9l6-16 8 24 6-14h7' fill='none' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
   <title>Tibo Reset Lab</title>
   <style>
-    :root {{ color-scheme: light; --ink:#172033; --muted:#667085; --line:#d9e0ea; --bg:#f6f8fb; --panel:#ffffff; --blue:#2563eb; --green:#16815f; --amber:#b45309; --red:#be3b3b; --soft:#eef4ff; }}
+    :root {{ color-scheme: light; --ink:#27211b; --muted:#746b60; --line:#e4d8c8; --bg:#fbf5ec; --paper:#fffdf8; --cream:#f4eadc; --blue:#315f7d; --green:#26735b; --amber:#b66a2d; --rose:#a64d56; --shadow:0 20px 60px rgba(80,52,24,.10); }}
     * {{ box-sizing: border-box; }}
-    body {{ margin:0; font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif; color:var(--ink); background:var(--bg); }}
-    header {{ background:#182033; color:white; padding:34px 20px 28px; border-bottom:4px solid #3b82f6; }}
-    .wrap {{ max-width:1180px; margin:0 auto; }}
-    .eyebrow {{ color:#b7c4d8; font-size:14px; margin:0 0 8px; }}
-    h1 {{ margin:0; font-size:clamp(32px,5vw,58px); line-height:1.04; letter-spacing:0; }}
-    .lead {{ max-width:780px; margin:16px 0 0; color:#d7deea; font-size:18px; }}
-    nav {{ margin-top:22px; display:flex; gap:10px; flex-wrap:wrap; }}
-    nav a {{ color:#eaf1ff; text-decoration:none; border:1px solid #41516e; border-radius:999px; padding:7px 12px; }}
-    main {{ padding:24px 20px 56px; }}
-    section {{ margin:22px auto; max-width:1180px; }}
-    h2 {{ margin:0 0 10px; font-size:24px; }}
+    body {{ margin:0; font:16px/1.62 ui-serif,Georgia,"Times New Roman",serif; color:var(--ink); background:var(--bg); }}
+    body::before {{ content:""; position:fixed; inset:0; pointer-events:none; opacity:.55; background-image:linear-gradient(rgba(92,64,32,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(92,64,32,.035) 1px, transparent 1px); background-size:28px 28px; }}
+    header {{ position:relative; padding:28px 20px 18px; }}
+    .wrap {{ max-width:1120px; margin:0 auto; position:relative; }}
+    .topbar {{ display:flex; justify-content:space-between; gap:16px; align-items:center; margin-bottom:24px; }}
+    .brand {{ font:700 15px/1.2 system-ui,-apple-system,Segoe UI,sans-serif; letter-spacing:.08em; text-transform:uppercase; }}
+    .eyebrow {{ color:var(--blue); font:700 13px/1.2 system-ui,-apple-system,Segoe UI,sans-serif; margin:0 0 12px; }}
+    h1 {{ margin:0; max-width:850px; font-size:clamp(42px,7vw,84px); line-height:.96; letter-spacing:0; }}
+    .lead {{ max-width:700px; margin:20px 0 0; color:var(--muted); font-size:20px; }}
+    nav {{ display:flex; gap:8px; flex-wrap:wrap; }}
+    nav a {{ color:var(--ink); background:rgba(255,255,255,.55); text-decoration:none; border:1px solid var(--line); border-radius:999px; padding:8px 12px; font:600 14px/1 system-ui,-apple-system,Segoe UI,sans-serif; }}
+    main {{ padding:8px 20px 64px; }}
+    section {{ margin:26px auto; max-width:1120px; }}
+    h2 {{ margin:0 0 10px; font-size:28px; line-height:1.12; }}
+    h3 {{ margin:0 0 10px; font-size:18px; }}
     .grid {{ display:grid; grid-template-columns:repeat(12,1fr); gap:16px; }}
-    .panel {{ background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px; }}
-    .heroCard {{ grid-column:span 5; }}
-    .chartCard {{ grid-column:span 7; }}
-    .stat {{ font-size:56px; line-height:1; font-weight:750; margin:10px 0; }}
+    .panel {{ background:rgba(255,253,248,.88); border:1px solid var(--line); border-radius:18px; padding:22px; box-shadow:var(--shadow); }}
+    .heroCard {{ grid-column:span 7; padding:28px; }}
+    .chartCard {{ grid-column:span 5; }}
+    .stat {{ font:800 clamp(68px,11vw,124px)/.9 system-ui,-apple-system,Segoe UI,sans-serif; margin:8px 0 12px; color:var(--blue); }}
     .subtle {{ color:var(--muted); }}
-    .facts {{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:14px; }}
-    .fact {{ border-left:4px solid var(--blue); padding:10px 12px; background:#f8fbff; }}
+    .facts {{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:22px; }}
+    .fact {{ border:1px solid var(--line); border-radius:14px; padding:12px; background:var(--cream); }}
     .metricRow {{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }}
-    .metric {{ background:white; border:1px solid var(--line); border-radius:8px; padding:14px; }}
-    .metric strong {{ display:block; font-size:24px; }}
-    table {{ width:100%; border-collapse:collapse; background:white; border:1px solid var(--line); border-radius:8px; overflow:hidden; }}
-    .tableWrap {{ overflow:auto; border-radius:8px; }}
+    .metric {{ background:rgba(255,253,248,.8); border:1px solid var(--line); border-radius:16px; padding:16px; }}
+    .metric strong {{ display:block; font:800 28px/1.1 system-ui,-apple-system,Segoe UI,sans-serif; margin-top:5px; }}
+    table {{ width:100%; border-collapse:collapse; background:var(--paper); border:1px solid var(--line); border-radius:14px; overflow:hidden; font-family:system-ui,-apple-system,Segoe UI,sans-serif; }}
+    .tableWrap {{ overflow:auto; border-radius:14px; }}
     th,td {{ padding:10px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }}
-    th {{ background:#eef2f7; font-weight:650; }}
+    th {{ background:#f3eadf; font-weight:700; }}
     td:nth-child(n+2), th:nth-child(n+2) {{ text-align:right; }}
     .note {{ color:var(--muted); margin:8px 0 14px; }}
-    .bars {{ display:flex; flex-direction:column; gap:10px; }}
-    .bar {{ display:grid; grid-template-columns:160px 1fr 56px; align-items:center; gap:10px; }}
-    .track {{ height:14px; background:#e5e7eb; border-radius:999px; overflow:hidden; }}
-    .fill {{ height:100%; background:var(--blue); }}
+    .probTherm {{ margin:0 0 22px; padding:18px; border-radius:18px; background:#f6ead9; }}
+    .thermTop {{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; margin-bottom:12px; }}
+    .thermTop span {{ color:var(--muted); }}
+    .thermTop strong {{ font:800 42px/1 system-ui,-apple-system,Segoe UI,sans-serif; color:var(--blue); white-space:nowrap; }}
+    .thermTrack {{ height:18px; border-radius:999px; background:#e5d5bf; overflow:hidden; }}
+    .thermFill {{ height:100%; width:{hero_p * 100:.2f}%; border-radius:999px; background:var(--blue); }}
+    .dotRows {{ display:flex; flex-direction:column; gap:12px; margin-top:14px; font-family:system-ui,-apple-system,Segoe UI,sans-serif; }}
+    .dotRow {{ display:grid; grid-template-columns:150px 1fr 54px; align-items:center; gap:10px; font-size:14px; }}
+    .dotLine {{ position:relative; height:2px; background:#dacbb8; }}
+    .dotLine i {{ position:absolute; top:50%; width:14px; height:14px; border-radius:50%; background:var(--blue); transform:translate(-50%,-50%); box-shadow:0 0 0 4px #fff8ee; }}
     .chips {{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }}
-    .chip {{ border:1px solid var(--line); background:white; border-radius:999px; padding:6px 10px; color:var(--muted); }}
+    .chip {{ border:1px solid var(--line); background:var(--paper); border-radius:999px; padding:7px 11px; color:var(--muted); font-family:system-ui,-apple-system,Segoe UI,sans-serif; }}
     .two {{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }}
     .evidenceGrid {{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }}
-    .evidence {{ border:1px solid var(--line); border-radius:8px; padding:14px; background:white; }}
+    .evidence {{ border:1px solid var(--line); border-radius:16px; padding:16px; background:var(--paper); min-height:150px; }}
     .evidence span {{ display:inline-block; font-weight:700; margin-bottom:8px; }}
     .evidence p {{ margin:0; color:var(--muted); }}
-    .evidence.support {{ border-top:4px solid var(--green); }}
-    .evidence.caution {{ border-top:4px solid var(--amber); }}
-    .timeline {{ list-style:none; padding:0; margin:0; border-left:2px solid var(--line); }}
-    .timeline li {{ margin:0 0 14px 0; padding-left:14px; position:relative; }}
-    .timeline li::before {{ content:""; width:9px; height:9px; border-radius:50%; background:var(--blue); position:absolute; left:-5.5px; top:7px; }}
+    .evidence.support {{ border-top:5px solid var(--green); }}
+    .evidence.caution {{ border-top:5px solid var(--amber); }}
+    .timeline {{ list-style:none; padding:0; margin:0; }}
+    .timeline li {{ margin:0 0 12px 0; padding:13px 14px; border:1px solid var(--line); border-radius:14px; background:rgba(255,253,248,.78); }}
     .timeline time {{ display:block; color:var(--muted); font-size:13px; }}
     .timeline strong {{ margin-right:8px; }}
     .timeline span {{ color:var(--muted); }}
+    .predictionBox {{ display:grid; grid-template-columns:1fr auto; gap:18px; align-items:center; }}
+    input[type=range] {{ width:100%; accent-color:var(--blue); }}
+    .sliderValue {{ font:800 42px/1 system-ui,-apple-system,Segoe UI,sans-serif; color:var(--blue); min-width:110px; text-align:right; }}
+    .storyStrip {{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }}
+    .story {{ padding:18px; border:1px solid var(--line); border-radius:18px; background:rgba(255,253,248,.76); }}
+    .readCard {{ margin-top:20px; padding:16px 18px; border-radius:16px; background:#f6ead9; color:#57493b; }}
     footer {{ border-top:1px solid var(--line); padding:24px 20px; color:var(--muted); }}
     a {{ color:var(--blue); }}
-    @media (max-width: 950px) {{ .heroCard,.chartCard {{ grid-column:1 / -1; }} .two,.facts,.metricRow,.evidenceGrid {{ grid-template-columns:1fr; }} .bar {{ grid-template-columns:120px 1fr 48px; }} table {{ font-size:14px; }} }}
+    @media (max-width: 950px) {{ .topbar {{ align-items:flex-start; flex-direction:column; }} .heroCard,.chartCard {{ grid-column:1 / -1; }} .two,.facts,.metricRow,.evidenceGrid,.storyStrip {{ grid-template-columns:1fr; }} .dotRow {{ grid-template-columns:118px 1fr 48px; }} .predictionBox {{ grid-template-columns:1fr; }} .sliderValue {{ text-align:left; }} table {{ font-size:14px; }} }}
   </style>
 </head>
 <body>
   <header>
     <div class="wrap">
-      <p class="eyebrow">开放预测实验 · 不是官方倒计时</p>
-      <h1>未来一天会不会再次重置额度？</h1>
-      <p class="lead">我们只使用公开证据，让统计模型和 LLM 给出概率。等结果揭晓后，用同一规则计算误差。</p>
-      <nav aria-label="页面导航">
-        <a href="#current">当前概率</a>
-        <a href="#why">为什么这样猜</a>
-        <a href="#scores">已揭晓评分</a>
-        <a href="#history">历史演练</a>
-      </nav>
+      <div class="topbar">
+        <div class="brand">Tibo Reset Lab</div>
+        <nav aria-label="页面导航">
+          <a href="#current">当前实验</a>
+          <a href="#why">证据天平</a>
+          <a href="#play">你的判断</a>
+          <a href="#history">历史表现</a>
+        </nav>
+      </div>
+      <p class="eyebrow">公开证据里的概率练习</p>
+      <h1>下一次额度重置，会在什么时候出现？</h1>
+      <p class="lead">这里把公开公告、背景事件、统计模型和 LLM 判断放在同一张桌面上。你看到的不只是一个数字，而是它为什么会变。</p>
     </div>
   </header>
   <main>
@@ -298,26 +320,47 @@ def main() -> int:
 
     <section class="grid" id="current">
       <div class="panel heroCard">
-        <h2>当前最高 24h 预测</h2>
+        <h2>当前实验卡</h2>
         <div class="stat">{pct(hero_p)}</div>
-        <p class="subtle">不同预测者的 24h 概率范围：{pct(min_p)} 到 {pct(max_p)}。数据更新至 <code>{esc(data_at)}</code>。</p>
+        <p class="subtle">这是当前最高 24h 概率。所有预测者的区间是 {pct(min_p)} 到 {pct(max_p)}，证据更新至 <code>{esc(data_at)}</code>。</p>
         <div class="facts">
           <div class="fact"><strong>最新公告</strong><br><a href="{esc(latest_url)}">原始 X 帖</a></div>
           <div class="fact"><strong>公告时间</strong><br>{esc(latest_ann['announced_at_utc'])}</div>
           <div class="fact"><strong>距今约</strong><br>{hours_since:.1f} 小时</div>
         </div>
+        <div class="readCard"><strong>怎么读：</strong>如果把最近相似情形重复 10 次，最高模型大约认为其中 4 次会在一天内再出现 reset 公告。</div>
       </div>
       <div class="panel chartCard">
+        <div class="probTherm">
+          <div class="thermTop"><span>最高 24h 概率</span><strong>{pct(hero_p)}</strong></div>
+          <div class="thermTrack"><div class="thermFill"></div></div>
+        </div>
         <h2>预测者分歧</h2>
-        <p class="note">40% 可以理解为“10 次类似情况里，预计约 4 次会发生”。</p>
-        <div class="bars" id="bars"></div>
+        <p class="note">每个点是一位预测者的 24h 概率。点越靠右，越相信短期会再次出现公告。</p>
+        <div class="dotRows">{predictor_dots}</div>
       </div>
     </section>
 
     <section id="why">
-      <h2>为什么概率会上下移动？</h2>
-      <p class="note">这些是给普通读者看的解释卡：它们帮助理解模型输入，但不等同于对 OpenAI 内部动机的判断。</p>
+      <h2>证据天平</h2>
+      <p class="note">这些卡片把模型输入翻译成人话：哪些信号把概率往上推，哪些信号让它慢下来。</p>
       <div class="evidenceGrid">{evidence_html}</div>
+    </section>
+
+    <section class="panel" id="play">
+      <h2>你的判断是多少？</h2>
+      <div class="predictionBox">
+        <div>
+          <p class="note">拖动滑块，给出你自己的 24h 概率。这个版本先在浏览器本地显示，后续会接入匿名提交和 Crowd 分布。</p>
+          <input id="guess" type="range" min="0" max="100" value="{hero_p * 100:.0f}" aria-label="你的24小时概率">
+          <div class="chips">
+            <span class="chip">10%：很冷</span>
+            <span class="chip">40%：值得看</span>
+            <span class="chip">70%：强信号</span>
+          </div>
+        </div>
+        <div class="sliderValue"><span id="guessValue">{hero_p * 100:.0f}</span>%</div>
+      </div>
     </section>
 
     <section>
@@ -328,14 +371,23 @@ def main() -> int:
 
     <section class="two" id="scores">
       <div>
-        <h2>已经揭晓的演示预测</h2>
-        <p class="note">结果为 1 表示 24 小时内确实发生。误差越小越好；bootstrap 是演示评分，不算正式比赛。</p>
+        <h2>已经揭晓的预测</h2>
+        <p class="note">结果为 1 表示 24 小时内发生。误差越小，说明当时的概率判断越贴近结果。</p>
         <div class="tableWrap"><table><thead><tr><th>预测者</th><th>签发时间</th><th>当时猜24h</th><th>结果</th><th>误差</th><th>类型</th></tr></thead><tbody>{score_rows_html}</tbody></table></div>
       </div>
       <div id="history">
         <h2>历史演练榜</h2>
-        <p class="note">full 覆盖完整历史窗口；limited 只跑了少量回放点，不能和 full 直接比冠军。</p>
+        <p class="note">full 是完整历史窗口；limited 是少量回放点。先看样本量，再看误差。</p>
         <div class="tableWrap"><table><thead><tr><th>#</th><th>预测者</th><th>覆盖</th><th>N</th><th>平均误差</th><th>惩罚大错</th><th>相对基础模型</th></tr></thead><tbody>{leaderboard_rows}</tbody></table></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>历史故事模式</h2>
+      <div class="storyStrip">
+        <article class="story"><h3>回到当时</h3><p class="note">只看某个时间点以前的公开证据，再猜未来一天会不会出现 reset。</p></article>
+        <article class="story"><h3>揭晓答案</h3><p class="note">窗口结束后展示公告、原因类型和各预测者当时的概率。</p></article>
+        <article class="story"><h3>复盘判断</h3><p class="note">比较人、LLM、Crowd 和统计模型，看看谁更稳、谁更敢押。</p></article>
       </div>
     </section>
 
@@ -355,24 +407,19 @@ def main() -> int:
       <div class="chips">
         <span class="chip">平均误差越小越好</span>
         <span class="chip">N 越大越可信</span>
-        <span class="chip">bootstrap 只是演示</span>
-        <span class="chip">scheduled 才是正式预测</span>
-        <span class="chip">概率不是官方消息</span>
+        <span class="chip">24h 看短线</span>
+        <span class="chip">7d 看趋势</span>
+        <span class="chip">证据截止表示当时能看到什么</span>
       </div>
-      <p class="note">这个项目不会读取你的账号额度，也不会预测任何人的私人行为。它只追踪公开公告，并把预测过程和评分公开。</p>
+      <p class="note">每个数字都来自公开表格、冻结预测或评分记录；想深挖时可以直接打开仓库数据。</p>
     </section>
   </main>
   <footer><div class="wrap">数据来自仓库 CSV。查看 <a href="https://github.com/CRF2004/tibo-reset-lab/blob/main/README.md">README</a>、<a href="https://github.com/CRF2004/tibo-reset-lab/blob/main/reports/community_dashboard.md">Markdown Dashboard</a> 和 <a href="https://github.com/CRF2004/tibo-reset-lab/blob/main/PUBLIC_PRODUCT_IDEAS.md">产品路线</a>。</div></footer>
   <script>
     const data = {probabilities_json};
-    const bars = document.getElementById('bars');
-    for (const row of data) {{
-      const p = row.p24 ?? 0;
-      const el = document.createElement('div');
-      el.className = 'bar';
-      el.innerHTML = `<div>${{row.name}}</div><div class="track"><div class="fill" style="width:${{Math.max(0, Math.min(100, p*100))}}%"></div></div><div>${{(p*100).toFixed(1)}}%</div>`;
-      bars.appendChild(el);
-    }}
+    const guess = document.getElementById('guess');
+    const guessValue = document.getElementById('guessValue');
+    guess.addEventListener('input', () => {{ guessValue.textContent = guess.value; }});
   </script>
 </body>
 </html>
