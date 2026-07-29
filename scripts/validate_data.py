@@ -105,6 +105,9 @@ REQUIRED_HEADERS = {
         "action_id", "action_cluster_id", "announcement_id", "action_at_utc",
         "action_type", "reason_type", "gold_version",
     ],
+    "data/processed/announcement_cluster_overrides.csv": [
+        "announcement_id", "action_cluster_id", "confidence", "rationale",
+    ],
     "data/processed/tournament_predictors.csv": [
         "predictor_id", "display_name", "predictor_class", "model_version",
         "active", "formal_eligible", "description",
@@ -248,6 +251,43 @@ def main() -> int:
             errors.append(
                 f"data/processed/reset_announcements.csv:{line}: unknown source_id"
             )
+    action_announcement_ids = {
+        row["announcement_id"]
+        for row in tables.get("data/processed/reset_actions.csv", [])
+    }
+    override_ids = set()
+    for line, row in enumerate(
+        tables.get("data/processed/announcement_cluster_overrides.csv", []), start=2
+    ):
+        if row["announcement_id"] not in announcement_ids:
+            errors.append(
+                f"data/processed/announcement_cluster_overrides.csv:{line}: "
+                "unknown announcement_id"
+            )
+        if row["announcement_id"] in action_announcement_ids:
+            errors.append(
+                f"data/processed/announcement_cluster_overrides.csv:{line}: "
+                "override duplicates an action-derived mapping"
+            )
+        if row["announcement_id"] in override_ids:
+            errors.append(
+                f"data/processed/announcement_cluster_overrides.csv:{line}: "
+                "duplicate announcement override"
+            )
+        override_ids.add(row["announcement_id"])
+
+    accepted_ids = {
+        row["announcement_id"]
+        for row in tables.get("data/processed/reset_announcements.csv", [])
+        if row["adjudication_status"] == "accepted"
+    }
+    missing_cluster = sorted(accepted_ids - action_announcement_ids - override_ids)
+    if missing_cluster:
+        errors.append(
+            "Accepted announcements missing action cluster mapping: "
+            + ", ".join(missing_cluster)
+        )
+
     confirmation_source_ids = {
         row["source_id"]
         for row in tables.get("data/raw/confirmation_evidence.csv", [])
