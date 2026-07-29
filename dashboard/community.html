@@ -95,9 +95,25 @@
     .scoreExplainer { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:14px; }
     .scoreExplainer div { background:#f6ead9; border-radius:16px; padding:16px; }
     .scoreExplainer strong { display:block; margin-bottom:6px; }
+    .caseFile { border:1px solid #d8c5ad; background:#2b241d; color:#fff8ee; border-radius:24px; padding:26px; box-shadow:var(--shadow); }
+    .caseFile .note { color:#e5d6c3; }
+    .caseStamp { display:inline-block; margin-bottom:12px; padding:6px 10px; border:1px solid #8f7658; border-radius:999px; color:#f0c996; font:800 12px/1 system-ui,-apple-system,Segoe UI,sans-serif; letter-spacing:.08em; }
+    .caseGrid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:18px 0; }
+    .caseGrid div { padding:14px; border-radius:16px; background:rgba(255,248,238,.10); }
+    .caseGrid span { display:block; color:#d9c6ad; font:700 12px/1 system-ui,-apple-system,Segoe UI,sans-serif; margin-bottom:8px; }
+    .caseGrid strong { font:800 22px/1.1 system-ui,-apple-system,Segoe UI,sans-serif; }
+    .detectiveGrid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+    .detective { padding:18px; border:1px solid var(--line); border-radius:18px; background:var(--paper); }
+    .detective span { color:var(--amber); font:800 13px/1 system-ui,-apple-system,Segoe UI,sans-serif; }
+    .detective strong { display:block; margin:8px 0; font:800 24px/1.1 system-ui,-apple-system,Segoe UI,sans-serif; color:var(--blue); }
+    .detective p { margin:0; color:var(--muted); }
+    .routeMap { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:14px; }
+    .routeMap div { padding:14px; border:1px solid var(--line); border-radius:16px; background:#f6ead9; }
+    .routeMap span { color:var(--muted); font:800 12px/1 system-ui,-apple-system,Segoe UI,sans-serif; }
+    .routeMap strong { display:block; margin-top:8px; }
     footer { border-top:1px solid var(--line); padding:24px 20px; color:var(--muted); }
     a { color:var(--blue); }
-    @media (max-width: 950px) { .topbar { align-items:flex-start; flex-direction:column; } .heroCard,.chartCard { grid-column:1 / -1; } .two,.facts,.metricRow,.evidenceGrid,.storyStrip,.labRibbon,.moveGrid,.watchList,.seasonBoard,.lessonIntro,.lessonGrid,.scoreExplainer { grid-template-columns:1fr; } .dotRow { grid-template-columns:118px 1fr 48px; } .predictionBox { grid-template-columns:1fr; } .sliderValue { text-align:left; } table { font-size:14px; } }
+    @media (max-width: 950px) { .topbar { align-items:flex-start; flex-direction:column; } .heroCard,.chartCard { grid-column:1 / -1; } .two,.facts,.metricRow,.evidenceGrid,.storyStrip,.labRibbon,.moveGrid,.watchList,.seasonBoard,.lessonIntro,.lessonGrid,.scoreExplainer,.caseGrid,.detectiveGrid,.routeMap { grid-template-columns:1fr; } .dotRow { grid-template-columns:118px 1fr 48px; } .predictionBox { grid-template-columns:1fr; } .sliderValue { text-align:left; } table { font-size:14px; } }
   </style>
 </head>
 <body>
@@ -235,6 +251,26 @@
     </section>
 
     <section>
+      <div class="lessonIntro">
+        <div>
+          <p class="eyebrow">证据侦探</p>
+          <h2>证据是怎么被放进数据集的？</h2>
+        </div>
+        <p class="note">预测可信，前提是事件定义清楚。我们把“看到帖子”“确认含义”“切分动作”“等待结果”拆成几步，避免把不同性质的 reset 混在一起。</p>
+      </div>
+      <div class="detectiveGrid"><article class='detective'><span>官方公告</span><strong>42 条</strong><p>先确认来源是不是 Tibo / OpenAI 可追溯公开信息。</p></article>
+<article class='detective'><span>实际到账</span><strong>17 条成功线索</strong><p>把“宣布会 reset”和“用户看到额度变化”分开记录。</p></article>
+<article class='detective'><span>事件切分</span><strong>41 个独立事件</strong><p>一条公告可能包含 hard reset、banked credit 或条件性处理，需要拆成动作。</p></article>
+<article class='detective'><span>背景信号</span><strong>55 条</strong><p>事故、发布、里程碑会进入公开背景，但不会直接改写结果标签。</p></article></div>
+      <div class="routeMap">
+        <div><span>1</span><strong>发现新帖</strong></div>
+        <div><span>2</span><strong>回到原始来源</strong></div>
+        <div><span>3</span><strong>分类 hard / banked / conditional</strong></div>
+        <div><span>4</span><strong>锁定预测与结果</strong></div>
+      </div>
+    </section>
+
+    <section>
       <h2>当前概率表</h2>
       <p class="note">证据截止时间说明预测者最多只能看到该时间以前的信息。</p>
       <div class="tableWrap"><table><thead><tr><th>预测者</th><th>未来24小时</th><th>未来7天</th><th>证据截止</th></tr></thead><tbody><tr><td>Global event rate</td><td>12.0%</td><td>59.2%</td><td>2026-07-29T05:05:00Z</td></tr>
@@ -278,6 +314,21 @@
 <tr><td>10</td><td>Step 3.5 Flash</td><td>limited</td><td>4</td><td>0.016425</td><td>0.136505</td><td>87.1%</td></tr>
 <tr><td>11</td><td>Qwen 3.5 397B</td><td>limited</td><td>2</td><td>0.018450</td><td>0.145176</td><td>85.5%</td></tr></tbody></table></div>
       </div>
+    </section>
+
+    <section class="caseFile">
+      
+        <div class="caseStamp">最近复盘</div>
+        <h2>Step 3.5 Flash 的一次已揭晓预测</h2>
+        <p class="note">这张卡把一次预测拆开看：当时给了多少概率，后来结果是什么，误差又意味着什么。</p>
+        <div class="caseGrid">
+          <div><span>签发时间</span><strong>2026-07-28T09:38:00Z</strong></div>
+          <div><span>当时概率</span><strong>20.0%</strong></div>
+          <div><span>结果</span><strong>发生</strong></div>
+          <div><span>Brier 误差</span><strong>0.6400</strong></div>
+        </div>
+        <p class="note">读法：如果预测偏低但事件发生，误差会变大；如果预测很高却没发生，误差也会变大。这个机制会奖励长期校准，而不是奖励单次喊得最响。</p>
+        
     </section>
 
     <section class="panel">

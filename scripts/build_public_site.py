@@ -66,6 +66,7 @@ def main() -> int:
     forecasts = [row for row in read("tournament_forecasts.csv") if row["eligibility_status"] == "eligible"]
     scores = read("tournament_scores.csv")
     announcements = [row for row in read("reset_announcements.csv") if row["adjudication_status"] == "accepted"]
+    confirmations = read("reset_confirmations.csv")
     contexts = [row for row in read("context_events.csv") if row["prediction_eligible"] == "1"]
     actions = read("reset_actions.csv")
     historical = read("strong_daily_baseline_forecasts.csv")
@@ -117,6 +118,7 @@ def main() -> int:
             "kind": forecast["schedule_class"],
         })
     scored.sort(key=lambda row: row["issued"], reverse=True)
+    autopsy = scored[0] if scored else None
 
     hist_fields = [
         ("p_rolling30", "Recent 30-day rate"),
@@ -163,6 +165,21 @@ def main() -> int:
         f"<tr><td>{esc(row['name'])}</td><td>{esc(row['issued'])}</td><td>{pct(row['prob'])}</td><td>{esc(row['label'])}</td><td>{row['brier']:.4f}</td><td>{esc(row['kind'])}</td></tr>"
         for row in scored[:12]
     ) or "<tr><td colspan='6'>暂无成熟评分</td></tr>"
+    if autopsy:
+        autopsy_html = f"""
+        <div class="caseStamp">最近复盘</div>
+        <h2>{esc(autopsy['name'])} 的一次已揭晓预测</h2>
+        <p class="note">这张卡把一次预测拆开看：当时给了多少概率，后来结果是什么，误差又意味着什么。</p>
+        <div class="caseGrid">
+          <div><span>签发时间</span><strong>{esc(autopsy['issued'])}</strong></div>
+          <div><span>当时概率</span><strong>{pct(autopsy['prob'])}</strong></div>
+          <div><span>结果</span><strong>{'发生' if autopsy['label'] == '1' else '未发生'}</strong></div>
+          <div><span>Brier 误差</span><strong>{autopsy['brier']:.4f}</strong></div>
+        </div>
+        <p class="note">读法：如果预测偏低但事件发生，误差会变大；如果预测很高却没发生，误差也会变大。这个机制会奖励长期校准，而不是奖励单次喊得最响。</p>
+        """
+    else:
+        autopsy_html = "<h2>预测复盘</h2><p class='note'>等第一批窗口成熟后，这里会展示事前概率、结果和误差。</p>"
     leaderboard_rows = "\n".join(
         f"<tr><td>{index}</td><td>{esc(row['name'])}</td><td>{esc(row['coverage'])}</td><td>{row['n']}</td><td>{row['brier']:.6f}</td><td>{row['log_loss']:.6f}</td><td>{(1 - row['brier'] / global_brier):.1%}</td></tr>"
         for index, row in enumerate(leaderboard, 1)
@@ -279,6 +296,16 @@ def main() -> int:
         f"<li><time>{esc(row['first_public_at_utc'])}</time><strong>{esc(row['event_type'])}</strong><span>{esc(row['scoring_rationale'][:110])}</span></li>"
         for row in sorted_contexts[:6]
     )
+    detective_items = [
+        ("官方公告", f"{len(announcements)} 条", "先确认来源是不是 Tibo / OpenAI 可追溯公开信息。"),
+        ("实际到账", f"{sum(1 for row in confirmations if row['applied_successfully'] == '1')} 条成功线索", "把“宣布会 reset”和“用户看到额度变化”分开记录。"),
+        ("事件切分", f"{action_cluster_count} 个独立事件", "一条公告可能包含 hard reset、banked credit 或条件性处理，需要拆成动作。"),
+        ("背景信号", f"{len(contexts)} 条", "事故、发布、里程碑会进入公开背景，但不会直接改写结果标签。"),
+    ]
+    detective_html = "\n".join(
+        f"<article class='detective'><span>{esc(label)}</span><strong>{esc(value)}</strong><p>{esc(text)}</p></article>"
+        for label, value, text in detective_items
+    )
 
     html_text = f"""<!doctype html>
 <html lang="zh-CN">
@@ -377,9 +404,25 @@ def main() -> int:
     .scoreExplainer {{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:14px; }}
     .scoreExplainer div {{ background:#f6ead9; border-radius:16px; padding:16px; }}
     .scoreExplainer strong {{ display:block; margin-bottom:6px; }}
+    .caseFile {{ border:1px solid #d8c5ad; background:#2b241d; color:#fff8ee; border-radius:24px; padding:26px; box-shadow:var(--shadow); }}
+    .caseFile .note {{ color:#e5d6c3; }}
+    .caseStamp {{ display:inline-block; margin-bottom:12px; padding:6px 10px; border:1px solid #8f7658; border-radius:999px; color:#f0c996; font:800 12px/1 system-ui,-apple-system,Segoe UI,sans-serif; letter-spacing:.08em; }}
+    .caseGrid {{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:18px 0; }}
+    .caseGrid div {{ padding:14px; border-radius:16px; background:rgba(255,248,238,.10); }}
+    .caseGrid span {{ display:block; color:#d9c6ad; font:700 12px/1 system-ui,-apple-system,Segoe UI,sans-serif; margin-bottom:8px; }}
+    .caseGrid strong {{ font:800 22px/1.1 system-ui,-apple-system,Segoe UI,sans-serif; }}
+    .detectiveGrid {{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }}
+    .detective {{ padding:18px; border:1px solid var(--line); border-radius:18px; background:var(--paper); }}
+    .detective span {{ color:var(--amber); font:800 13px/1 system-ui,-apple-system,Segoe UI,sans-serif; }}
+    .detective strong {{ display:block; margin:8px 0; font:800 24px/1.1 system-ui,-apple-system,Segoe UI,sans-serif; color:var(--blue); }}
+    .detective p {{ margin:0; color:var(--muted); }}
+    .routeMap {{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:14px; }}
+    .routeMap div {{ padding:14px; border:1px solid var(--line); border-radius:16px; background:#f6ead9; }}
+    .routeMap span {{ color:var(--muted); font:800 12px/1 system-ui,-apple-system,Segoe UI,sans-serif; }}
+    .routeMap strong {{ display:block; margin-top:8px; }}
     footer {{ border-top:1px solid var(--line); padding:24px 20px; color:var(--muted); }}
     a {{ color:var(--blue); }}
-    @media (max-width: 950px) {{ .topbar {{ align-items:flex-start; flex-direction:column; }} .heroCard,.chartCard {{ grid-column:1 / -1; }} .two,.facts,.metricRow,.evidenceGrid,.storyStrip,.labRibbon,.moveGrid,.watchList,.seasonBoard,.lessonIntro,.lessonGrid,.scoreExplainer {{ grid-template-columns:1fr; }} .dotRow {{ grid-template-columns:118px 1fr 48px; }} .predictionBox {{ grid-template-columns:1fr; }} .sliderValue {{ text-align:left; }} table {{ font-size:14px; }} }}
+    @media (max-width: 950px) {{ .topbar {{ align-items:flex-start; flex-direction:column; }} .heroCard,.chartCard {{ grid-column:1 / -1; }} .two,.facts,.metricRow,.evidenceGrid,.storyStrip,.labRibbon,.moveGrid,.watchList,.seasonBoard,.lessonIntro,.lessonGrid,.scoreExplainer,.caseGrid,.detectiveGrid,.routeMap {{ grid-template-columns:1fr; }} .dotRow {{ grid-template-columns:118px 1fr 48px; }} .predictionBox {{ grid-template-columns:1fr; }} .sliderValue {{ text-align:left; }} table {{ font-size:14px; }} }}
   </style>
 </head>
 <body>
@@ -498,6 +541,23 @@ def main() -> int:
     </section>
 
     <section>
+      <div class="lessonIntro">
+        <div>
+          <p class="eyebrow">证据侦探</p>
+          <h2>证据是怎么被放进数据集的？</h2>
+        </div>
+        <p class="note">预测可信，前提是事件定义清楚。我们把“看到帖子”“确认含义”“切分动作”“等待结果”拆成几步，避免把不同性质的 reset 混在一起。</p>
+      </div>
+      <div class="detectiveGrid">{detective_html}</div>
+      <div class="routeMap">
+        <div><span>1</span><strong>发现新帖</strong></div>
+        <div><span>2</span><strong>回到原始来源</strong></div>
+        <div><span>3</span><strong>分类 hard / banked / conditional</strong></div>
+        <div><span>4</span><strong>锁定预测与结果</strong></div>
+      </div>
+    </section>
+
+    <section>
       <h2>当前概率表</h2>
       <p class="note">证据截止时间说明预测者最多只能看到该时间以前的信息。</p>
       <div class="tableWrap"><table><thead><tr><th>预测者</th><th>未来24小时</th><th>未来7天</th><th>证据截止</th></tr></thead><tbody>{probability_rows}</tbody></table></div>
@@ -514,6 +574,10 @@ def main() -> int:
         <p class="note">full 是完整历史窗口；limited 是少量回放点。先看样本量，再看误差。</p>
         <div class="tableWrap"><table><thead><tr><th>#</th><th>预测者</th><th>覆盖</th><th>N</th><th>平均误差</th><th>惩罚大错</th><th>相对基础模型</th></tr></thead><tbody>{leaderboard_rows}</tbody></table></div>
       </div>
+    </section>
+
+    <section class="caseFile">
+      {autopsy_html}
     </section>
 
     <section class="panel">
