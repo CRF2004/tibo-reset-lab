@@ -39,22 +39,26 @@ Tibo Reset Lab 是一个关于 Codex / ChatGPT Work 特殊额度重置公告的�
 ### 统计预测者历史演练排行榜
 
 口径：v1.2 `cluster_first`，每日 17:00 UTC landmark，24小时窗口；每个预测点只用此前数据。
-LLM、玩家和 Crowd 需要当时冻结的上下文提交，暂不纳入历史演练。
+统计模型使用严格 expanding-window；LLM replay 使用当前冻结上下文构建器在历史 cutoff 回放。
+玩家和 Crowd 只有存在独立历史 replay 提交时才计分。
 
-| 排名 | 预测者 | N | Brier | Log Loss | Skill vs global |
-| ---: | --- | ---: | ---: | ---: | ---: |
-| 1 | EWMA half-life 30d | 247 | 0.117336 | 0.391868 | 5.6% |
-| 2 | Recent 30-day rate | 247 | 0.117437 | 0.390606 | 5.6% |
-| 3 | Two-regime rate | 247 | 0.118392 | 0.398566 | 4.8% |
-| 4 | Recent 60-day rate | 247 | 0.118566 | 0.403098 | 4.7% |
-| 5 | Calendar model | 247 | 0.121546 | 0.420149 | 2.3% |
-| 6 | Same-gap nearest 30 | 247 | 0.122434 | 0.412941 | 1.5% |
-| 7 | Calendar model without regime | 247 | 0.123121 | 0.426222 | 1.0% |
-| 8 | Global event rate | 247 | 0.124353 | 0.425184 | 0.0% |
-| 9 | Discrete renewal hazard | 247 | 0.153615 | 0.489800 | -23.5% |
+| 排名 | 预测者 | 覆盖 | N | Brier | Log Loss | Skill vs global |
+| ---: | --- | --- | ---: | ---: | ---: | ---: |
+| 1 | EWMA half-life 30d | full | 247 | 0.117336 | 0.391868 | 5.6% |
+| 2 | Recent 30-day rate | full | 247 | 0.117437 | 0.390606 | 5.6% |
+| 3 | Two-regime rate | full | 247 | 0.118392 | 0.398566 | 4.8% |
+| 4 | Recent 60-day rate | full | 247 | 0.118566 | 0.403098 | 4.7% |
+| 5 | Calendar model | full | 247 | 0.121546 | 0.420149 | 2.3% |
+| 6 | Same-gap nearest 30 | full | 247 | 0.122434 | 0.412941 | 1.5% |
+| 7 | Calendar model without regime | full | 247 | 0.123121 | 0.426222 | 1.0% |
+| 8 | Global event rate | full | 247 | 0.124353 | 0.425184 | 0.0% |
+| 9 | Discrete renewal hazard | full | 247 | 0.153615 | 0.489800 | -23.5% |
+| 10 | Kimi K2.5 | limited | 1 | 0.006400 | 0.083382 | 94.9% |
+| 11 | DeepSeek V4 Pro | limited | 1 | 0.014400 | 0.127833 | 88.4% |
 
 共同窗口 `2025-11-23T17:00:00Z` 至 `2026-07-27T17:00:00Z`；
 正例率 `14.2%`。这是模型开发期历史演练，不替代未来 scheduled 排行榜。
+暂无可评分 replay：Qwen 3.5 397B, MiniMax M2.7, Step 3.5 Flash, Independent player, Crowd aggregate。
 <!-- LIVE_SNAPSHOT_END -->
 
 ## 它与普通 reset tracker 有什么不同？

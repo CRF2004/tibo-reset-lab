@@ -39,6 +39,17 @@ def score_rows(rows: list[dict[str, str]], field: str) -> tuple[int, float, floa
     return n, brier, log_loss, sum(y for y, _ in scored) / n
 
 
+def score_probability_rows(rows: list[dict[str, str]]) -> tuple[int, float, float, float]:
+    scored = [
+        (int(row["label"]), min(max(float(row["probability"]), 1e-15), 1 - 1e-15))
+        for row in rows
+    ]
+    n = len(scored)
+    brier = sum((p - y) ** 2 for y, p in scored) / n
+    log_loss = -sum(y * math.log(p) + (1 - y) * math.log(1 - p) for y, p in scored) / n
+    return n, brier, log_loss, sum(y for y, _ in scored) / n
+
+
 def main() -> int:
     predictors = {row["predictor_id"]: row for row in read("tournament_predictors.csv")}
     forecasts = [
@@ -51,6 +62,7 @@ def main() -> int:
     ]
     scores = read("tournament_scores.csv")
     historical = read("strong_daily_baseline_forecasts.csv")
+    replay = read("historical_replay_forecasts.csv")
     scheduled = [row for row in forecasts if row["schedule_class"] == "scheduled"]
     if scheduled:
         issue = max(row["issued_at_utc"] for row in scheduled)
@@ -109,19 +121,38 @@ def main() -> int:
         ("p_km_renewal", "Discrete renewal hazard"),
     ]
     historical_scores = [
-        (name, *score_rows(historical, field))
+        (name, "full", *score_rows(historical, field))
         for field, name in historical_fields
     ]
-    historical_scores.sort(key=lambda row: row[2])
-    baseline_brier = next(row[2] for row in historical_scores if row[0] == "Global event rate")
+    replay_display = {
+        "P_LLM_DEEPSEEK_V4": "DeepSeek V4 Pro",
+        "P_LLM_QWEN35_397B": "Qwen 3.5 397B",
+        "P_LLM_KIMI_K25": "Kimi K2.5",
+        "P_LLM_MINIMAX_M27": "MiniMax M2.7",
+        "P_LLM_STEP35": "Step 3.5 Flash",
+        "P_PLAYER": "Independent player",
+        "P_CROWD": "Crowd aggregate",
+    }
+    replay_status = []
+    for predictor_id, name in replay_display.items():
+        rows = [
+            row for row in replay
+            if row["predictor_id"] == predictor_id and row["horizon_hours"] == "24"
+        ]
+        if rows:
+            historical_scores.append((name, "limited", *score_probability_rows(rows)))
+        else:
+            replay_status.append(name)
+    historical_scores.sort(key=lambda row: (-row[2], row[3]))
+    baseline_brier = next(row[3] for row in historical_scores if row[0] == "Global event rate")
     leaderboard = "\n".join(
-        f"| {rank} | {name} | {n} | {brier:.6f} | {log_loss:.6f} | "
+        f"| {rank} | {name} | {coverage} | {n} | {brier:.6f} | {log_loss:.6f} | "
         f"{(1 - brier / baseline_brier):.1%} |"
-        for rank, (name, n, brier, log_loss, _prevalence) in enumerate(
+        for rank, (name, coverage, n, brier, log_loss, _prevalence) in enumerate(
             historical_scores, start=1
         )
     )
-    historical_prevalence = historical_scores[0][4] if historical_scores else 0
+    historical_prevalence = score_rows(historical, "p_global")[3] if historical else 0
     mature_scheduled = {
         row["tournament_forecast_id"] for row in scores
         if any(
@@ -152,14 +183,16 @@ def main() -> int:
 ### 统计预测者历史演练排行榜
 
 口径：v1.2 `cluster_first`，每日 17:00 UTC landmark，24小时窗口；每个预测点只用此前数据。
-LLM、玩家和 Crowd 需要当时冻结的上下文提交，暂不纳入历史演练。
+统计模型使用严格 expanding-window；LLM replay 使用当前冻结上下文构建器在历史 cutoff 回放。
+玩家和 Crowd 只有存在独立历史 replay 提交时才计分。
 
-| 排名 | 预测者 | N | Brier | Log Loss | Skill vs global |
-| ---: | --- | ---: | ---: | ---: | ---: |
+| 排名 | 预测者 | 覆盖 | N | Brier | Log Loss | Skill vs global |
+| ---: | --- | --- | ---: | ---: | ---: | ---: |
 {leaderboard}
 
 共同窗口 `{historical[0]['issued_at_utc']}` 至 `{historical[-1]['issued_at_utc']}`；
 正例率 `{historical_prevalence:.1%}`。这是模型开发期历史演练，不替代未来 scheduled 排行榜。
+暂无可评分 replay：{", ".join(replay_status) if replay_status else "无"}。
 {END}"""
     text = README.read_text(encoding="utf-8")
     if START not in text or END not in text:

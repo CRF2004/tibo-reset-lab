@@ -136,6 +136,12 @@ REQUIRED_HEADERS = {
         "label", "event_count", "brier", "log_loss",
         "rolling30_brier_skill", "score_status", "source_data_sha256",
     ],
+    "data/processed/historical_replay_forecasts.csv": [
+        "replay_forecast_id", "predictor_id", "participant_id", "issued_at_utc",
+        "horizon_hours", "window_end_utc", "probability", "label",
+        "event_count", "brier", "log_loss", "evidence_cutoff_utc",
+        "evidence_ids", "rationale", "replay_method", "payload_sha256",
+    ],
 }
 
 ENUMS = {
