@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import csv
+import math
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -27,6 +28,17 @@ def pct(value: str | None) -> str:
     return "—" if value is None else f"{float(value):.1%}"
 
 
+def score_rows(rows: list[dict[str, str]], field: str) -> tuple[int, float, float, float]:
+    scored = [
+        (int(row["label_24h"]), min(max(float(row[field]), 1e-15), 1 - 1e-15))
+        for row in rows
+    ]
+    n = len(scored)
+    brier = sum((p - y) ** 2 for y, p in scored) / n
+    log_loss = -sum(y * math.log(p) + (1 - y) * math.log(1 - p) for y, p in scored) / n
+    return n, brier, log_loss, sum(y for y, _ in scored) / n
+
+
 def main() -> int:
     predictors = {row["predictor_id"]: row for row in read("tournament_predictors.csv")}
     forecasts = [
@@ -38,6 +50,7 @@ def main() -> int:
         if row["adjudication_status"] == "accepted"
     ]
     scores = read("tournament_scores.csv")
+    historical = read("strong_daily_baseline_forecasts.csv")
     scheduled = [row for row in forecasts if row["schedule_class"] == "scheduled"]
     if scheduled:
         issue = max(row["issued_at_utc"] for row in scheduled)
@@ -84,6 +97,31 @@ def main() -> int:
         (row["submitted_at_utc"] for row in selected),
         default=datetime.now(timezone.utc).isoformat(),
     )
+    historical_fields = [
+        ("p_ewma_hl30", "EWMA half-life 30d"),
+        ("p_rolling30", "Recent 30-day rate"),
+        ("p_rolling60", "Recent 60-day rate"),
+        ("p_regime_rate", "Two-regime rate"),
+        ("p_m2", "Calendar model"),
+        ("p_m2_no_regime", "Calendar model without regime"),
+        ("p_global", "Global event rate"),
+        ("p_same_gap30", "Same-gap nearest 30"),
+        ("p_km_renewal", "Discrete renewal hazard"),
+    ]
+    historical_scores = [
+        (name, *score_rows(historical, field))
+        for field, name in historical_fields
+    ]
+    historical_scores.sort(key=lambda row: row[2])
+    baseline_brier = next(row[2] for row in historical_scores if row[0] == "Global event rate")
+    leaderboard = "\n".join(
+        f"| {rank} | {name} | {n} | {brier:.6f} | {log_loss:.6f} | "
+        f"{(1 - brier / baseline_brier):.1%} |"
+        for rank, (name, n, brier, log_loss, _prevalence) in enumerate(
+            historical_scores, start=1
+        )
+    )
+    historical_prevalence = historical_scores[0][4] if historical_scores else 0
     mature_scheduled = {
         row["tournament_forecast_id"] for row in scores
         if any(
@@ -110,6 +148,18 @@ def main() -> int:
 - [查看中文理由、证据与完整 Dashboard](reports/community_dashboard.md)。
 
 概率不是官方消息，也不是“重置倒计时”。Bootstrap、迟交和未成熟结果不进入正式排名。
+
+### 统计预测者历史演练排行榜
+
+口径：v1.2 `cluster_first`，每日 17:00 UTC landmark，24小时窗口；每个预测点只用此前数据。
+LLM、玩家和 Crowd 需要当时冻结的上下文提交，暂不纳入历史演练。
+
+| 排名 | 预测者 | N | Brier | Log Loss | Skill vs global |
+| ---: | --- | ---: | ---: | ---: | ---: |
+{leaderboard}
+
+共同窗口 `{historical[0]['issued_at_utc']}` 至 `{historical[-1]['issued_at_utc']}`；
+正例率 `{historical_prevalence:.1%}`。这是模型开发期历史演练，不替代未来 scheduled 排行榜。
 {END}"""
     text = README.read_text(encoding="utf-8")
     if START not in text or END not in text:

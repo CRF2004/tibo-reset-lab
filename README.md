@@ -35,6 +35,26 @@ Tibo Reset Lab 是一个关于 Codex / ChatGPT Work 特殊额度重置公告的�
 - [查看中文理由、证据与完整 Dashboard](reports/community_dashboard.md)。
 
 概率不是官方消息，也不是“重置倒计时”。Bootstrap、迟交和未成熟结果不进入正式排名。
+
+### 统计预测者历史演练排行榜
+
+口径：v1.2 `cluster_first`，每日 17:00 UTC landmark，24小时窗口；每个预测点只用此前数据。
+LLM、玩家和 Crowd 需要当时冻结的上下文提交，暂不纳入历史演练。
+
+| 排名 | 预测者 | N | Brier | Log Loss | Skill vs global |
+| ---: | --- | ---: | ---: | ---: | ---: |
+| 1 | EWMA half-life 30d | 247 | 0.117336 | 0.391868 | 5.6% |
+| 2 | Recent 30-day rate | 247 | 0.117437 | 0.390606 | 5.6% |
+| 3 | Two-regime rate | 247 | 0.118392 | 0.398566 | 4.8% |
+| 4 | Recent 60-day rate | 247 | 0.118566 | 0.403098 | 4.7% |
+| 5 | Calendar model | 247 | 0.121546 | 0.420149 | 2.3% |
+| 6 | Same-gap nearest 30 | 247 | 0.122434 | 0.412941 | 1.5% |
+| 7 | Calendar model without regime | 247 | 0.123121 | 0.426222 | 1.0% |
+| 8 | Global event rate | 247 | 0.124353 | 0.425184 | 0.0% |
+| 9 | Discrete renewal hazard | 247 | 0.153615 | 0.489800 | -23.5% |
+
+共同窗口 `2025-11-23T17:00:00Z` 至 `2026-07-27T17:00:00Z`；
+正例率 `14.2%`。这是模型开发期历史演练，不替代未来 scheduled 排行榜。
 <!-- LIVE_SNAPSHOT_END -->
 
 ## 它与普通 reset tracker 有什么不同？
@@ -59,15 +79,15 @@ Tibo Reset Lab 是一个关于 Codex / ChatGPT Work 特殊额度重置公告的�
 | 主结果：独立决策 cluster | 40 个 |
 | 拆分后的额度动作 | 42 个 |
 | 官方事故上下文 | 已回填至 2025-09 |
-| 历史模型比较 | 旧 v1 开发结果已完成；17:00 对齐的 v1.2 待重建 |
+| 历史模型比较 | 17:00 UTC / cluster-first 的 v1.2 历史演练已重建 |
 | 前瞻设计 | v1 冻结；v1.1 强基线修订；v1.2 对齐时间与事件单位 |
 | 实时比赛 | 数据结构、冻结、Crowd 与评分流程已建立 |
 | 正式前瞻样本 | 尚未积累到停止条件 |
 
-旧 v1 开发回测中，近期 30 天事件率的 Brier Score 为 `0.119664`，优于 Calendar M2
-的 `0.125443`。这些数值使用旧的 00:00 UTC / announcement-post 口径，只作为开发记录；
-v1.2 将在 17:00 UTC / cluster-first 共同窗口上重建全部模型。项目不声称复杂模型已经
-胜出。旧结果见 [strong_baselines_v1.md](reports/strong_baselines_v1.md)。
+v1.2 历史演练中，EWMA half-life 30d 的 Brier Score 为 `0.117336`，略优于近期
+30 天事件率的 `0.117437` 和 Calendar M2 的 `0.121546`。这些结果只覆盖可严格回放的
+统计预测者；LLM、玩家和 Crowd 需要当时冻结的上下文提交，等待前瞻 scheduled 排名。
+详细结果见 [strong_baselines_v1.md](reports/strong_baselines_v1.md)。
 
 正式比较至少需要同时达到：
 

@@ -164,7 +164,7 @@ def main() -> int:
     skill_m3 = 1 - scores["m3"][0] / scores["m0"][0]
     skill_m3_vs_m1 = 1 - scores["m3"][0] / scores["m1"][0]
     REPORT.write_text(
-        f"""# M0–M3-lite 严格滚动比较 v1
+        f"""# M0–M3-lite 严格滚动比较 v1.2
 
 共同评分窗口：{output[0]['issued_at_utc']} 至 {output[-1]['issued_at_utc']}  
 共同预测点：{len(output)}  

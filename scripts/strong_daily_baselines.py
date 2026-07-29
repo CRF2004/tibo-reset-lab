@@ -143,7 +143,7 @@ def main() -> int:
     )
     prevalence = sum(int(row["label_24h"]) for row in output) / len(output)
     REPORT.write_text(
-        f"""# 强日级基线比较 v1
+        f"""# 强日级基线比较 v1.2
 
 共同窗口：{len(output)} 点；正例率：{prevalence:.3%}。所有自适应基线只使用预测点
 之前的数据。两阶段边界固定为 2026-06-11（banked reset 首次公开产品证据），但该
