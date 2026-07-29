@@ -35,6 +35,11 @@ def signed_pct(value: float) -> str:
     return f"{sign}{value:.1%}"
 
 
+def short_day(value: str) -> str:
+    parsed = dt(value)
+    return parsed.strftime("%m/%d")
+
+
 def esc(value: object) -> str:
     return html.escape(str(value), quote=True)
 
@@ -306,6 +311,39 @@ def main() -> int:
         f"<article class='detective'><span>{esc(label)}</span><strong>{esc(value)}</strong><p>{esc(text)}</p></article>"
         for label, value, text in detective_items
     )
+    graph_events = []
+    for row in sorted_contexts[:7]:
+        if row["event_type"] == "product_incident":
+            node_type = "incident"
+            title = "事故信号"
+        elif row["event_type"] == "milestone":
+            node_type = "milestone"
+            title = row["milestone_label"] or "里程碑"
+        elif row["event_type"] == "product_launch_or_promotion":
+            node_type = "launch"
+            title = row["launch_label"] or "发布/额度更新"
+        else:
+            node_type = "context"
+            title = row["event_type"]
+        graph_events.append({
+            "at": row["first_public_at_utc"],
+            "type": node_type,
+            "title": title,
+            "text": row["scoring_rationale"][:82],
+        })
+    for row in sorted_ann[:5]:
+        graph_events.append({
+            "at": row["announced_at_utc"],
+            "type": "reset",
+            "title": row["reset_type"],
+            "text": row["reason_type"],
+        })
+    graph_events.sort(key=lambda row: row["at"])
+    graph_events = graph_events[-12:]
+    route_html = "\n".join(
+        f"<article class='routeNode {esc(row['type'])}'><span>{esc(short_day(row['at']))}</span><b>{esc(row['title'])}</b><p>{esc(row['text'])}</p></article>"
+        for row in graph_events
+    )
 
     html_text = f"""<!doctype html>
 <html lang="zh-CN">
@@ -420,6 +458,18 @@ def main() -> int:
     .routeMap div {{ padding:14px; border:1px solid var(--line); border-radius:16px; background:#f6ead9; }}
     .routeMap span {{ color:var(--muted); font:800 12px/1 system-ui,-apple-system,Segoe UI,sans-serif; }}
     .routeMap strong {{ display:block; margin-top:8px; }}
+    .eventMap {{ overflow-x:auto; padding:10px 4px 18px; }}
+    .routePath {{ display:grid; grid-auto-flow:column; grid-auto-columns:minmax(190px,1fr); gap:18px; align-items:start; min-width:980px; position:relative; padding-top:28px; }}
+    .routePath::before {{ content:""; position:absolute; left:20px; right:20px; top:45px; height:5px; border-radius:999px; background:linear-gradient(90deg,#d6c3aa,#315f7d,#26735b,#b66a2d); opacity:.72; }}
+    .routeNode {{ position:relative; padding:44px 16px 16px; border:1px solid var(--line); border-radius:18px; background:rgba(255,253,248,.94); box-shadow:0 12px 34px rgba(80,52,24,.08); }}
+    .routeNode::before {{ content:""; position:absolute; top:8px; left:18px; width:24px; height:24px; border-radius:50%; border:5px solid #fff8ee; background:var(--blue); box-shadow:0 0 0 1px var(--line); }}
+    .routeNode.reset::before {{ background:var(--green); }}
+    .routeNode.incident::before {{ background:var(--rose); }}
+    .routeNode.launch::before {{ background:var(--amber); }}
+    .routeNode.milestone::before {{ background:var(--blue); }}
+    .routeNode span {{ color:var(--muted); font:800 12px/1 system-ui,-apple-system,Segoe UI,sans-serif; }}
+    .routeNode b {{ display:block; margin:7px 0; font:800 17px/1.15 system-ui,-apple-system,Segoe UI,sans-serif; }}
+    .routeNode p {{ margin:0; color:var(--muted); font-size:14px; }}
     footer {{ border-top:1px solid var(--line); padding:24px 20px; color:var(--muted); }}
     a {{ color:var(--blue); }}
     @media (max-width: 950px) {{ .topbar {{ align-items:flex-start; flex-direction:column; }} .heroCard,.chartCard {{ grid-column:1 / -1; }} .two,.facts,.metricRow,.evidenceGrid,.storyStrip,.labRibbon,.moveGrid,.watchList,.seasonBoard,.lessonIntro,.lessonGrid,.scoreExplainer,.caseGrid,.detectiveGrid,.routeMap {{ grid-template-columns:1fr; }} .dotRow {{ grid-template-columns:118px 1fr 48px; }} .predictionBox {{ grid-template-columns:1fr; }} .sliderValue {{ text-align:left; }} table {{ font-size:14px; }} }}
@@ -506,6 +556,24 @@ def main() -> int:
       <h2>证据天平</h2>
       <p class="note">这些卡片把模型输入翻译成人话：哪些信号把概率往上推，哪些信号让它慢下来。</p>
       <div class="evidenceGrid">{evidence_html}</div>
+    </section>
+
+    <section>
+      <div class="lessonIntro">
+        <div>
+          <p class="eyebrow">OpenAI 事件路线</p>
+          <h2>预测看到的是一条节奏线</h2>
+        </div>
+        <p class="note">事故、里程碑、发布和 reset 公告不是孤立点。路线图把它们按公开时间排开，帮助你看到“为什么最近窗口会变热，为什么刚 reset 后又可能降温”。</p>
+      </div>
+      <div class="eventMap"><div class="routePath">{route_html}</div></div>
+      <div class="chips">
+        <span class="chip">手机上可横向滑动</span>
+        <span class="chip">红点：事故</span>
+        <span class="chip">蓝点：里程碑</span>
+        <span class="chip">橙点：发布/额度更新</span>
+        <span class="chip">绿点：reset 公告</span>
+      </div>
     </section>
 
     <section>
